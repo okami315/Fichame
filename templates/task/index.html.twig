@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TaskController!{% endblock %}
+
+{% block body %}
+
+{% block javascripts %}
+
+{% endblock %}
+<main class="container-fluid d-flex">
+    {% for task in tasks %}       
+      <section class="">
+        <h3>Tarea ID:<b>{{ task.id}}</b></h3>
+        <p>Estado: {{task.state}}</p>
+        <p>Estado Request: {{task.getStateRequest}}</p>
+        <p>User: {{task.user}}</p>
+        <p>Evento: {{task.event}}</p>
+        <p>Hora de Comienzo: {{task.getStartTime| date ('y-M-d H:m')}}</p>
+        <p>Hora de Fin: {{task.getEndTime| date ('y-M-d H:m')}}</p>
+
+        <a class="btn btn-primary" href="{{ path('app_task_edit', { id: task.id}) }}">Editar</a>
+        
+      </section>
+    {% endfor %}  
+</main>
+  
+{% endblock %}

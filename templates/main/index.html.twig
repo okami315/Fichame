@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!
+{% endblock %}
+
+{% block body %}
+{% set showMessage = true %}
+<main class="p-4 container-fluid">
+	<a class="mb-2 btn btn-secondary" type="button" href="{{path("app_seeAsignedTasks")}}">Ver Tareas Aceptadas</a>
+	
+	<section>
+	{% if tasks %}
+		<h3>Tareas pendientes</h3>
+		<ul class="list-group">
+			{% for task in tasks %}
+				<li class="list-group-item">
+					<span class="fw-bol">{{task.event.name}}</span>
+					<a href="{{ path('app_task_edit_State_request', {'id': task.id, 'state_request': 1}) }}">
+						<button type="button" class="btn btn-success"><i class="fa-solid fa-check"></i> Aceptar</button>
+					</a>
+					<a href="{{ path('app_task_edit_State_request', {'id': task.id, 'state_request': 0}) }}">
+					<a href="{{ path('app_task_edit_State_request', {'id': task.id, 'state_request': 0}) }}">
+						<button type="button" class="btn btn-danger"><i class="fa-solid fa-xmark"></i> Rechazar</button>
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<h3>No hay tareas pendientes</h3>
+	{% endif %}
+	</section>
+
+	<section class="">
+		{% for task in taskAsignments %}
+			<ul>
+				<li>
+					Nombre de la tarea:{{task.Event.name}}<br>
+					
+					{% if (task.isState()== 1 and task.getStateRequest()==1 and task.getStartTime()== NULL) %}
+						<a href="{{ path('app_task_update_State', {'id': task.id}) }}">
+							<button type="button">Comenzar Tarea</button>
+						</a>
+					{% else %}
+						<form action="{{ path('app_task_update_State', {'id': task.id}) }}">
+
+							<a>
+								<button type="submit">Terminar Tarea</button>
+							</a>
+							<input type="number" placeholder="Tiempo de Descanso" name="breakHours"/>
+						</form>
+						{% set showMessage = false %}
+					{% endif %}
+					
+				</li>
+			</ul>
+		{% endfor %}
+
+		{% if showMessage %}
+			{% if is_granted("ROLE_ALMACEN")%}
+				<a href="{{path('app_event_newAlmacen') }}">
+				Almacen</a>
+			{% endif %}
+		{% endif %}
+
+		<a href="{{ path('app_seeAsignedTasks')}}"> 
+
+	</section>
+</main>
+	
+{% endblock %}
