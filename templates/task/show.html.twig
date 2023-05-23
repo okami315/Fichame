@@ -4,9 +4,12 @@
 {% block body %}
     
     <div class="mx-5 my-5">
-    <h2 class="mx-5 my-5 text-center">Tareas</h2>
+    <h2 class="text-center my-5 mx-5">Tareas</h2>
     <table class="table">
         <tbody>
+            {# <tr>
+                <th colspan="12" class="text-center" style="font-size:22pt">Tareas</th>
+            </tr> #}
             <tr>
                 <th class="text-center">Nombre de la tarea</th>
                 <td class="text-center">{{ task.event.name }}</td>
@@ -19,6 +22,14 @@
                 <th class="text-center">Fecha de finalización</th>
                 <td class="text-center">{{ task.endTime ? task.endTime|date('d/m/Y H:i:s') : '' }}</td>
             </tr>
+            {# <tr>
+                <th>Estado</th>
+                <td>{{ task.state ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>State_request</th>
+                <td>{{ task.stateRequest }}</td>
+            </tr> #}
             <tr>
                 <th class="text-center">Tiempo extra</th>
                 <td class="text-center">{{ task.extraTime ? task.extraTime|date('d/m/Y H:i:s') : '' }}</td>
@@ -32,11 +43,11 @@
     </table>
     </div>
 
-    {% if task.type == 1 %}
-    <h2 class="mx-5 my-5 text-center">Trabajos</h2>
+            {% if task.type == 1 %}
+    <h2 class="text-center my-5 mx-5">Trabajos</h2>
           <a href="{{ path("app_job_new")}}" class="btn btn-primary">Crear Trabajo</a>
     <div class="container">
-      <div class="text-center row d-flex justify-content-around">
+      <div class="row text-center d-flex justify-content-around">
         {% for job in task.jobs %}
         <div class="col-md-4">
           
@@ -45,7 +56,7 @@
               <h5 class="card-title">{{ job.description }}</h5>
               <p class="card-text">{{ job.time }} minutos</p>
             </div>
-            <div class="m-auto btn-group">
+            <div class="btn-group m-auto">
               <form method="post" action="{{ path('app_job_delete', {'id': job.id}) }}" onsubmit="return confirm('¿Estás seguro de que quieres borrar el trabajo?');">
                   <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ job.id) }}">
                   <button class="mb-2 btn btn-danger">Eliminar</button>
@@ -58,7 +69,41 @@
     </div>
     {% endif %}
 
-    {% if is_granted('ROLE_WAREHOUSE') %}
-        <a class="m-2 mt-5 btn btn-success font-weight-bold" href="{{ path('app_warehouse') }}"> <-- Volver al calendario</a>
-    {% endif %}
+            {# <div class="mx-5 my-5">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th colspan="12" class="text-center" style="font-size:22pt">Trabajos</th>
+                    </tr>
+                    <tr>
+                                <th class="text-center">holA</th>
+                                <td class="text-center"> minutos</td>
+                            </tr>
+                    {% for job in task.jobs %}
+                            <tr>
+                                <th class="text-center">{{ job.description }}</th>
+                                <td class="text-center">{{ job.time }} minutos</td>
+                            </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div> #}
+            
+                {# <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th colspan="12" class="text-center" style="font-size:22pt">Trabajos</th>
+                        </tr>
+                        {% for job in task.jobs %}
+                            <tr>
+                                <th  class="text-center">{{ job.description }}</th>
+                                <td  class="text-center">{{ job.time }} minutos</td>
+                            </tr>
+                        {% endfor %}
+                        {% endif %}
+                        
+                    </tbody>
+                </table> #}
+
+    <a class="m-2 mt-5 btn btn-success font-weight-bold" href="{{ path('app_warehouse') }}"> <-- Volver al calendario</a>
 {% endblock %}

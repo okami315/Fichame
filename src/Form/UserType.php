@@ -15,8 +15,6 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('roles')
-            ->add('password')
             ->add('fullName')
             ->add('roles', ChoiceType::class, [
                 'choices'  => [
@@ -31,6 +29,7 @@ class UserType extends AbstractType
             ->add('address')
             ->add('phoneNumber')
             ->add('dni')
+            ->add('naf')
         ;
     }
 

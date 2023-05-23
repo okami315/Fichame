@@ -43,6 +43,10 @@
                 <th>Dni</th>
                 <td>{{ user.dni }}</td>
             </tr>
+            <tr>
+                <th>NAF</th>
+                <td>{{ user.naf }}</td>
+            </tr>
             {% if is_granted("ROLE_ADMIN") %}
             <tr>
                 <th>RegDate</th>

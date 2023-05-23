@@ -29,18 +29,17 @@
                 <td class="text-center">{{ task.user }}</td>
 
                 <td class="text-center">
-                
-                {% if task.staterequest is null %}
+                {% if task.staterequest == NULL %}
                     <p>❔</p>
                     {% elseif task.staterequest == 1 %}
-                        <p class="accept">✅</p>
+                        <p class="accept">✅ {{task.statusResolveDate |date("d-m-Y")}}</p>
                     {% elseif task.staterequest == 0 %}
                         <p class="deny">⛔</p>
                 {% endif %}
 
                 </td>
                 <td class="text-center">
-                {% if task.staterequest == 1 and task.state == 0 %}
+                {% if task.staterequest == 1 %}
                     <a href="{{path("app_task_resolve",{"id":task.id, "state":1})}}">Accept</a>
                     <a href="{{path("app_task_resolve",{"id":task.id, "state":0})}}">Deny</a>
                 {% endif %}

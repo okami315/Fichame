@@ -55,9 +55,6 @@ class Task
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $startTimeCompare = null;
 
-    #[ORM\Column]
-    private ?bool $hidden = false;
-
     public function __construct()
     {
         $this->jobs = new ArrayCollection();
@@ -247,18 +244,6 @@ class Task
     public function setStartTimeCompare(?\DateTimeInterface $startTimeCompare): self
     {
         $this->startTimeCompare = $startTimeCompare;
-
-        return $this;
-    }
-
-    public function isHidden(): ?bool
-    {
-        return $this->hidden;
-    }
-
-    public function setHidden(bool $hidden): self
-    {
-        $this->hidden = $hidden;
 
         return $this;
     }
