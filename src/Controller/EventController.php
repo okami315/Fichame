@@ -25,10 +25,10 @@ class EventController extends AbstractController
         if($this->isGranted('ROLE_SUPER_ADMIN')){
             $events = $eventRepository->findAll();
         } else {
-            $events =  $eventRepository->findBy([
+            $events = $eventRepository->findBy([
                 'company' => $this->getUser()->getCompany()->getId(),
-                'hidden' => "0"
-            ]);
+                'hidden' => "0",
+            ], ['startDate' => 'ASC']);
         }
         return $this->render('event/index.html.twig', [
             'events' => $events,

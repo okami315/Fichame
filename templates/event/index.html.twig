@@ -6,54 +6,45 @@
 {% block body %}
 	{% set currentDate = "now"|date('U') %}
 	{% set currentMonth = "now"|date('F') %}
-		
-		{% for event in events|filter(event => (event.startDate|date('U') > currentDate) or (event.endDate|date('U') >= currentDate)) %}
-			{% set eventDate = event.startDate|date('U') %}
-			{% set eventEndDate = event.endDate|date('U') %}
-			{% set eventMonthEnd = event.endDate|date('F') %}
-			{% set eventMonthStart = event.startDate|date('F') %}
 
-				{# Si la fecha de comienzo es menor que la fecha actual se asignan a un apartado especial osea el del mes actual #}
-				{% if eventDate < currentDate %} 
-				<h1>{{currentMonth}}</h1><hr>
-				<div class="row">
-				<div class="col-sm-6 col-md-4 col-lg-3">
-					<div class="card mb-4">
-						<div class="card-body">
-							<h5 class="card-title">{{ event.name }}</h5>
-							<p class="card-text">Fecha comienzo <b>{{ event.startDate|date('d-m-Y')}}</b></p>
-							<p class="card-text">Fecha fin <b>{{ event.endDate|date('d-m-Y') }}</b></p>
-						</div>
-					</div>
+	{% set lastMonth = null %}
+
+	{% for event in events|filter(event => (event.startDate|date('U') > currentDate) or (event.endDate|date('U') >= currentDate)) %}
+		{% set eventDate = event.startDate|date('U') %}
+		{% set eventEndDate = event.endDate|date('U') %}
+		{% set eventMonthEnd = event.endDate|date('F') %}
+		{% set eventMonthStart = event.startDate|date('F') %}
+
+		{# Verificar si el evento comienza antes pero termina después de la fecha actual #}
+		{% if eventDate < currentDate and eventEndDate > currentDate %}
+			{% set eventMonthStart = currentMonth %}
+		{% endif %}
+
+		{# Mostrar encabezado del mes si es diferente al mes anterior #}
+		{% if eventMonthStart != lastMonth %}
+			<h2>{{ eventMonthStart }}</h2>
+			{% set lastMonth = eventMonthStart %}
+		{% endif %}
+
+		<div class="col-sm-6 col-md-4 col-lg-3">
+			<div class="card mb-4">
+				<div class="card-body">
+					<h5 class="card-title">{{ event.name }}</h5>
+					<p class="card-text">Fecha comienzo
+						<b>{{ event.startDate|date('d-m-Y') }}</b>
+					</p>
+					<p class="card-text">Fecha fin
+						<b>{{ event.endDate|date('d-m-Y') }}</b>
+					</p>
+					{# Resto del contenido del evento #}
 				</div>
-				</div>
-				{# Si esto no pasa se asigna el mes que tenga como comienzo #}
-				{% else %}
-				<h1>{{eventMonthStart}}</h1><hr>
-				<div class="row">
-				<div class="col-sm-6 col-md-4 col-lg-3">
-					<div class="card mb-4">
-						<div class="card-body">
-							<h5 class="card-title">{{ event.name }}</h5>
-							<p class="card-text">Fecha comienzo <b>{{ event.startDate|date('d-m-Y')}}</b></p>
-							<p class="card-text">Fecha fin <b>{{ event.endDate|date('d-m-Y') }}</b></p>
-						</div>
-					</div>
-				</div>
-				</div>
-				{% endif %}
-				{# {% if is_granted('ROLE_ADMIN') %}
-								<td>
-									<a href="{{ path('app_event_show', {'id': event.id}) }}">Ver</a>
-									<a href="{{ path('app_event_edit', {'id': event.id}) }}">Editar</a>
-									<a href="{{ path('app_event_report', {'id': event.id}) }}">Informe</a>
-								</td>
-							{% endif %} #}
-			{% endfor %}
-			
-			{% if is_granted('ROLE_ADMIN') %}
-				<div>
-					<a href="{{ path('app_event_new') }}" class="btn btn-primary mx-auto">Crear nuevo evento</a>
-				</div>
-			{% endif %}
-		{% endblock %}
+			</div>
+		</div>
+	{% endfor %}
+
+	{% if is_granted('ROLE_ADMIN') %}
+		<div>
+			<a href="{{ path('app_event_new') }}" class="btn btn-primary mx-auto">Crear nuevo evento</a>
+		</div>
+	{% endif %}
+{% endblock %}
