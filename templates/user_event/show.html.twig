@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserEvent{% endblock %}
+
+{% block body %}
+    <h1>UserEvent</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_event.id }}</td>
+            </tr>
+            <tr>
+                <th>Disponibility</th>
+                <td>{{ user_event.disponibility }}</td>
+            </tr>
+            <tr>
+                <th>Coordination</th>
+                <td>{{ user_event.coordination ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Driving</th>
+                <td>{{ user_event.driving ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_event_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_event_edit', {'id': user_event.id}) }}">edit</a>
+
+    {{ include('user_event/_delete_form.html.twig') }}
+{% endblock %}

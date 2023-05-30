@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserEvent index{% endblock %}
+
+{% block body %}
+    <h1>UserEvent index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Disponibility</th>
+                <th>Coordination</th>
+                <th>Driving</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user_event in user_events %}
+            <tr>
+                <td>{{ user_event.id }}</td>
+                <td>{{ user_event.disponibility }}</td>
+                <td>{{ user_event.coordination ? 'Yes' : 'No' }}</td>
+                <td>{{ user_event.driving ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_user_event_show', {'id': user_event.id}) }}">show</a>
+                    <a href="{{ path('app_user_event_edit', {'id': user_event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_event_new') }}">Create new</a>
+{% endblock %}

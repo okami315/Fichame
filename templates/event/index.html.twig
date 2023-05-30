@@ -36,6 +36,7 @@
 					<p class="card-text">Fecha fin
 						<b>{{ event.endDate|date('d-m-Y') }}</b>
 					</p>
+						<a href="{{ path('app_user_event_disponibilidad', {'id': event.id}) }}">disponibilidad</a>
 					{# Resto del contenido del evento #}
 				</div>
 			</div>
