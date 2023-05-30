@@ -7,7 +7,6 @@ use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
-use App\Repository\EventCategoryRepository;
 
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +26,6 @@ class EventController extends AbstractController
         } else {
             $events = $eventRepository->findBy([
                 'company' => $this->getUser()->getCompany()->getId(),
-                'hidden' => "0",
             ], ['startDate' => 'ASC']);
         }
         return $this->render('event/index.html.twig', [
@@ -123,10 +121,10 @@ class EventController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/newAlmacen', name: 'app_event_newAlmacen', methods: ['GET', 'POST'])]
-    public function newAlmacen(Request $request, EventRepository $eventRepository, TaskRepository $taskRepository, EventCategoryRepository $eventCategoryRepository): Response
+    public function newAlmacen(Request $request, EventRepository $eventRepository, TaskRepository $taskRepository): Response
     {
 
-        $taskId = $eventRepository->createEventAlmacen($this->getUser(), $taskRepository, $eventCategoryRepository);
+        $taskId = $eventRepository->createEventAlmacen($this->getUser(), $taskRepository);
 
 
         return $this->redirectToRoute('app_task_update_State', ['id' => $taskId], Response::HTTP_SEE_OTHER);

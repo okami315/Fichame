@@ -20,10 +20,6 @@ class Job
     private ?int $time = null;
 
     #[ORM\ManyToOne(inversedBy: 'jobs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Task $task_id = null;
-
-    #[ORM\ManyToOne(inversedBy: 'jobs')]
     private ?Task $task = null;
 
     public function getId(): ?int
@@ -51,18 +47,6 @@ class Job
     public function setTime(int $time): self
     {
         $this->time = $time;
-
-        return $this;
-    }
-
-    public function getTaskId(): ?Task
-    {
-        return $this->task_id;
-    }
-
-    public function setTaskId(?Task $task_id): self
-    {
-        $this->task_id = $task_id;
 
         return $this;
     }
