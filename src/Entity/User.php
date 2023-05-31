@@ -68,10 +68,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $naf = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserEvent::class)]
+    private Collection $userEvents;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this -> regDate = new \DateTime();
+        $this->events = new ArrayCollection();
+        $this->userEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,7 +137,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
     /**
      * @see UserInterface
      */
@@ -141,7 +145,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
-
     public function getFullName(): ?string
     {
         return $this->fullName;
@@ -291,5 +294,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $this->setRemaininghours(((new \Datetime('2023-03-12'))->format('m')-$this->lastLogin->format('m'))*$this->monthlytime);
             }
         }
+    }
+
+    /**
+     * @return Collection<int, UserEvent>
+     */
+    public function getUserEvents(): Collection
+    {
+        return $this->userEvents;
+    }
+
+    public function addUserEvent(UserEvent $userEvent): self
+    {
+        if (!$this->userEvents->contains($userEvent)) {
+            $this->userEvents->add($userEvent);
+            $userEvent->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserEvent(UserEvent $userEvent): self
+    {
+        if ($this->userEvents->removeElement($userEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($userEvent->getUser() === $this) {
+                $userEvent->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

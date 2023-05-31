@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\EventCategoryRepository;
+use App\Repository\TypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EventCategoryRepository::class)]
-class EventCategory
+#[ORM\Entity(repositoryClass: TypeRepository::class)]
+class Type
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,7 +19,10 @@ class EventCategory
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Event::class)]
+    #[ORM\Column(type: Types::BLOB)]
+    private $icon = null;
+
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'type')]
     private Collection $events;
 
     public function __construct()
@@ -43,6 +47,18 @@ class EventCategory
         return $this;
     }
 
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    public function setIcon($icon): self
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Event>
      */
@@ -55,7 +71,7 @@ class EventCategory
     {
         if (!$this->events->contains($event)) {
             $this->events->add($event);
-            $event->setCategory($this);
+            $event->addType($this);
         }
 
         return $this;
@@ -64,15 +80,9 @@ class EventCategory
     public function removeEvent(Event $event): self
     {
         if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getCategory() === $this) {
-                $event->setCategory(null);
-            }
+            $event->removeType($this);
         }
 
         return $this;
-    }
-    public function __toString(){
-        return $this->name;
     }
 }

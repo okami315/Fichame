@@ -22,7 +22,6 @@ class EventType extends AbstractType
             ->add('linkInformation')
             ->add('linkForm')
             ->add('workers_number')
-            ->add('category')
         ;
     }
 

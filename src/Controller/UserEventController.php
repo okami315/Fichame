@@ -25,14 +25,14 @@ class UserEventController extends AbstractController
         $usuario = $security->getUser();
 
         $userEvent = $userEventRepository->findOneBy([
-            'users' => $usuario,
-            'events' => $evento,
+            'user' => $usuario,
+            'event' => $evento,
         ]);
 
         if (!$userEvent) {
             $userEvent = new UserEvent();
-            $userEvent->setUsers($usuario);
-            $userEvent->setEvents($evento);
+            $userEvent->setUser($usuario);
+            $userEvent->setEvent($evento);
         }
 
         $form = $this->createForm(DisponibilidadType::class, $userEvent);

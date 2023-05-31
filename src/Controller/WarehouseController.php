@@ -23,7 +23,6 @@ class WarehouseController extends AbstractController
         $tasks = $taskRepository->findBy([
             'state' => 1,
             'user' => $this->getUser(),
-            'hidden' => 0
         ]);
 
         return $this->render('warehouse/index.html.twig', [
@@ -46,7 +45,6 @@ class WarehouseController extends AbstractController
         $event->setSchedule(' ');
         $event->setLinkInformation(' ');
         $event->setWorkersNumber(1);
-        $event->setHidden(1);
         $event->setCompany($this->getUser()->getCompany());
         
         $task = new Task();

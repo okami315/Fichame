@@ -37,13 +37,6 @@ class Event
     private Collection $tasks;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?EventCategory $category = null;
-
-
-    #[ORM\Column]
-    private ?int $hidden = 0;
-    
-    #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
@@ -53,9 +46,18 @@ class Event
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endDate = null;
 
+    #[ORM\ManyToMany(targetEntity: Type::class, inversedBy: 'events')]
+    private Collection $type;
+
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: UserEvent::class)]
+    private Collection $userEvents;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->type = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->userEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,32 +157,8 @@ class Event
         return $this;
     }
 
-    public function getCategory(): ?EventCategory
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?EventCategory $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
     public function __toString(){
         return $this->name;
-    }
-
-    public function getHidden(): ?int
-    {
-        return $this->hidden;
-    }
-
-    public function setHidden(int $hidden): void
-    {
-        for ($i=0; $i < count($this->tasks) ; $i++) { 
-            $this->tasks[$i]->setHidden($hidden);
-        }
-        $this->hidden = $hidden;
     }
 
     public function getCompany(): ?Company
@@ -215,6 +193,60 @@ class Event
     public function setEndDate(?\DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Type>
+     */
+    public function getType(): Collection
+    {
+        return $this->type;
+    }
+
+    public function addType(Type $type): self
+    {
+        if (!$this->type->contains($type)) {
+            $this->type->add($type);
+        }
+
+        return $this;
+    }
+
+    public function removeType(Type $type): self
+    {
+        $this->type->removeElement($type);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserEvent>
+     */
+    public function getUserEvents(): Collection
+    {
+        return $this->userEvents;
+    }
+
+    public function addUserEvent(UserEvent $userEvent): self
+    {
+        if (!$this->userEvents->contains($userEvent)) {
+            $this->userEvents->add($userEvent);
+            $userEvent->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserEvent(UserEvent $userEvent): self
+    {
+        if ($this->userEvents->removeElement($userEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($userEvent->getEvent() === $this) {
+                $userEvent->setEvent(null);
+            }
+        }
 
         return $this;
     }

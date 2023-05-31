@@ -23,10 +23,10 @@ class UserEvent
     private ?bool $driving = false;
 
     #[ORM\ManyToOne(inversedBy: 'userEvents')]
-    private ?User $users = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'userEvents')]
-    private ?Event $events = null;
+    private ?Event $event = null;
 
     public function getId(): ?int
     {
@@ -69,26 +69,26 @@ class UserEvent
         return $this;
     }
 
-    public function getUsers(): ?User
+    public function getUser(): ?User
     {
-        return $this->users;
+        return $this->user;
     }
 
-    public function setUsers(?User $users): self
+    public function setUser(?User $user): self
     {
-        $this->users = $users;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getEvents(): ?Event
+    public function getEvent(): ?Event
     {
-        return $this->events;
+        return $this->event;
     }
 
-    public function setEvents(?Event $events): self
+    public function setEvent(?Event $event): self
     {
-        $this->events = $events;
+        $this->event = $event;
 
         return $this;
     }
