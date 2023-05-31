@@ -39,6 +39,17 @@ class UserEventRepository extends ServiceEntityRepository
         }
     }
 
+    public function getUsersDisponibilities()
+    {
+        $query = $this->createQueryBuilder('e')
+            ->where('e.disponibility = :disponibility')
+            ->setParameter('disponibility', 1)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+
 //    /**
 //     * @return UserEvent[] Returns an array of UserEvent objects
 //     */

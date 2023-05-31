@@ -3,37 +3,41 @@
 {% block title %}UserEvent index{% endblock %}
 
 {% block body %}
-    <h1>UserEvent index</h1>
+    <div class="container-fluid">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Disponibility</th>
-                <th>Coordination</th>
-                <th>Driving</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user_event in user_events %}
-            <tr>
-                <td>{{ user_event.id }}</td>
-                <td>{{ user_event.disponibility }}</td>
-                <td>{{ user_event.coordination ? 'Yes' : 'No' }}</td>
-                <td>{{ user_event.driving ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_user_event_show', {'id': user_event.id}) }}">show</a>
-                    <a href="{{ path('app_user_event_edit', {'id': user_event.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <h1>Lista de disponibilidad de usuarios</h1>
 
-    <a href="{{ path('app_user_event_new') }}">Create new</a>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Usuario</th>
+                    <th>Evento</th>
+                    <th>Disponibilidad</th>
+                    <th>Coordinacion</th>
+                    <th>Conduccion</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user_event in user_events %}
+                <tr>
+                    <td>{{ user_event.id }}</td>
+                    <td>{{ user_event.user }}</td>
+                    <td>{{ user_event.event }}</td>
+                    <td>{{ user_event.disponibility != 0 ? "Si" : "No" }}</td>
+                    <td>{{ user_event.coordination ? 'Yes' : 'No' }}</td>
+                    <td>{{ user_event.driving ? 'Yes' : 'No' }}</td>
+                    <td>
+                        <a href="{{ path('app_user_event_edit', {'id': user_event.id}) }}">editar</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">No se han encontrado registros</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

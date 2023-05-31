@@ -12,11 +12,8 @@ class UserEventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('disponibility')
             ->add('coordination')
             ->add('driving')
-            ->add('users')
-            ->add('events')
         ;
     }
 

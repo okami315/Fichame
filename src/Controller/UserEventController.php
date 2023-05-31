@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\UserEvent;
 use App\Form\DisponibilidadType;
+use App\Form\UserEventType;
 use App\Repository\EventRepository;
 use App\Repository\UserEventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,12 +13,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Repository\UserRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/user/event')]
 class UserEventController extends AbstractController
 {
-
     #[Route('/disponibilidad/{id}', name: 'app_user_event_disponibilidad', methods: ['GET', 'POST'])]
     public function disponibilidad(Security $security, Request $request, int $id, EventRepository $eventRepository ,UserEventRepository $userEventRepository): Response
     {
@@ -49,9 +52,9 @@ class UserEventController extends AbstractController
             'form' => $form,
         ]);
     }
-
+    
     #[Route('/', name: 'app_user_event_index', methods: ['GET'])]
-    public function index(UserEventRepository $userEventRepository): Response
+    public function index(UserEventRepository $userEventRepository, UserRepository $userRepository): Response
     {
         return $this->render('user_event/index.html.twig', [
             'user_events' => $userEventRepository->findAll(),
