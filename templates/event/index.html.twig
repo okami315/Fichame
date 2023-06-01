@@ -3,6 +3,7 @@
 {% block title %}Eventos{% endblock %}
 
 {% block body %}
+	{% set currentMonth = "now"|date('F Y') %}
 	<div class="container-fluid">
 		<div class="row justify-content-center mb-3">
 			<div class="col-12 col-md-2 pt-4">
@@ -14,44 +15,29 @@
   				{% endif %}
 			</div>
 			<div class="col-12 col-md-10">
-				{% set currentDate = "now"|date('U') %}
-				{% set currentMonth = "now"|date('F') %}
-
-				{% set lastMonth = null %}
-
-				{% for event in events|filter(event => (event.startDate|date('U') > currentDate) or (event.endDate|date('U') >= currentDate)) %}
-					{% set eventDate = event.startDate|date('U') %}
-					{% set eventEndDate = event.endDate|date('U') %}
-					{% set eventMonthEnd = event.endDate|date('F') %}
-					{% set eventMonthStart = event.startDate|date('F') %}
-
-					{# Verificar si el evento comienza antes pero termina después de la fecha actual #}
-					{% if eventDate < currentDate and eventEndDate > currentDate %}
-						{% set eventMonthStart = currentMonth %}
-					{% endif %}
-
-					{# Mostrar encabezado del mes si es diferente al mes anterior #}
-					{% if eventMonthStart != lastMonth %}
-						<h2>{{ eventMonthStart }}</h2>
-						{% set lastMonth = eventMonthStart %}
-					{% endif %}
-					<div class="col-sm-6 col-md-4 col-lg-3">
-						<div class="card mb-4">
-							<div class="card-body">
-								<h5 class="card-title">{{ event.name }}</h5>
-								<p class="card-text">Fecha comienzo
-									<b>{{ event.startDate|date('d-m-Y') }}</b>
-								</p>
-								<p class="card-text">Fecha fin
-									<b>{{ event.endDate|date('d-m-Y') }}</b>
-								</p>
-								{% if is_granted('ROLE_ADMIN') %}
-									<a href="{{ path('app_user_event_disponibilidad', {'id': event.id}) }}">disponibilidad</a>
-								{% endif %}
-								{# Resto del contenido del evento #}
-							</div>
-						</div>
+				{% for mes, eventos in eventosPorMes %}
+				    {% if mes == currentMonth %}
+					<h2>{{ mes }}</h2>
+					<div class="container">
+  						<div class="row justify-content-center align-items-center">
+    						{% for evento in eventos %}
+      							<div class="col-md-3">
+        							<div class="card mb-4">
+          								<div class="card-body">
+            								<h5 class="card-title">{{ evento.name }}</h5>
+											<p class="card-text">Fecha comienzo <b>{{ evento.startDate|date('d-m-Y') }}</b></p>
+											<p class="card-text">Fecha fin <b>{{ evento.endDate|date('d-m-Y') }}</b></p>
+											{% if is_granted('ROLE_ADMIN') %}
+												<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">disponibilidad</a>
+											{% endif %}
+											{# Resto del contenido del evento #}
+										</div>
+        							</div>
+      							</div>
+    						{% endfor %}
+  						</div>
 					</div>
+					{% endif %}
 				{% endfor %}
 			</div>
 		</div>
