@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserEventRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserEventRepository::class)]
@@ -27,6 +28,12 @@ class UserEvent
 
     #[ORM\ManyToOne(inversedBy: 'userEvents')]
     private ?Event $event = null;
+
+    #[ORM\Column]
+    private ?bool $private_car = null;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $asistance = null;
 
     public function getId(): ?int
     {
@@ -89,6 +96,30 @@ class UserEvent
     public function setEvent(?Event $event): self
     {
         $this->event = $event;
+
+        return $this;
+    }
+
+    public function isPrivateCar(): ?bool
+    {
+        return $this->private_car;
+    }
+
+    public function setPrivateCar(bool $private_car): self
+    {
+        $this->private_car = $private_car;
+
+        return $this;
+    }
+
+    public function getAsistance(): ?int
+    {
+        return $this->asistance;
+    }
+
+    public function setAsistance(int $asistance): self
+    {
+        $this->asistance = $asistance;
 
         return $this;
     }

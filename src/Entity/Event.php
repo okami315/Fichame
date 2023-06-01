@@ -52,6 +52,18 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: UserEvent::class)]
     private Collection $userEvents;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $status = null;
+
+    #[ORM\Column]
+    private ?int $workers_available = null;
+
+    #[ORM\Column]
+    private ?float $distance = null;
+
+    #[ORM\Column]
+    private ?int $drivers_number = null;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -247,6 +259,54 @@ class Event
                 $userEvent->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getWorkersAvailable(): ?int
+    {
+        return $this->workers_available;
+    }
+
+    public function setWorkersAvailable(int $workers_available): self
+    {
+        $this->workers_available = $workers_available;
+
+        return $this;
+    }
+
+    public function getDistance(): ?float
+    {
+        return $this->distance;
+    }
+
+    public function setDistance(float $distance): self
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    public function getDriversNumber(): ?int
+    {
+        return $this->drivers_number;
+    }
+
+    public function setDriversNumber(int $drivers_number): self
+    {
+        $this->drivers_number = $drivers_number;
 
         return $this;
     }
