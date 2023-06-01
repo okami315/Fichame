@@ -31,21 +31,8 @@ class EventController extends AbstractController
                 'company' => $this->getUser()->getCompany()->getId(),
             ], ['startDate' => 'ASC']);
         }
-        // Filtrar eventos del mes actual y eventos que comenzaron en meses anteriores pero finalizan en el mes actual
-        $filteredEvents = [];
-        foreach ($events as $evento) {
-            $mesInicio = $evento->getStartDate()->format('F Y');
-            $mesFin = $evento->getEndDate()->format('F Y');
 
-            if ($mesInicio <= $currentMonth->format('F Y') && $mesFin == $currentMonth->format('F Y')) {
-                // var_dump($mesInicio <= $currentMonth->format('F Y'));
-                // var_dump($mesFin == $currentMonth->format('F Y'));
-                // var_dump($mesInicio <= $currentMonth->format('F Y') && $mesFin == $currentMonth->format('F Y'));
-                $filteredEvents[] = $evento;
-            }
-        }
-
-        // Agrupa los eventos por meses
+            // Agrupa los eventos por meses
         $eventosPorMes = [];
         foreach ($events as $evento) {
             $mes = $evento->getStartDate()->format('F Y');

@@ -24,6 +24,18 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function findByPrecioSuperior($event)
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT p
+            FROM App\Entity\Producto p
+            WHERE p.precio > :precio'
+        )->setParameter('event', $event);
+
+        return $query->getResult();
+    }
+
     public function save(Event $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

@@ -16,19 +16,19 @@
 			</div>
 			<div class="col-12 col-md-10">
 				{% for mes, eventos in eventosPorMes %}
-				    {% if mes == currentMonth %}
+				    {% if mes >= currentMonth %}
 					<h2>{{ mes }}</h2>
 					<div class="container">
   						<div class="row justify-content-center align-items-center">
-    						{% for evento in eventos %}
+    						{% for eventos in eventos %}
       							<div class="col-md-3">
         							<div class="card mb-4">
           								<div class="card-body">
-            								<h5 class="card-title">{{ evento.name }}</h5>
-											<p class="card-text">Fecha comienzo <b>{{ evento.startDate|date('d-m-Y') }}</b></p>
-											<p class="card-text">Fecha fin <b>{{ evento.endDate|date('d-m-Y') }}</b></p>
+            								<h5 class="card-title">{{ eventos.name }}</h5>
+											<p class="card-text">Fecha comienzo <b>{{ eventos.startDate|date('d-m-Y') }}</b></p>
+											<p class="card-text">Fecha fin <b>{{ eventos.endDate|date('d-m-Y') }}</b></p>
 											{% if is_granted('ROLE_ADMIN') %}
-												<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">disponibilidad</a>
+												<a href="{{ path('app_user_event_disponibilidad', {'id': eventos.id}) }}">disponibilidad</a>
 											{% endif %}
 											{# Resto del contenido del evento #}
 										</div>
