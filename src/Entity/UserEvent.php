@@ -30,10 +30,10 @@ class UserEvent
     private ?Event $event = null;
 
     #[ORM\Column]
-    private ?bool $private_car = null;
+    private ?bool $private_car = false;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $asistance = null;
+    private ?int $asistance = 0;
 
     public function getId(): ?int
     {
