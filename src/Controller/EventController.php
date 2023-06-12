@@ -32,7 +32,7 @@ class EventController extends AbstractController
             ], ['startDate' => 'ASC']);
         }
 
-            // Agrupa los eventos por meses
+        // Agrupa los eventos por meses
         $eventosPorMes = [];
         foreach ($events as $evento) {
             $mes = $evento->getStartDate()->format('F Y');

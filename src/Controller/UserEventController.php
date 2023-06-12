@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\UserEvent;
 use App\Form\DisponibilidadType;
+use App\Form\AsistanceType;
 use App\Form\UserEventType;
 use App\Repository\EventRepository;
 use App\Repository\UserEventRepository;
@@ -17,12 +18,45 @@ use App\Repository\UserRepository;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
-#[IsGranted('ROLE_ADMIN')]
 #[Route('/user/event')]
 class UserEventController extends AbstractController
 {
+
+    #[Route('/asistance/{id}', name: 'app_user_event_asistance', methods: ['GET', 'POST'])]
+    public function asistance(Security $security, Request $request, int $id, EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
+    {
+        $evento = $eventRepository->find($id);
+        $usuario = $security->getUser();
+
+        $userEvent = $userEventRepository->findOneBy([
+            'user' => $usuario,
+            'event' => $evento,
+        ]);
+
+        if (!$userEvent) {
+            $userEvent = new UserEvent();
+            $userEvent->setUser($usuario);
+            $userEvent->setEvent($evento);
+        }
+
+        $form = $this->createForm(AsistanceType::class, $userEvent);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userEventRepository->save($userEvent, true);
+
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user_event/newAsistance.html.twig', [
+            'user_event' => $userEvent,
+            'form' => $form,
+        ]);
+    }
+
+
     #[Route('/disponibilidad/{id}', name: 'app_user_event_disponibilidad', methods: ['GET', 'POST'])]
-    public function disponibilidad(Security $security, Request $request, int $id, EventRepository $eventRepository ,UserEventRepository $userEventRepository): Response
+    public function disponibilidad(Security $security, Request $request, int $id, EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
     {
         $evento = $eventRepository->find($id);
         $usuario = $security->getUser();
@@ -47,12 +81,12 @@ class UserEventController extends AbstractController
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user_event/new.html.twig', [
+        return $this->render('user_event/newDisponibility.html.twig', [
             'user_event' => $userEvent,
             'form' => $form,
         ]);
     }
-    
+
     #[Route('/', name: 'app_user_event_index', methods: ['GET'])]
     public function index(UserEventRepository $userEventRepository, UserRepository $userRepository): Response
     {
@@ -109,7 +143,7 @@ class UserEventController extends AbstractController
     #[Route('/{id}', name: 'app_user_event_delete', methods: ['POST'])]
     public function delete(Request $request, UserEvent $userEvent, UserEventRepository $userEventRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$userEvent->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $userEvent->getId(), $request->request->get('_token'))) {
             $userEventRepository->remove($userEvent, true);
         }
 

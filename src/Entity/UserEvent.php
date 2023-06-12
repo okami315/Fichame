@@ -15,9 +15,9 @@ class UserEvent
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $disponibility = 0;
+    private ?int $disponibility = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $coordination = false;
 
     #[ORM\Column]
@@ -32,8 +32,11 @@ class UserEvent
     #[ORM\Column]
     private ?bool $private_car = false;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $asistance = 0;
+    #[ORM\Column(type: Types::SMALLINT,nullable: true)]
+    private ?int $asistance = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $selected = null;
 
     public function getId(): ?int
     {
@@ -120,6 +123,18 @@ class UserEvent
     public function setAsistance(int $asistance): self
     {
         $this->asistance = $asistance;
+
+        return $this;
+    }
+
+    public function isSelected(): ?bool
+    {
+        return $this->selected;
+    }
+
+    public function setSelected(?bool $selected): self
+    {
+        $this->selected = $selected;
 
         return $this;
     }

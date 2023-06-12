@@ -1,42 +1,88 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Eventos{% endblock %}
+{% block title %}Eventos
+{% endblock %}
 
 {% block body %}
 	{% set currentMonth = "now"|date('F Y') %}
 	<div class="container-fluid">
 		<div class="row justify-content-center mb-3">
 			<div class="col-12 col-md-2 pt-4">
-  				{% if is_granted('ROLE_ADMIN') %}
-  					<div class="text-center">
-    					<a href="{{ path('app_event_new') }}" class="btn btn-primary mb-2">Crear nuevo evento</a>
-    					<a href="{{ path('app_user_event_index') }}" class="btn btn-primary mb-2">Lista de trabajadores</a>
-  					</div>
-  				{% endif %}
+				{% if is_granted('ROLE_ADMIN') %}
+					<div class="text-center">
+						<a href="{{ path('app_event_new') }}" class="btn btn-primary mb-2">Crear nuevo evento</a>
+						<a href="{{ path('app_user_event_index') }}" class="btn btn-primary mb-2">Lista de trabajadores</a>
+					</div>
+				{% endif %}
 			</div>
 			<div class="col-12 col-md-10">
+				{{dump(eventosPorMes)}}
 				{% for mes, eventos in eventosPorMes %}
-				    {% if mes >= currentMonth %}
-					<h2>{{ mes }}</h2>
-					<div class="container">
-  						<div class="row justify-content-center align-items-center">
-    						{% for eventos in eventos %}
-      							<div class="col-md-3">
-        							<div class="card mb-4">
-          								<div class="card-body">
-            								<h5 class="card-title">{{ eventos.name }}</h5>
-											<p class="card-text">Fecha comienzo <b>{{ eventos.startDate|date('d-m-Y') }}</b></p>
-											<p class="card-text">Fecha fin <b>{{ eventos.endDate|date('d-m-Y') }}</b></p>
-											{% if is_granted('ROLE_ADMIN') %}
-												<a href="{{ path('app_user_event_disponibilidad', {'id': eventos.id}) }}">disponibilidad</a>
-											{% endif %}
-											{# Resto del contenido del evento #}
+					{% if mes >= currentMonth %}
+						<h2>{{ mes }}</h2>
+						<div class="container">
+							<div class="row justify-content-center align-items-center">
+								{% for evento in eventos %}
+									<div class="col-md-3">
+										<div class="card mb-4">
+											<div class="card-body">
+												<h5 class="card-title">{{ evento.name }}</h5>
+												<p class="card-text">Fecha comienzo
+													<b>{{ evento.startDate|date('d-m-Y') }}</b>
+												</p>
+												<p class="card-text">Fecha fin
+													<b>{{ evento.endDate|date('d-m-Y') }}</b>
+												</p>
+												{% for userEvent in evento.userEvents %}
+													{% if userEvent.user == app.user %}
+
+
+														{% if userEvent.disponibility is null %}
+															<p>🟡</p>
+														{% elseif userEvent.disponibility == 0 %}
+															<p>⚫</p>
+														{% elseif userEvent.selected is null %}
+															<p>🔘</p>
+															{% if userEvent.coordination == 1 %}
+																<p>🗣</p>
+															{% endif %}
+															{% if userEvent.driving == 1 %}
+																<p>🚕</p>
+															{% endif %}
+														{% else %}
+															<p>🟢</p>
+															{% if userEvent.coordination == 1 %}
+																<p>🗣</p>
+															{% endif %}
+															{% if userEvent.driving == 1 %}
+																<p>🚕</p>
+															{% endif %}
+														{% endif %}
+
+														{% if userEvent.asistance is null %}
+															<a href="{{ path('app_user_event_asistance', {'id': evento.id}) }}">Asistencia</a>
+														{% endif %}
+
+													{% endif %}
+												{% endfor %}
+
+												<p class="card-text">Número de trabajadores :
+													{{evento.workersnumber}}</p>
+
+												{# <p class="card-text">
+																								<b>{{ evento.endDate|date('d-m-Y') }}</b>
+																								</p> #}
+
+
+											<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
+
+												{# Resto del contenido del evento #}
+											</div>
 										</div>
-        							</div>
-      							</div>
-    						{% endfor %}
-  						</div>
-					</div>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
 					{% endif %}
 				{% endfor %}
 			</div>

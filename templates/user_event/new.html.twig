@@ -1,7 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Disponibilidad{% endblock %}
+{% block title %}New User_Event
+{% endblock %}
 
 {% block body %}
-    {% include 'comunes/_form.html.twig' with {'titulo': 'Indica tu disponibilidad en el evento'} %}
+	<h1>Create new User_Event</h1>
+	{{ include('user_event/_form.html.twig') }}
+	<a href="{{ path('app_user_event_index') }}">back to list</a>
 {% endblock %}
