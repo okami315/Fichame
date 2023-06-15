@@ -53,7 +53,7 @@ class Event
     private Collection $userEvents;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $status = null;
+    private ?int $status = 0;
 
     #[ORM\Column]
     private ?int $workers_available = null;

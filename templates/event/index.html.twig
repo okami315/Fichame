@@ -11,6 +11,7 @@
 			<div class="col-12 col-md-2 pt-4">
 					<div class="text-center">
 						<a href="{{ path('app_event_new') }}" class="btn btn-primary mb-2">Crear nuevo evento</a>
+						<a href="{{ path('app_type_new') }}" class="btn btn-primary mb-2">Crear tipo de evento</a>
 						<a href="{{ path('app_user_event_index') }}" class="btn btn-primary mb-2">Lista de trabajadores</a>
 					</div>
 			</div>
@@ -24,7 +25,15 @@
 									<div class="col-md-3">
 										<div class="card mb-4">
 											<div class="card-body">
-												<h5 class="card-title">{{ evento.name }}</h5>
+												<div>
+													<h5 class="card-title">{{ evento.name }}</h5>
+													{{ dump(evento.type) }}
+													{% if evento.type is not empty %}
+														{% for type in evento.type %}
+															<p>{{ type.icon }}</p>
+														{% endfor %}
+													{% endif %}
+												</div>
 												<p class="card-text">Fecha comienzo
 													<b>{{ evento.startDate|date('d-m-Y') }}</b>
 												</p>
