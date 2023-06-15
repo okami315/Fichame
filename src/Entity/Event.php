@@ -76,7 +76,9 @@ class Event
     {
         return $this->id;
     }
-
+    public function setId($id){
+        return $this;
+    }
     public function getName(): ?string
     {
         return $this->name;

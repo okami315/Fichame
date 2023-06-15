@@ -48,15 +48,24 @@
 														{{ evento.workersavailable }}
 														de
 														{{ evento.workersnumber }}</p>
+													<div class="d-flex justify-content-around">
+														<a class="btn btn-primary" href="{{ path('app_event_edit', {'id': evento.id}) }}">Editar</a>
+														{% if evento.status == 0 and evento.userEvents|length  == 0 %}
 
-													<p>
-														<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
-													</p>
-
-													<a href="{{ path('app_event_edit', {'id': evento.id}) }}">Editar</a>
-
-
-													
+															<form method="post" action="{{ path('app_event_delete', {'id': evento.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
+																<button class="btn btn-primary">Borrar</button>
+															</form>
+															<form method="post" action="{{ path('app_event_open_id', {'id': evento.id}) }}">
+																<button class="btn btn-primary">Publicar evento</button>
+															</form>
+														{% endif %}
+														{% if evento.status == 1 %}
+															<form method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
+																<button class="btn btn-primary mb-3">Cerrar evento</button>
+															</form>
+														{% endif %}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -67,7 +76,6 @@
 							</div>
 						{% endif %}
 					{% endfor %}
-
 
 				{% else %}
 					{{dump(eventosPorMes)}}
@@ -126,8 +134,8 @@
 															{{evento.workersnumber}}</p>
 
 														{# <p class="card-text">
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															<b>{{ evento.endDate|date('d-m-Y') }}</b>
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															</p> #}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			<b>{{ evento.endDate|date('d-m-Y') }}</b>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		</p> #}
 
 
 														<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
