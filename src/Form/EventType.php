@@ -19,9 +19,12 @@ class EventType extends AbstractType
             ->add('start_date', DateType::class)
             ->add('end_date', DateType::class)   
             ->add('schedule')
+            ->add('distance')
+            ->add('drivers_number')
             ->add('linkInformation')
             ->add('linkForm')
             ->add('workers_number')
+            ->add('type')
         ;
     }
 

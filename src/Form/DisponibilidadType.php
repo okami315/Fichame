@@ -15,7 +15,7 @@ class DisponibilidadType extends AbstractType
         $builder
             ->add('disponibility', ChoiceType::class, [
                 'choices' => [
-                    'Null' => null,
+                    'Pendiente de disponibilidad' => null,
                     'No disponible' => 0,
                     'Disponible' => 1,
                 ],

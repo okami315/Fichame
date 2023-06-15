@@ -30,7 +30,6 @@ class TypeType extends AbstractType
                     ])
                 ],
             ])
-            ->add('events')
         ;
     }
 

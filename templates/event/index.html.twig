@@ -25,12 +25,14 @@
 									<div class="col-md-3">
 										<div class="card mb-4">
 											<div class="card-body">
-												<div>
-													<h5 class="card-title">{{ evento.name }}</h5>
-													{{ dump(evento.type) }}
+												<div class="row justify-content-center align-items-center">
+													<h5 class="col-md-9 card-title">{{ evento.name }}</h5>
+													
 													{% if evento.type is not empty %}
 														{% for type in evento.type %}
-															<p>{{ type.icon }}</p>
+															<div class="col-md-3">
+            													<img  src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="100%">
+															</div>
 														{% endfor %}
 													{% endif %}
 												</div>

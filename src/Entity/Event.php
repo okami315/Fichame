@@ -56,13 +56,14 @@ class Event
     private ?int $status = 0;
 
     #[ORM\Column]
-    private ?int $workers_available = null;
+    private ?int $workers_available = 0;
 
     #[ORM\Column]
     private ?float $distance = null;
 
     #[ORM\Column]
     private ?int $drivers_number = null;
+    
 
     public function __construct()
     {
