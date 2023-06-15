@@ -7,6 +7,7 @@ use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -82,24 +83,75 @@ class EventController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Event $event, EventRepository $eventRepository): Response
+    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         SecurityController::checkCompany($this, $this->getUser()->getCompany()->getNif(), $event->getCompany()->getNif());
-
+    
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $eventRepository->save($event, true);
-
+            $valorDelBoton = $request->request->get('draft');
+            
+            if ($valorDelBoton === 'draft') {
+                // dd($event->getCompany());
+                // Crear un nuevo evento como borrador
+                $draftEvent = new Event();
+                $draftEvent->setName("a");
+                $draftEvent->setSchedule("a");
+                $draftEvent->setLinkInformation("a");
+                $draftEvent->setLinkForm("a");
+                $draftEvent->setWorkersNumber(4);
+                $draftEvent->setWorkersAvailable(2);
+                $draftEvent->setCompany($event->getCompany());
+                $draftEvent->setDriversNumber(4);
+                $draftEvent->setStartDate($event->getStartDate());
+                $draftEvent->setEndDate($event->getEndDate());
+                $draftEvent->setDistance(10);
+                $draftEvent->setStatus(0);
+                dd($draftEvent);
+                $entityManager->persist($draftEvent);
+                $entityManager->flush();
+            }             
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('event/edit.html.twig', [
-            'event' => $event,
+    
+        return $this->render('event/edit.html.twig', [
+            'evento' => $event,
             'form' => $form,
         ]);
     }
+
+    // #[IsGranted('ROLE_ADMIN')]
+    // #[Route('/admin/event/new/{id}', name: 'app_event_new_id', methods: ['POST'])]
+    // public function newDraft(Request $request, Event $event, EventRepository $eventRepository): Response
+    // {
+    //     $newEvent = clone $event;
+    //     $newEvent->setStatus(0);
+    //     $eventRepository->save($newEvent, true);
+    //     return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    // }
+
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/event/close/{id}', name: 'app_event_close_id', methods: ['POST'])]
+    public function close(Request $request, Event $event, EventRepository $eventRepository): Response
+    {
+
+        $event->setStatus(2);
+        $eventRepository->save($event, true);
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/event/open/{id}', name: 'app_event_open_id', methods: ['POST'])]
+    public function open(Request $request, Event $event, EventRepository $eventRepository): Response
+    {
+        $event->setStatus(1);
+        $eventRepository->save($event, true);
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/{id}', name: 'app_event_delete', methods: ['POST'])]

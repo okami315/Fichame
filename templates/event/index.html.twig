@@ -16,75 +16,134 @@
 				{% endif %}
 			</div>
 			<div class="col-12 col-md-10">
-				{{dump(eventosPorMes)}}
-				{% for mes, eventos in eventosPorMes %}
-					{% if mes >= currentMonth %}
-						<h2>{{ mes }}</h2>
-						<div class="container">
-							<div class="row justify-content-center align-items-center">
-								{% for evento in eventos %}
-									<div class="col-md-3">
-										<div class="card mb-4">
-											<div class="card-body">
-												<h5 class="card-title">{{ evento.name }}</h5>
-												<p class="card-text">Fecha comienzo
-													<b>{{ evento.startDate|date('d-m-Y') }}</b>
-												</p>
-												<p class="card-text">Fecha fin
-													<b>{{ evento.endDate|date('d-m-Y') }}</b>
-												</p>
-												{% for userEvent in evento.userEvents %}
-													{% if userEvent.user == app.user %}
+				{% if is_granted('ROLE_ADMIN') %}
+					{{dump(eventosPorMes)}}
+					{% for mes, eventos in eventosPorMes %}
+						{% if mes >= currentMonth %}
+							<h2>{{ mes }}</h2>
+							<div class="container">
+								<div class="row justify-content-center align-items-center">
+									{% for evento in eventos %}
 
+										<div class="col-md-3">
+											<div class="card mb-4">
+												<div class="card-body">
+													<h5 class="card-title">{{ evento.name }}</h5>
+													<p class="card-text">Fecha comienzo
+														<b>{{ evento.startDate|date('d-m-Y') }}</b>
+													</p>
+													<p class="card-text">Fecha fin
+														<b>{{ evento.endDate|date('d-m-Y') }}</b>
+													</p>
 
-														{% if userEvent.disponibility is null %}
-															<p>🟡</p>
-														{% elseif userEvent.disponibility == 0 %}
-															<p>⚫</p>
-														{% elseif userEvent.selected is null %}
-															<p>🔘</p>
-															{% if userEvent.coordination == 1 %}
-																<p>🗣</p>
-															{% endif %}
-															{% if userEvent.driving == 1 %}
-																<p>🚕</p>
-															{% endif %}
-														{% else %}
-															<p>🟢</p>
-															{% if userEvent.coordination == 1 %}
-																<p>🗣</p>
-															{% endif %}
-															{% if userEvent.driving == 1 %}
-																<p>🚕</p>
-															{% endif %}
-														{% endif %}
-
-														{% if userEvent.asistance is null %}
-															<a href="{{ path('app_user_event_asistance', {'id': evento.id}) }}">Asistencia</a>
-														{% endif %}
-
+													{% if evento.status == 0 %}
+														<p>🟡</p>
+													{% elseif evento.status == 1 %}
+														<p>🔴</p>
+													{% else %}
+														<p>🟢</p>
 													{% endif %}
-												{% endfor %}
 
-												<p class="card-text">Número de trabajadores :
-													{{evento.workersnumber}}</p>
+													<p class="card-text">Número de trabajadores:
+														{{ evento.workersavailable }}
+														de
+														{{ evento.workersnumber }}</p>
 
-												{# <p class="card-text">
-																								<b>{{ evento.endDate|date('d-m-Y') }}</b>
-																								</p> #}
+													<p>
+														<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
+													</p>
+
+													<a href="{{ path('app_event_edit', {'id': evento.id}) }}">Editar</a>
 
 
-											<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
-
-												{# Resto del contenido del evento #}
+													
+												</div>
 											</div>
 										</div>
-									</div>
-								{% endfor %}
+
+									{% endfor %}
+
+								</div>
 							</div>
-						</div>
-					{% endif %}
-				{% endfor %}
+						{% endif %}
+					{% endfor %}
+
+
+				{% else %}
+					{{dump(eventosPorMes)}}
+					{% for mes, eventos in eventosPorMes %}
+						{% if mes >= currentMonth %}
+							<h2>{{ mes }}</h2>
+							<div class="container">
+								<div class="row justify-content-center align-items-center">
+									{% for evento in eventos %}
+										{% if evento.status != 0 %}
+											<div class="col-md-3">
+												<div class="card mb-4">
+													<div class="card-body">
+														<h5 class="card-title">{{ evento.name }}</h5>
+														<p class="card-text">Fecha comienzo
+															<b>{{ evento.startDate|date('d-m-Y') }}</b>
+														</p>
+														<p class="card-text">Fecha fin
+															<b>{{ evento.endDate|date('d-m-Y') }}</b>
+														</p>
+														{% for userEvent in evento.userEvents %}
+
+															{# {% if userEvent.user == app.user %} #}
+
+															{% if userEvent.disponibility is null %}
+																<p>🟡</p>
+															{% elseif userEvent.disponibility == 0 %}
+																<p>⚫</p>
+															{% elseif userEvent.selected is null %}
+																<p>🔘</p>
+																{% if userEvent.coordination == 1 %}
+																	<p>🗣</p>
+																{% endif %}
+																{% if userEvent.driving == 1 %}
+																	<p>🚕</p>
+																{% endif %}
+															{% else %}
+																<p>🟢</p>
+																{% if userEvent.coordination == 1 %}
+																	<p>🗣</p>
+																{% endif %}
+																{% if userEvent.driving == 1 %}
+																	<p>🚕</p>
+																{% endif %}
+															{% endif %}
+
+															{% if userEvent.asistance is null %}
+																<a href="{{ path('app_user_event_asistance', {'id': evento.id}) }}">Asistencia</a>
+															{% endif %}
+
+															{# {% endif %} #}
+
+														{% endfor %}
+
+														<p class="card-text">Número de trabajadores :
+															{{evento.workersnumber}}</p>
+
+														{# <p class="card-text">
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															<b>{{ evento.endDate|date('d-m-Y') }}</b>
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															</p> #}
+
+
+														<a href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
+
+														{# Resto del contenido del evento #}
+													</div>
+												</div>
+											</div>
+										{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+						{% endif %}
+					{% endfor %}
+
+				{% endif %}
 			</div>
 		</div>
 	</div>
