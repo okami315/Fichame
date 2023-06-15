@@ -24,6 +24,10 @@ class EventController extends AbstractController
         $currentMonth = new \DateTime('first day of this month');
         $currentMonth->setTime(0, 0, 0);
 
+        $previousMonth = new \DateTime('first day of previous month');
+        $previousMonth->setTime(0, 0, 0);
+
+
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $events = $eventRepository->findAll();
         } else {
@@ -31,6 +35,15 @@ class EventController extends AbstractController
                 'company' => $this->getUser()->getCompany()->getId(),
             ], ['startDate' => 'ASC']);
         }
+
+        // Obtener eventos del mes actual y del mes anterior, ordenados por fecha de inicio ascendente
+        $events = $eventRepository->createQueryBuilder('e')
+            ->where('e.startDate >= :previousMonth AND e.endDate >= :currentMonth')
+            ->setParameter('previousMonth', $previousMonth)
+            ->setParameter('currentMonth', $currentMonth)
+            ->orderBy('e.startDate', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         // Agrupa los eventos por meses
         $eventosPorMes = [];
