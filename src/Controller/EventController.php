@@ -85,13 +85,11 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('event/new.html.twig', [
+        return $this->render('event/new.html.twig', [
             'event' => $event,
             'form' => $form,
         ]);
     }
-
-
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
@@ -108,11 +106,43 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('event/edit.html.twig', [
-            'event' => $event,
+        return $this->render('event/edit.html.twig', [
+            'evento' => $event,
             'form' => $form,
         ]);
     }
+
+    // #[IsGranted('ROLE_ADMIN')]
+    // #[Route('/admin/event/new/{id}', name: 'app_event_new_id', methods: ['POST'])]
+    // public function newDraft(Request $request, Event $event, EventRepository $eventRepository): Response
+    // {
+    //     $newEvent = clone $event;
+    //     $newEvent->setStatus(0);
+    //     $newEvent->setId(null);
+    //     $eventRepository->save($newEvent, true);
+    //     return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    // }
+
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/event/close/{id}', name: 'app_event_close_id', methods: ['POST'])]
+    public function close(Request $request, Event $event, EventRepository $eventRepository): Response
+    {
+
+        $event->setStatus(2);
+        $eventRepository->save($event, true);
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/event/open/{id}', name: 'app_event_open_id', methods: ['POST'])]
+    public function open(Request $request, Event $event, EventRepository $eventRepository): Response
+    {
+        $event->setStatus(1);
+        $eventRepository->save($event, true);
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/{id}', name: 'app_event_delete', methods: ['POST'])]

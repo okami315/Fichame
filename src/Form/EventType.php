@@ -23,8 +23,15 @@ class EventType extends AbstractType
             ->add('drivers_number')
             ->add('linkInformation')
             ->add('linkForm')
+            // ->add('type'), multiple select
             ->add('workers_number')
             ->add('type')
+            ->add('drivers_number')
+            ->add('distance')
+            // ->add('horario estimado') 
+            // ->add('horario real')
+            // 
+            
         ;
     }
 
