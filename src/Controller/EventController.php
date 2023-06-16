@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\TaskRepository;
+use App\Repository\UserEventRepository;
 use App\Repository\UserRepository;
 
 use DateTime;
@@ -78,9 +79,9 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $eventRepository->save($event, true);
 
-            foreach ($userRepository->findAll() as $user) {
-                $taskRepository->createTask($event, $user);
-            }
+            // foreach ($userRepository->findAll() as $user) {
+            //     $taskRepository->createTask($event, $user);
+            // }
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -136,10 +137,17 @@ class EventController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/open/{id}', name: 'app_event_open_id', methods: ['POST'])]
-    public function open(Request $request, Event $event, EventRepository $eventRepository): Response
+    public function open(Request $request, Event $event, EventRepository $eventRepository , UserRepository $userRepository ,UserEventRepository $userEventRepository): Response
     {
         $event->setStatus(1);
         $eventRepository->save($event, true);
+
+        // Se asignan todos los user_events para después sacar el número de ellos que quedan por marcar disponibilidad
+        foreach ($userRepository->findAll() as $user) {
+                $userEventRepository->createUserEvent($event, $user);
+            }
+
+
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
 

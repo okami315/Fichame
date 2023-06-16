@@ -63,6 +63,12 @@ class Event
 
     #[ORM\Column]
     private ?int $drivers_number = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $editDate = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createDate = null;
     
 
     public function __construct()
@@ -310,6 +316,30 @@ class Event
     public function setDriversNumber(int $drivers_number): self
     {
         $this->drivers_number = $drivers_number;
+
+        return $this;
+    }
+
+    public function getEditDate(): ?\DateTimeInterface
+    {
+        return $this->editDate;
+    }
+
+    public function setEditDate(?\DateTimeInterface $editDate): self
+    {
+        $this->editDate = $editDate;
+
+        return $this;
+    }
+
+    public function getCreateDate(): ?\DateTimeInterface
+    {
+        return $this->createDate;
+    }
+
+    public function setCreateDate(\DateTimeInterface $createDate): self
+    {
+        $this->createDate = $createDate;
 
         return $this;
     }

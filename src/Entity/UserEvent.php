@@ -38,6 +38,15 @@ class UserEvent
     #[ORM\Column(nullable: true)]
     private ?bool $selected = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $estimatedHours = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $realHours = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $extraHours = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -135,6 +144,42 @@ class UserEvent
     public function setSelected(?bool $selected): self
     {
         $this->selected = $selected;
+
+        return $this;
+    }
+
+    public function getEstimatedHours(): ?float
+    {
+        return $this->estimatedHours;
+    }
+
+    public function setEstimatedHours(?float $estimatedHours): self
+    {
+        $this->estimatedHours = $estimatedHours;
+
+        return $this;
+    }
+
+    public function getRealHours(): ?float
+    {
+        return $this->realHours;
+    }
+
+    public function setRealHours(?float $realHours): self
+    {
+        $this->realHours = $realHours;
+
+        return $this;
+    }
+
+    public function getExtraHours(): ?float
+    {
+        return $this->extraHours;
+    }
+
+    public function setExtraHours(?float $extraHours): self
+    {
+        $this->extraHours = $extraHours;
 
         return $this;
     }
