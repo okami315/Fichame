@@ -54,7 +54,7 @@ class TypeController extends AbstractController
 
             $typeRepository->save($type, true);
 
-            return $this->redirectToRoute('app_type_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('type/new.html.twig', [

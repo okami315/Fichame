@@ -3,12 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Event;
-use DateTime;
+use App\Entity\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType ;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class EventType extends AbstractType
 {
@@ -16,22 +16,20 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('type', EntityType::class, [
+                'class' => Type::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true,
+            ])
             ->add('start_date', DateType::class)
-            ->add('end_date', DateType::class)   
-            ->add('schedule')
-            ->add('distance')
+            ->add('end_date', DateType::class)
+            ->add('workers_number')
             ->add('drivers_number')
+            ->add('distance')
+            ->add('schedule')
             ->add('linkInformation')
             ->add('linkForm')
-            // ->add('type'), multiple select
-            ->add('workers_number')
-            ->add('type')
-            ->add('drivers_number')
-            ->add('distance')
-            // ->add('horario estimado') 
-            // ->add('horario real')
-            // 
-            
         ;
     }
 
