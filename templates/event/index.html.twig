@@ -20,153 +20,158 @@
 				{% if is_granted('ROLE_ADMIN') %}
 					{# {{dump(eventosPorMes)}} #}
 					{% for mes, eventos in eventosPorMes %}
-						{% set monthDate = mes ~ '-01' %}
-    					{% set monthDateTime = monthDate|date('Y-m') %}
-    					{% set currentDateTime = 'now'|date('Y-m') %}
-    					{% if monthDateTime >= currentDateTime %}
+					{% set monthDate = mes ~ '-01' %}
+    				{% set monthDateTime = monthDate|date('Y-m') %}
+    				{% set currentDateTime = 'now'|date('Y-m') %}
+						{% if monthDateTime >= currentDateTime %}
 						<h2>{{ mes }}</h2>
-						<div class="container">
-							<div class="row justify-content-center align-items-center">
+								<table class="table text-center">
+									<thead>
+										<tr>
+											<th>Estado</th>
+											<th>Nombre</th>
+											<th>Fecha</th>
+											<th>Tipo</th>
+											<th>Nº trabajadores</th>
+											<th>Acciones</th>
+										</tr>
+									</thead>
 								{% for evento in eventos %}
-									<div class="col-md-3">
-										<div class="card mb-4">
-											<div class="card-body">
-												<h5 class="card-title">{{ evento.name }}</h5>	
-												<div class="row justify-content-center align-items-center">
-													{% if evento.type is not empty %}
-														{% for type in evento.type %}
-															<div class="col-3">
-																<img src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="100%">
-															</div>
-														{% endfor %}
-													{% endif %}
-												</div>
-												<p class="card-text text-center">Fecha comienzo
-													<b>{{ evento.startDate|date('d-m-Y') }}</b>
-												</p>
-												<p class="card-text text-center">Fecha fin
-													<b>{{ evento.endDate|date('d-m-Y') }}</b>
-												</p>
-
+									<tbody>
+										<tr>
+											<td>
 												{% if evento.status == 0 %}
-													<p class="text-center">🟡</p>
+													<p>🟡</p>
 												{% elseif evento.status == 1 %}
-													<p class="text-center">🔴</p>
+													<p>🔴</p>
 												{% else %}
-													<p class="text-center">🟢</p>
+													<p>🟢</p>
 												{% endif %}
-
-												<p class="card-text text-center">Nº trabajadores:
-													{{ evento.workersavailable }}
-													/
-													{{ evento.workersnumber }}
-												</p>
+											</td>
+											<td>{{ evento.name }}</td>
+											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
+											<td>
+												{% if evento.type is not empty %}
+												  	<div class="d-flex justify-content-center align-items-center">
+													{% for type in evento.type %}
+														<img src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="40px">
+													{% endfor %}
+													</div>
+												{% endif %}
+											</td>
+											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
+											<td>
 												<div class="row justify-content-center align-items-center">
-
-													<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_event_edit', {'id': evento.id}) }}">Editar</a>
-												
-													{% if evento.status == 0 and evento.userEvents|length  == 0 %}
-														<div class="col-11 mb-2 px-0">
-															<form class="m-0 mb-2" method="post" action="{{ path('app_event_delete', {'id': evento.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
-																<button class="btn btn-primary" style="width: 100%;">Borrar</button>
-															</form>
-															<form class="m-0" method="post" action="{{ path('app_event_open_id', {'id': evento.id}) }}">
-																<button class="btn btn-primary" style="width: 100%;">Publicar evento</button>
-															</form>
+													<div>
+														<div>
+															<a class="mb-2 btn btn-primary" href="{{ path('app_event_edit', {'id': evento.id}) }}">Editar</a>
 														</div>
-
-													{% endif %}
-													{% if evento.status == 1 %}
-														<div class="col-11 px-0 ">
-															<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
-																<button class="btn btn-primary" style="width: 100%;">Cerrar evento</button>
-															</form>
-														</div>
-													{% endif %}
-
-													<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_show', {'id': evento.id}) }}">Lista de trabajadores</a>
+														{% if evento.status == 0 and evento.userEvents|length  == 0 %} #}
+															<div>
+																<form class="m-0 mb-2" method="post" action="{{ path('app_event_delete', {'id': evento.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+																	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
+																	<button class="btn btn-primary">Borrar</button>
+																</form>
+																<form class="m-0 mb-2" method="post" action="{{ path('app_event_open_id', {'id': evento.id}) }}">
+																	<button class="btn btn-primary">Publicar evento</button>
+																</form>
+															</div>
+														{% endif %}
+														{% if evento.status == 1 %}
+															<div>
+																<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
+																	<button class="btn btn-primary">Cerrar evento</button>
+																</form>
+															</div>
+														{% endif %}
+													</div>
 												</div>
-											</div>
-										</div>
-									</div>
+											</td>
+										</tr>
+									</tbody>
 								{% endfor %}
-							</div>
-						</div>
-					{% endif %}
+							</table>
+						{% endif %}
 					{% endfor %}
 				{% else %}
 					{% for mes, eventos in eventosPorMes %}
-						{% set monthDate = mes ~ '-01' %}
-    					{% set monthDateTime = monthDate|date('Y-m') %}
-    					{% set currentDateTime = 'now'|date('Y-m') %}
-    					{% if monthDateTime >= currentDateTime %}
+					{% set monthDate = mes ~ '-01' %}
+    				{% set monthDateTime = monthDate|date('Y-m') %}
+    				{% set currentDateTime = 'now'|date('Y-m') %}
+						{% if monthDateTime >= currentDateTime %}
 						<h2>{{ mes }}</h2>
-						<div class="container">
-							<div class="row justify-content-center align-items-center">
+								<table class="table text-center">
+									<thead>
+										<tr>
+											<th>Estado</th>
+											<th>Nombre</th>
+											<th>Fecha</th>
+											<th>Tipo</th>
+											<th>Nº trabajadores</th>
+											<th>Acciones</th>
+										</tr>
+									</thead>
 								{% for evento in eventos %}
 									{% if evento.status != 0 %}
-										<div class="col-md-3">
-											<div class="card mb-4">
-												<div class="card-body">
-													<h5 class="card-title">{{ evento.name }}</h5>	
-													<div class="row justify-content-center align-items-center">
-														{% if evento.type is not empty %}
-															{% for type in evento.type %}
-																<div class="col-3">
-																	<img src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="100%">
-																</div>
-															{% endfor %}
-														{% endif %}
-													</div>
-													<p class="card-text text-center">Fecha comienzo
-														<b>{{ evento.startDate|date('d-m-Y') }}</b>
-													</p>
-													<p class="card-text text-center">Fecha fin
-														<b>{{ evento.endDate|date('d-m-Y') }}</b>
-													</p>
-													{% for userEvent in evento.userEvents %}
-														<div class="row justify-content-center mx-1">
-															{% if userEvent.disponibility is null %}
-																<p>🟡</p>
-															{% elseif userEvent.disponibility == 0 %}
-																<p>⚫</p>
-															{% elseif userEvent.selected is null %}
-																<p>🔘</p>
-																{% if userEvent.coordination == 1 %}
-																	<p>🗣</p>
-																{% endif %}
-																{% if userEvent.driving == 1 %}
-																	<p>🚕</p>
-																{% endif %}
-															{% else %}
-																<p>🟢</p>
-																{% if userEvent.coordination == 1 %}
-																	<p>🗣</p>
-																{% endif %}
-																{% if userEvent.driving == 1 %}
-																	<p>🚕</p>
-																{% endif %}
-															{% endif %}
-														</div>
-
-														<p class="card-text text-center">Nº trabajadores:
-															{{evento.workersnumber}}
-														</p>
-
-														{% if userEvent.asistance is null %}
-															<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_asistance', {'id': evento.id}) }}">Asistencia</a>
-														{% endif %}
+									<tbody>
+										<tr>
+											<td>
+											{% for userEvent in evento.userEvents %}
+												{% if userEvent.disponibility is null %}
+													<p>🟡</p>
+												{% elseif userEvent.disponibility == 0 %}
+													<p>⚫</p>
+												{% elseif userEvent.selected is null %}
+													<p>🔘</p>
+													{% if userEvent.coordination == 1 %}
+														<p>🗣</p>
+													{% endif %}
+													{% if userEvent.driving == 1 %}
+														<p>🚕</p>
+													{% endif %}
+												{% else %}
+													<p>🟢</p>
+													{% if userEvent.coordination == 1 %}
+														<p>🗣</p>
+													{% endif %}
+													{% if userEvent.driving == 1 %}
+														<p>🚕</p>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+											</td>
+											<td>{{ evento.name }}</td>
+											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
+											<td>
+												{% if evento.type is not empty %}
+												  	<div class="d-flex justify-content-center align-items-center">
+													{% for type in evento.type %}
+														<img src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="40px">
 													{% endfor %}
-
-													<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
+													</div>
+												{% endif %}
+											</td>
+											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
+											<td>
+												<div class="row justify-content-center align-items-center">
+													<div>
+														{% for userEvent in evento.userEvents %}
+															{% if userEvent.asistance is null %}
+																<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_asistance', {'id': evento.id}) }}">Asistencia</a>
+															{% endif %}
+														{% endfor %}
+														
+														<div>
+															<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
+														</div>
+													</div>
 												</div>
-											</div>
-										</div>
+											</td>
+										</tr>
+									</tbody>
 									{% endif %}
 								{% endfor %}
-							</div>
-						</div>
+							</table>
 						{% endif %}
 					{% endfor %}
 				{% endif %}
