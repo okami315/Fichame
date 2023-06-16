@@ -20,7 +20,10 @@
 				{% if is_granted('ROLE_ADMIN') %}
 					{# {{dump(eventosPorMes)}} #}
 					{% for mes, eventos in eventosPorMes %}
-						{% if mes == currentMonth %}
+						{% set monthDate = mes ~ '-01' %}
+    					{% set monthDateTime = monthDate|date('Y-m') %}
+    					{% set currentDateTime = 'now'|date('Y-m') %}
+    					{% if monthDateTime >= currentDateTime %}
 						<h2>{{ mes }}</h2>
 						<div class="container">
 							<div class="row justify-content-center align-items-center">
@@ -90,10 +93,14 @@
 								{% endfor %}
 							</div>
 						</div>
-						{% endif %}
+					{% endif %}
 					{% endfor %}
 				{% else %}
 					{% for mes, eventos in eventosPorMes %}
+						{% set monthDate = mes ~ '-01' %}
+    					{% set monthDateTime = monthDate|date('Y-m') %}
+    					{% set currentDateTime = 'now'|date('Y-m') %}
+    					{% if monthDateTime >= currentDateTime %}
 						<h2>{{ mes }}</h2>
 						<div class="container">
 							<div class="row justify-content-center align-items-center">
@@ -160,6 +167,7 @@
 								{% endfor %}
 							</div>
 						</div>
+						{% endif %}
 					{% endfor %}
 				{% endif %}
 			</div>

@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\TaskRepository;
+use App\Repository\UserEventRepository;
 use App\Repository\UserRepository;
 
 use DateTime;
@@ -27,6 +28,11 @@ class EventController extends AbstractController
         $previousMonth = new \DateTime('first day of previous month');
         $previousMonth->setTime(0, 0, 0);
 
+        $currentMonth = new DateTime('now');
+        $nextMonth = (new DateTime('now'))->modify('first day of next month');
+
+        $currentYear = $currentMonth->format('Y'); // Obtener el año actual
+
 
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $events = $eventRepository->findAll();
@@ -38,19 +44,29 @@ class EventController extends AbstractController
 
         // Obtener eventos del mes actual y del mes anterior, ordenados por fecha de inicio ascendente
         $events = $eventRepository->createQueryBuilder('e')
-            ->where('e.startDate >= :previousMonth AND e.endDate >= :currentMonth')
+            ->where('e.startDate >= :previousMonth OR e.endDate >= :currentMonth OR (e.endDate < :currentYear AND e.endDate = :currentMonth)')
             ->setParameter('previousMonth', $previousMonth)
-            ->setParameter('currentMonth', $currentMonth)
+            ->setParameter('currentMonth', $currentMonth->format('m'))
+            ->setParameter('currentYear', $currentYear)
             ->orderBy('e.startDate', 'ASC')
             ->getQuery()
             ->getResult();
 
-        // Agrupa los eventos por meses
+
+
+            // Agrupa los eventos por meses
         $eventosPorMes = [];
         foreach ($events as $evento) {
-            $mes = $evento->getStartDate()->format('F Y');
+            $mes = $evento->getEndDate ()->format('F Y');
             $eventosPorMes[$mes][] = $evento;
         }
+
+            // Ordenar los meses y años en orden ascendente
+        uksort($eventosPorMes, function ($a, $b) {
+            $mesA = \DateTime::createFromFormat('F Y', $a);
+            $mesB = \DateTime::createFromFormat('F Y', $b);
+            return $mesA <=> $mesB;
+        });
 
         return $this->render('event/index.html.twig', [
             'eventosPorMes' => $eventosPorMes,
@@ -78,9 +94,9 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $eventRepository->save($event, true);
 
-            foreach ($userRepository->findAll() as $user) {
-                $taskRepository->createTask($event, $user);
-            }
+            // foreach ($userRepository->findAll() as $user) {
+            //     $taskRepository->createTask($event, $user);
+            // }
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }

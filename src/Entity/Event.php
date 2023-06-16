@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -71,6 +72,8 @@ class Event
         $this->type = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->userEvents = new ArrayCollection();
+        $this->startDate = new \DateTime();
+        $this->endDate = new \DateTime();
     }
 
     public function getId(): ?int
