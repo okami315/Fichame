@@ -129,11 +129,10 @@ class UserEvent
         return $this->asistance;
     }
 
-    public function setAsistance(int $asistance): self
+    public function setAsistance(?int $asistance): void
     {
         $this->asistance = $asistance;
 
-        return $this;
     }
 
     public function isSelected(): ?bool

@@ -3,8 +3,8 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<main class=" container-fluid d-flex justify-content-center">
-    <form method="post" class="p-3 mt-4 rounded col-3 bg-primary color">
+<main class="container mx-auto row justify-content-center">
+    <form method="post" class="col-12 col-md-4 p-4 mt-4 rounded col-3 bg-primary">
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}

@@ -59,6 +59,17 @@ class UserEventRepository extends ServiceEntityRepository
         $this->save($userEvent, true);
     }
 
+    public function getUserForIdEvent($id)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->where('e.event_id = :id')
+            ->setParameter('id', $id)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+
 
 //    /**
 //     * @return UserEvent[] Returns an array of UserEvent objects
