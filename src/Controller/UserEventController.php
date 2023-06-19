@@ -45,16 +45,16 @@ class UserEventController extends AbstractController
         // $form->handleRequest($request);
 
         // if ($form->isSubmitted() && $form->isValid()) {
-           
-            if($data['asistance'] == "null"){
-                $userEvent->setAsistance(null);
-                $userEventRepository->save($userEvent, true);
-            }else{
-                $userEvent->setAsistance($data['asistance']);
-                $userEventRepository->save($userEvent, true);
-            }
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        if ($data['asistance'] == "null") {
+            $userEvent->setAsistance(null);
+            $userEventRepository->save($userEvent, true);
+        } else {
+            $userEvent->setAsistance($data['asistance']);
+            $userEventRepository->save($userEvent, true);
+        }
+
+        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         // }
 
         // return $this->render('user_event/newAsistance.html.twig', [
@@ -157,5 +157,89 @@ class UserEventController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+    #[Route('/update-asistance/{id}', name: 'app_user_event_updateAsistance', methods: ['GET', 'POST'])]
+    public function updateAsistance(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userEvent = $userEventRepository->find($id);
+
+        if ($data['asistance'] == "null") {
+            $userEvent->setAsistance(null);
+            $userEventRepository->save($userEvent, true);
+        } else {
+            $userEvent->setAsistance($data['asistance']);
+            $userEventRepository->save($userEvent, true);
+        }
+
+        return $this->json(['message' => 'Asistencia actualizada correctamente']);
+    }
+
+    #[Route('/update-coordinador/{id}', name: 'app_user_event_updateCoordinador', methods: ['GET', 'POST'])]
+    public function updateCoordinador(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userEvent = $userEventRepository->find($id);
+
+        $coordinador = $data['coordinador'] == '1' ? true : false; 
+
+        $userEvent->setCoordination($coordinador);
+        $userEventRepository->save($userEvent, true);
+
+        return new Response('Coordinador actualizado correctamente', Response::HTTP_OK);
+    }
+
+    #[Route('/update-driving/{id}', name: 'app_user_event_updateDriving', methods: ['GET', 'POST'])]
+    public function updateDriving(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userEvent = $userEventRepository->find($id);
+
+        $driving = $data['driving'] == '1' ? true : false; 
+
+        $userEvent->setDriving($driving);
+        $userEventRepository->save($userEvent, true);
+
+        return new Response('Conductor actualizado correctamente', Response::HTTP_OK);
+    }
+
+    #[Route('/update-privateCar/{id}', name: 'app_user_event_updatePrivateCar', methods: ['GET', 'POST'])]
+    public function updatePrivateCar(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userEvent = $userEventRepository->find($id);
+
+        $privateCar = $data['privateCar'] == '1' ? true : false; 
+
+        $userEvent->setPrivateCar($privateCar);
+        $userEventRepository->save($userEvent, true);
+
+        return new Response('Coche particular actualizado correctamente', Response::HTTP_OK);
+    }
+
+    #[Route('/update-estimated-hours/{id}', name: 'app_user_event_updateEstimatedHours', methods: ['GET', 'POST'])]
+    public function updateEstimatedHours(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userEvent = $userEventRepository->find($id);
+
+        $userEvent->setEstimatedHours($data['estimatedHours']);
+        $userEventRepository->save($userEvent, true);
+
+        return new Response('Horario estimado actualizado correctamente', Response::HTTP_OK);
+    }
+
+    #[Route('/update-extra-hours/{id}', name: 'app_user_event_updateExtraHours', methods: ['GET', 'POST'])]
+    public function updateExtraHours(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userEvent = $userEventRepository->find($id);
+
+        $userEvent->setExtraHours($data['extraHours']);
+        $userEventRepository->save($userEvent, true);
+
+        return new Response('Horas extra actualizadas correctamente', Response::HTTP_OK);
     }
 }

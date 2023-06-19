@@ -69,30 +69,45 @@ class UserEventRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function countUsersWithAvailabilityByEventId($eventId): int
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery('
+        SELECT COUNT(ue.id)
+        FROM App\Entity\UserEvent ue
+        WHERE ue.event = :eventId
+        AND ue.disponibility = 1
+    ')
+            ->setParameter('eventId', $eventId);
+
+        return $query->getSingleScalarResult();
+    }
 
 
-//    /**
-//     * @return UserEvent[] Returns an array of UserEvent objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?UserEvent
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return UserEvent[] Returns an array of UserEvent objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('u')
+    //            ->andWhere('u.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('u.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?UserEvent
+    //    {
+    //        return $this->createQueryBuilder('u')
+    //            ->andWhere('u.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

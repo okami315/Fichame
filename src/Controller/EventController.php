@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EventController extends AbstractController
 {
     #[Route('/event', name: 'app_event_index', methods: ['GET'])]
-    public function index(EventRepository $eventRepository): Response
+    public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
     {
         $currentMonth = new \DateTime('first day of this month');
         $currentMonth->setTime(0, 0, 0);
@@ -59,6 +59,9 @@ class EventController extends AbstractController
         foreach ($events as $evento) {
             $mes = $evento->getEndDate ()->format('F Y');
             $eventosPorMes[$mes][] = $evento;
+
+            $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($evento->getId());
+            $evento->setWorkersAvailable($countUsers);
         }
 
             // Ordenar los meses y años en orden ascendente
