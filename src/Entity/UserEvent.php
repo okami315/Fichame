@@ -14,7 +14,7 @@ class UserEvent
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $disponibility = null;
 
     #[ORM\Column(nullable: true)]
