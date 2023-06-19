@@ -102,6 +102,7 @@ class EventController extends AbstractController
         $form->handleRequest($request);
         $event->setCompany($this->getUser()->getCompany());
         if ($form->isSubmitted() && $form->isValid()) {
+            $event->setCreateDate(new DateTime());
             $eventRepository->save($event, true);
 
             // foreach ($userRepository->findAll() as $user) {
@@ -127,6 +128,7 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $event->setEditDate(new DateTime());
             $eventRepository->save($event, true);
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
@@ -137,18 +139,6 @@ class EventController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    // #[IsGranted('ROLE_ADMIN')]
-    // #[Route('/admin/event/new/{id}', name: 'app_event_new_id', methods: ['POST'])]
-    // public function newDraft(Request $request, Event $event, EventRepository $eventRepository): Response
-    // {
-    //     $newEvent = clone $event;
-    //     $newEvent->setStatus(0);
-    //     $newEvent->setId(null);
-    //     $eventRepository->save($newEvent, true);
-    //     return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-    // }
-
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/close/{id}', name: 'app_event_close_id', methods: ['POST'])]
@@ -162,10 +152,17 @@ class EventController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/event/open/{id}', name: 'app_event_open_id', methods: ['POST'])]
-    public function open(Request $request, Event $event, EventRepository $eventRepository): Response
+    public function open(Request $request, Event $event, EventRepository $eventRepository , UserRepository $userRepository ,UserEventRepository $userEventRepository): Response
     {
         $event->setStatus(1);
         $eventRepository->save($event, true);
+
+        // Se asignan todos los user_events para después sacar el número de ellos que quedan por marcar disponibilidad
+        foreach ($userRepository->findAll() as $user) {
+                $userEventRepository->createUserEvent($event, $user);
+            }
+
+
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
 

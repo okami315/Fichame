@@ -27,6 +27,8 @@ class UserEventController extends AbstractController
     {
         $evento = $eventRepository->find($id);
         $usuario = $security->getUser();
+        $data = json_decode($request->getContent(), true);
+
 
         $userEvent = $userEventRepository->findOneBy([
             'user' => $usuario,
@@ -39,19 +41,26 @@ class UserEventController extends AbstractController
             $userEvent->setEvent($evento);
         }
 
-        $form = $this->createForm(AsistanceType::class, $userEvent);
-        $form->handleRequest($request);
+        // $form = $this->createForm(AsistanceType::class, $userEvent);
+        // $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userEventRepository->save($userEvent, true);
+        // if ($form->isSubmitted() && $form->isValid()) {
+           
+            if($data['asistance'] == "null"){
+                $userEvent->setAsistance(null);
+                $userEventRepository->save($userEvent, true);
+            }else{
+                $userEvent->setAsistance($data['asistance']);
+                $userEventRepository->save($userEvent, true);
+            }
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-        }
+        // }
 
-        return $this->render('user_event/newAsistance.html.twig', [
-            'user_event' => $userEvent,
-            'form' => $form,
-        ]);
+        // return $this->render('user_event/newAsistance.html.twig', [
+        //     'user_event' => $userEvent,
+        //     'form' => $form,
+        // ]);
     }
 
 

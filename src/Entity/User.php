@@ -71,6 +71,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserEvent::class)]
     private Collection $userEvents;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $driver = null;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -322,6 +325,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userEvent->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isDriver(): ?bool
+    {
+        return $this->driver;
+    }
+
+    public function setDriver(?bool $driver): self
+    {
+        $this->driver = $driver;
 
         return $this;
     }

@@ -8,17 +8,18 @@
 	<div class="container-fluid">
 		<div class="row justify-content-center mb-3">
 			{% if is_granted('ROLE_ADMIN') %}
-			<div class="col-12 col-md-2 pt-4">
-				<div class="text-center">
-					<a href="{{ path('app_event_new') }}" class="btn btn-primary mb-2">Crear nuevo evento</a>
-					<a href="{{ path('app_type_new') }}" class="btn btn-primary mb-2">Crear tipo de evento</a>
-					<a href="{{ path('app_user_event_index') }}" class="btn btn-primary mb-2">Lista de trabajadores</a>
+				<div class="col-12 col-md-2 pt-4">
+					<div class="text-center">
+						<a href="{{ path('app_event_new') }}" class="btn btn-primary mb-2">Crear nuevo evento</a>
+						<a href="{{ path('app_type_new') }}" class="btn btn-primary mb-2">Crear tipo de evento</a>
+						<a href="{{ path('app_user_event_index') }}" class="btn btn-primary mb-2">Lista de trabajadores</a>
+						<a href="{{ path('app_type_index') }}" class="btn btn-primary mb-2">Gestionar tipos</a>
+					</div>
 				</div>
-			</div>
 			{% endif %}
 			<div class="col-12 col-md-10">
 				{% if is_granted('ROLE_ADMIN') %}
-					{# {{dump(eventosPorMes)}} #}
+					{{dump(eventosPorMes)}}
 					{% for mes, eventos in eventosPorMes %}
 					{% set monthDate = mes ~ '-01' %}
     				{% set monthDateTime = monthDate|date('Y-m') %}
@@ -93,6 +94,9 @@
 										</tr>
 									</tbody>
 								{% endfor %}
+							</div>
+						</div>
+						{# {% endif %} #}
 							</table>
 						{% endif %}
 					{% endfor %}
@@ -120,6 +124,7 @@
 										<tr>
 											<td>
 											{% for userEvent in evento.userEvents %}
+											{% if userEvent.user.id == app.user.id %}
 												{% if userEvent.disponibility is null %}
 													<p>🟡</p>
 												{% elseif userEvent.disponibility == 0 %}
@@ -141,6 +146,7 @@
 														<p>🚕</p>
 													{% endif %}
 												{% endif %}
+											{% endif %}
 											{% endfor %}
 											</td>
 											<td>{{ evento.name }}</td>
@@ -159,13 +165,19 @@
 												<div class="row justify-content-center align-items-center">
 													<div>
 														{% for userEvent in evento.userEvents %}
-															{% if userEvent.asistance is null %}
-																<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_asistance', {'id': evento.id}) }}">Asistencia</a>
-															{% endif %}
-														{% endfor %}
-														
+															{% if userEvent.user.id == app.user.id %}
+															{% if userEvent.selected is null %}
+															Marcar asistencia
+															<select class="col-11 mb-2 form-select" id="asistance-select-{{ evento.id }}" onchange="sendAsistance('{{ evento.id }}', event)">
+															<option value="null" {% if userEvent.asistance is null %}selected{% endif %}>No marcar</option>
+															<option value="1" {% if userEvent.asistance == 1 %}selected{% endif %}>Asisto</option>
+															<option value="0" {% if userEvent.asistance == 0 and userEvent.asistance is not null %}selected{% endif %}>No asisto</option>
+															</select>
+															{% endif %} 
+															{% endif %} 
+														{% endfor %}		
 														<div>
-															<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
+															<a class="btn btn-primary" href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
 														</div>
 													</div>
 												</div>
@@ -181,4 +193,27 @@
 			</div>
 		</div>
 	</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+function sendAsistance(eventId,event) {
+  event.preventDefault();
+  var selectElement = document.getElementById("asistance-select-" + eventId);
+  var asistanceValue = selectElement.value;
+
+  axios.post('http://127.0.0.1:8000/user/event/asistance/'+eventId, {
+    asistance: asistanceValue
+  })
+  .then(function (response) {
+    console.log("Todo gucci");
+    selectElement.value = asistanceValue;
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+</script>
+
+
 {% endblock %}
+
+

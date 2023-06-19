@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\UserEvent;
+use App\Entity\User;
+use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,6 +49,14 @@ class UserEventRepository extends ServiceEntityRepository
             ->getQuery();
 
         return $query->getResult();
+    }
+
+    public function createUserEvent(Event $event, User $user): void
+    {
+        $userEvent = new UserEvent();
+        $userEvent->setUser($user);
+        $userEvent->setEvent($event);
+        $this->save($userEvent, true);
     }
 
     public function getUserForIdEvent($id)
