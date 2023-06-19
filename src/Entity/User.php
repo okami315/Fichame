@@ -227,7 +227,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString()
     {
-        return $this->username;
+        return $this->fullName;
     }
 
     public function getMonthlytime(): ?int

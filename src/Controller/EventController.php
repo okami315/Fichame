@@ -74,6 +74,16 @@ class EventController extends AbstractController
     }
 
     #[IsGranted('ROLE_ADMIN')]
+    #[Route('/event/{id}/workers', name: 'app_event_show_workers', methods: ['GET'])]
+    public function showWorkers(Event $event): Response
+    {
+        SecurityController::checkCompany($this, $this->getUser()->getCompany()->getNif(), $event->getCompany()->getNif());
+        return $this->render('event/trabajadores.html.twig', [
+            'event' => $event,
+        ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/event/{id}', name: 'app_event_show', methods: ['GET'])]
     public function show(Event $event): Response
     {

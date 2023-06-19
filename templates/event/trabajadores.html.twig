@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Evento: {{ event.name }}</h1>
+
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">Trabajador</th>
+                <th scope="col">Asistencia</th>
+                <th scope="col">Coordinador</th>
+                <th scope="col">Conductor</th>
+                <th scope="col">Coche particular</th>
+                <th scope="col">Horario estimado</th>
+                <th scope="col">Horas fichadas</th>
+                <th scope="col">Modificador de horas</th>
+            </tr>
+        </thead>
+        {% for userEvent in event.userEvents %}
+        <tbody>
+            <tr>
+                <td>{{ userEvent.user }}</td>
+                {# <td>{{ userEvent.asistance ? '✓' : '✘' }}</td> #}
+                <td>
+                    <input type="radio" name="asistencia" id="asistencia-por-defecto" value="?" checked>
+                    <label for="asistencia-por-defecto">?</label>
+
+                    <input type="radio" name="asistencia" id="asistencia-asiste" value="✓">
+                    <label for="asistencia-asiste">✓</label>
+
+                    <input type="radio" name="asistencia" id="asistencia-no-asiste" value="✘">
+                    <label for="asistencia-no-asiste">✘</label>
+                </td>
+                <td>
+                {% if userEvent.asistance == 1 %}
+                    <input type="checkbox" name="es_coordinador" id="es_coordinador" value="1">
+                {% endif %}
+                </td>
+                <td>
+                    {% if userEvent.asistance == 1 %} {# falta indicar si el usuario puede conducir  #}
+                        <input type="checkbox" name="es_conductor" id="es_conductor" value="1">
+                    {% endif %}
+                </td>
+                <td>
+                    {% if userEvent.asistance == 1 %} {# falta indicar si el usuario puede conducir  #}
+                        <input type="checkbox" name="coche_particular" id="coche_particular" value="1">
+                    {% endif %}
+                </td>
+                <td>
+                    <input type="text" name="horario_estimado" id="horario_estimado" value="{{ event.schedule }}">
+                </td>
+                <td>Horas fichadas</td>
+                <td>
+                    <input type="number" name="modificador_horas" id="modificador_horas" value="{{ event.schedule }}" step="0.25">
+                </td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+{% endblock %}
