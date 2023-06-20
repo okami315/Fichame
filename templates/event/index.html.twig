@@ -116,12 +116,13 @@
 											<td>
 											{% for userEvent in evento.userEvents %}
 											{% if userEvent.user.id == app.user.id %}
+											<p id="p-{{ evento.id }}">
 												{% if userEvent.disponibility is null %}
-													<p>🟡</p>
+													🟡
 												{% elseif userEvent.disponibility == 0 %}
-													<p>⚫</p>
+													⚫
 												{% elseif userEvent.selected is null %}
-													<p>🔘</p>
+													🔘
 													{% if userEvent.coordination == 1 %}
 														<p>🗣</p>
 													{% endif %}
@@ -129,7 +130,7 @@
 														<p>🚕</p>
 													{% endif %}
 												{% else %}
-													<p>🟢</p>
+													🟢
 													{% if userEvent.coordination == 1 %}
 														<p>🗣</p>
 													{% endif %}
@@ -137,6 +138,7 @@
 														<p>🚕</p>
 													{% endif %}
 												{% endif %}
+											</p>
 											{% endif %}
 											{% endfor %}
 											</td>
@@ -157,19 +159,16 @@
 													<div>
 														{% for userEvent in evento.userEvents %}
 															{% if userEvent.user.id == app.user.id %}
-															{% if userEvent.selected is null %}
-															Marcar asistencia
-															<select class="col-11 mb-2 form-select" id="asistance-select-{{ evento.id }}" onchange="sendAsistance('{{ evento.id }}', event)">
-															<option value="null" {% if userEvent.asistance is null %}selected{% endif %}>No marcar</option>
-															<option value="1" {% if userEvent.asistance == 1 %}selected{% endif %}>Asisto</option>
-															<option value="0" {% if userEvent.asistance == 0 and userEvent.asistance is not null %}selected{% endif %}>No asisto</option>
+															{% if userEvent.asistance is null %}
+															Marcar disponibilidad
+															<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.selected }}')">
+															<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
+															<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
+															<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
 															</select>
 															{% endif %} 
 															{% endif %} 
-														{% endfor %}		
-														<div>
-															<a class="btn btn-primary" href="{{ path('app_user_event_disponibilidad', {'id': evento.id}) }}">Disponibilidad</a>
-														</div>
+														{% endfor %}
 													</div>
 												</div>
 											</td>
@@ -185,17 +184,35 @@
 	</div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-function sendAsistance(eventId,event) {
-  event.preventDefault();
-  var selectElement = document.getElementById("asistance-select-" + eventId);
-  var asistanceValue = selectElement.value;
+function sendDisponibility(eventId,eventselected) {
+  var selectElement = document.getElementById("disponibility-select-" + eventId);
+  var disponibilityValue = selectElement.value;
 
-  axios.post('http://127.0.0.1:8000/user/event/asistance/'+eventId, {
-    asistance: asistanceValue
+  axios.post('/user/event/disponibility/'+eventId, {
+    disponibility: disponibilityValue
   })
   .then(function (response) {
     console.log("Todo gucci");
-    selectElement.value = asistanceValue;
+    selectElement.value = disponibilityValue;
+
+	 // Actualizar el icono del evento en la interfaz de usuario
+    var iconElement = document.getElementById("p-" + eventId);
+    var newIcon = '';
+
+    if (disponibilityValue === '1') {
+		if(eventselected == 0){
+			 newIcon = '🔘';
+		}else{
+			newIcon = '🟢';
+		}
+    } else if (disponibilityValue === '0') {
+      newIcon = '⚫';
+    } else {
+      newIcon = '🟡';
+    }
+
+    iconElement.textContent = newIcon;
+
   })
   .catch(function (error) {
     console.log(error);

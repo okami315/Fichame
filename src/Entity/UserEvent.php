@@ -57,11 +57,9 @@ class UserEvent
         return $this->disponibility;
     }
 
-    public function setDisponibility(int $disponibility): self
+    public function setDisponibility(?int $disponibility): void
     {
         $this->disponibility = $disponibility;
-
-        return $this;
     }
 
     public function isCoordination(): ?bool

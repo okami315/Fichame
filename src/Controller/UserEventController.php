@@ -22,8 +22,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserEventController extends AbstractController
 {
 
-    #[Route('/asistance/{id}', name: 'app_user_event_asistance', methods: ['GET', 'POST'])]
-    public function asistance(Security $security, Request $request, int $id, EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
+    #[Route('/disponibility/{id}', name: 'app_user_event_disponibility', methods: ['GET', 'POST'])]
+    public function disponibility(Security $security, Request $request, int $id, EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
     {
         $evento = $eventRepository->find($id);
         $usuario = $security->getUser();
@@ -46,11 +46,11 @@ class UserEventController extends AbstractController
 
         // if ($form->isSubmitted() && $form->isValid()) {
 
-        if ($data['asistance'] == "null") {
-            $userEvent->setAsistance(null);
+        if ($data['disponibility'] == "null") {
+            $userEvent->setDisponibility(null);
             $userEventRepository->save($userEvent, true);
         } else {
-            $userEvent->setAsistance($data['asistance']);
+            $userEvent->setDisponibility($data['disponibility']);
             $userEventRepository->save($userEvent, true);
         }
 
@@ -61,39 +61,6 @@ class UserEventController extends AbstractController
         //     'user_event' => $userEvent,
         //     'form' => $form,
         // ]);
-    }
-
-
-    #[Route('/disponibilidad/{id}', name: 'app_user_event_disponibilidad', methods: ['GET', 'POST'])]
-    public function disponibilidad(Security $security, Request $request, int $id, EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
-    {
-        $evento = $eventRepository->find($id);
-        $usuario = $security->getUser();
-
-        $userEvent = $userEventRepository->findOneBy([
-            'user' => $usuario,
-            'event' => $evento,
-        ]);
-
-        if (!$userEvent) {
-            $userEvent = new UserEvent();
-            $userEvent->setUser($usuario);
-            $userEvent->setEvent($evento);
-        }
-
-        $form = $this->createForm(DisponibilidadType::class, $userEvent);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userEventRepository->save($userEvent, true);
-
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user_event/newDisponibility.html.twig', [
-            'user_event' => $userEvent,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/', name: 'app_user_event_index', methods: ['GET'])]
