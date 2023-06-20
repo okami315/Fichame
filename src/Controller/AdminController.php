@@ -62,6 +62,7 @@ class AdminController extends AbstractController
             $objectUser = new \stdClass();
             $objectUser->id = $user->getId();
             $objectUser->fullname = $user->getFullName();
+            $objectUser->email = $user->getEmail();
             $objectUser->hours = $hours;
             $objectUser->minutes = $minutes < 10 ? "0$minutes" : $minutes;
             $objectUser->date = "$filter_month/$filter_year";
