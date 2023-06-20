@@ -55,7 +55,7 @@
 												{% if evento.type is not empty %}
 												  	<div class="d-flex justify-content-center align-items-center">
 													{% for type in evento.type %}
-														<img src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="40px">
+														<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
 													{% endfor %}
 													</div>
 												{% endif %}
@@ -155,7 +155,7 @@
 												{% if evento.type is not empty %}
 												  	<div class="d-flex justify-content-center align-items-center">
 													{% for type in evento.type %}
-														<img src="{{ asset('images/' ~ type.icon) }}" alt="iconType" width="40px">
+														<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
 													{% endfor %}
 													</div>
 												{% endif %}

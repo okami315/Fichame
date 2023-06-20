@@ -19,43 +19,45 @@
             </tr>
         </thead>
         {% for userEvent in event.userEvents %}
-        <tbody>
-            <tr>
-                <td>{{ userEvent.user }}</td>
-                <td>
-                    <input type="radio" name="asistencia-{{ userEvent.id }}" id="asistencia-por-defecto-{{ userEvent.id }}" value="null" {% if userEvent.asistance is null or userEvent.asistance is same as('null') %}checked{% endif %} onchange="sendAsistance('{{ userEvent.id }}', event)">
-                    <label for="asistencia-por-defecto-{{ userEvent.id }}">?</label>
+            {% if userEvent.disponibility == 1 %}
+            <tbody>
+                <tr>
+                    <td>{{ userEvent.user }}</td>
+                    <td>
+                        <input type="radio" name="asistencia-{{ userEvent.id }}" id="asistencia-por-defecto-{{ userEvent.id }}" value="null" {% if userEvent.asistance is null or userEvent.asistance is same as('null') %}checked{% endif %} onchange="sendAsistance('{{ userEvent.id }}', event)">
+                        <label for="asistencia-por-defecto-{{ userEvent.id }}">?</label>
 
-                    <input type="radio" name="asistencia-{{ userEvent.id }}" id="asistencia-asiste-{{ userEvent.id }}" value="1" {% if userEvent.asistance is same as(1) %}checked{% endif %} onchange="sendAsistance('{{ userEvent.id }}', event)">
-                    <label for="asistencia-asiste-{{ userEvent.id }}">✓</label>
+                        <input type="radio" name="asistencia-{{ userEvent.id }}" id="asistencia-asiste-{{ userEvent.id }}" value="1" {% if userEvent.asistance is same as(1) %}checked{% endif %} onchange="sendAsistance('{{ userEvent.id }}', event)">
+                        <label for="asistencia-asiste-{{ userEvent.id }}">✓</label>
 
-                    <input type="radio" name="asistencia-{{ userEvent.id }}" id="asistencia-no-asiste-{{ userEvent.id }}" value="0" {% if userEvent.asistance is same as(0) %}checked{% endif %} onchange="sendAsistance('{{ userEvent.id }}', event)">
-                    <label for="asistencia-no-asiste-{{ userEvent.id }}">✘</label>
-                </td>
-                <td>
-                {% if userEvent.asistance == 1 %}
-                    <input type="checkbox" name="es_coordinador" id="es_coordinador" value="1" {% if userEvent.coordination == 1 %}checked{% endif %} onchange="updateCoordinador('{{ userEvent.id }}', this.checked)">
-                {% endif %}
-                </td>
-                <td>
-                    {% if userEvent.asistance == 1 and userEvent.user.driver == 1 %} 
-                        <input type="checkbox" name="es_conductor" id="es_conductor" value="1" {% if userEvent.driving == 1 %}checked{% endif %} onchange="updateDriving('{{ userEvent.id }}', this.checked)">
+                        <input type="radio" name="asistencia-{{ userEvent.id }}" id="asistencia-no-asiste-{{ userEvent.id }}" value="0" {% if userEvent.asistance is same as(0) %}checked{% endif %} onchange="sendAsistance('{{ userEvent.id }}', event)">
+                        <label for="asistencia-no-asiste-{{ userEvent.id }}">✘</label>
+                    </td>
+                    <td>
+                    {% if userEvent.asistance == 1 %}
+                        <input type="checkbox" name="es_coordinador" id="es_coordinador" value="1" {% if userEvent.coordination == 1 %}checked{% endif %} onchange="updateCoordinador('{{ userEvent.id }}', this.checked)">
                     {% endif %}
-                </td>
-                <td>
-                    {% if userEvent.asistance == 1 and userEvent.user.driver == 1 %}
-                        <input type="checkbox" name="coche_particular" id="coche_particular" value="1" {% if userEvent.isPrivateCar() %}checked{% endif %} onchange="updatePrivateCar('{{ userEvent.id }}', this.checked)">
-                    {% endif %}
-                </td>
-                <td>
-                    <input class="form-control" type="number" name="horario_estimado" id="horario_estimado" value="{% if userEvent.estimatedHours is null %}{{ event.schedule }}{% else %}{{ userEvent.estimatedHours }}{% endif %}" onchange="updateEstimatedHours('{{ userEvent.id }}', this.value)">
-                </td>
-                <td>Horas fichadas</td>
-                <td>
-                    <input class="form-control" type="number" name="horario_modificado" id="horario_modificado" value="{% if userEvent.extraHours is null %}0{% else %}{{ userEvent.extrahours }}{% endif %}" onchange="updateExtraHours('{{ userEvent.id }}', this.value)">
-                </td>
-            </tr>
-        </tbody>
+                    </td>
+                    <td>
+                        {% if userEvent.asistance == 1 and userEvent.user.driver == 1 %} 
+                            <input type="checkbox" name="es_conductor" id="es_conductor" value="1" {% if userEvent.driving == 1 %}checked{% endif %} onchange="updateDriving('{{ userEvent.id }}', this.checked)">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if userEvent.asistance == 1 and userEvent.user.driver == 1 %}
+                            <input type="checkbox" name="coche_particular" id="coche_particular" value="1" {% if userEvent.isPrivateCar() %}checked{% endif %} onchange="updatePrivateCar('{{ userEvent.id }}', this.checked)">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <input class="form-control" type="number" name="horario_estimado" id="horario_estimado" value="{% if userEvent.estimatedHours is null %}{{ event.schedule }}{% else %}{{ userEvent.estimatedHours }}{% endif %}" onchange="updateEstimatedHours('{{ userEvent.id }}', this.value)">
+                    </td>
+                    <td>Horas fichadas</td>
+                    <td>
+                        <input class="form-control" type="number" name="horario_modificado" id="horario_modificado" value="{% if userEvent.extraHours is null %}0{% else %}{{ userEvent.extrahours }}{% endif %}" onchange="updateExtraHours('{{ userEvent.id }}', this.value)">
+                    </td>
+                </tr>
+            </tbody>
+            {% endif %}
         {% endfor %}
     </table>
 

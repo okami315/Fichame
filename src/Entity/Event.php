@@ -80,6 +80,7 @@ class Event
         $this->userEvents = new ArrayCollection();
         $this->startDate = new \DateTime();
         $this->endDate = new \DateTime();
+        $this -> createDate = new \DateTime();
     }
 
     public function getId(): ?int
