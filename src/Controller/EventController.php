@@ -23,15 +23,7 @@ class EventController extends AbstractController
     public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
     {
         $currentMonth = new \DateTime('first day of this month');
-        $currentMonth->setTime(0, 0, 0);
-
-        $previousMonth = new \DateTime('first day of previous month');
-        $previousMonth->setTime(0, 0, 0);
-
-        $currentMonth = new DateTime('now');
-        $nextMonth = (new DateTime('now'))->modify('first day of next month');
-
-        $currentYear = $currentMonth->format('Y'); // Obtener el año actual
+        $nextMonth = (clone $currentMonth)->modify('+1 month');
 
 
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
@@ -44,10 +36,9 @@ class EventController extends AbstractController
 
         // Obtener eventos del mes actual y del mes anterior, ordenados por fecha de inicio ascendente
         $events = $eventRepository->createQueryBuilder('e')
-            ->where('e.startDate >= :previousMonth OR e.endDate >= :currentMonth OR (e.endDate < :currentYear AND e.endDate = :currentMonth)')
-            ->setParameter('previousMonth', $previousMonth)
-            ->setParameter('currentMonth', $currentMonth->format('m'))
-            ->setParameter('currentYear', $currentYear)
+            ->where('e.startDate < :nextMonth AND e.endDate >= :currentMonth')
+            ->setParameter('currentMonth', $currentMonth)
+            ->setParameter('nextMonth', $nextMonth)
             ->orderBy('e.startDate', 'ASC')
             ->getQuery()
             ->getResult();
