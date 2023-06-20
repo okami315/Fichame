@@ -4,7 +4,7 @@ function sendAsistance(userEventId, event) {
 
     var asistanceValue = event.target.value;
 
-    axios.post('http://127.0.0.1:8000/user/event/update-asistance/' + userEventId, {
+    axios.post('/user/event/update-asistance/' + userEventId, {
         asistance: asistanceValue
     })
         .then(function (response) {
@@ -17,7 +17,7 @@ function sendAsistance(userEventId, event) {
 
 function updateCoordinador(userEventId, isChecked) {
     event.preventDefault();
-    axios.post('http://127.0.0.1:8000/user/event/update-coordinador/' + userEventId, {
+    axios.post('/user/event/update-coordinador/' + userEventId, {
         coordinador: isChecked ? '1' : '0' // Invertir el valor para mantener la estructura actual
     })
         .then(function (response) {
@@ -30,7 +30,7 @@ function updateCoordinador(userEventId, isChecked) {
 
 function updateDriving(userEventId, isChecked) {
     event.preventDefault();
-    axios.post('http://127.0.0.1:8000/user/event/update-driving/' + userEventId, {
+    axios.post('/user/event/update-driving/' + userEventId, {
         driving: isChecked ? '1' : '0'
     })
         .then(function (response) {
@@ -43,7 +43,7 @@ function updateDriving(userEventId, isChecked) {
 
 function updatePrivateCar(userEventId, isChecked) {
     event.preventDefault();
-    axios.post('http://127.0.0.1:8000/user/event/update-privateCar/' + userEventId, {
+    axios.post('/user/event/update-privateCar/' + userEventId, {
         privateCar: isChecked ? '1' : '0'
     })
         .then(function (response) {
@@ -55,7 +55,7 @@ function updatePrivateCar(userEventId, isChecked) {
 }
 
 function updateEstimatedHours(userEventId, value) {
-    axios.post('http://127.0.0.1:8000/user/event/update-estimated-hours/' + userEventId, {
+    axios.post('/user/event/update-estimated-hours/' + userEventId, {
         estimatedHours: parseFloat(value)
     })
         .then(function (response) {
@@ -67,7 +67,7 @@ function updateEstimatedHours(userEventId, value) {
 }
 
 function updateExtraHours(userEventId, value) {
-    axios.post('http://127.0.0.1:8000/user/event/update-extra-hours/' + userEventId, {
+    axios.post('/user/event/update-extra-hours/' + userEventId, {
         extraHours: parseFloat(value)
     })
         .then(function (response) {
