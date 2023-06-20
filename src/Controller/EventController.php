@@ -10,6 +10,7 @@ use App\Repository\UserEventRepository;
 use App\Repository\UserRepository;
 
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +23,6 @@ class EventController extends AbstractController
     #[Route('/event', name: 'app_event_index', methods: ['GET'])]
     public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
     {
-        $currentMonth = new \DateTime('first day of this month');
-        $nextMonth = (clone $currentMonth)->modify('+1 month');
-
-
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $events = $eventRepository->findAll();
         } else {
@@ -34,33 +31,30 @@ class EventController extends AbstractController
             ], ['startDate' => 'ASC']);
         }
 
-        // Obtener eventos del mes actual y del mes anterior, ordenados por fecha de inicio ascendente
+        $currentMonth = new \DateTime();
+        $currentMonth->modify('first day of this month');
+
         $events = $eventRepository->createQueryBuilder('e')
-            ->where('e.startDate < :nextMonth AND e.endDate >= :currentMonth')
+            ->where('e.endDate >= :currentMonth')
             ->setParameter('currentMonth', $currentMonth)
-            ->setParameter('nextMonth', $nextMonth)
-            ->orderBy('e.startDate', 'ASC')
             ->getQuery()
             ->getResult();
 
-
-
-            // Agrupa los eventos por meses
+            // Separar eventos por meses y años
         $eventosPorMes = [];
-        foreach ($events as $evento) {
-            $mes = $evento->getEndDate ()->format('F Y');
-            $eventosPorMes[$mes][] = $evento;
+        foreach ($events as $event) {
+            $endDate = $event->getEndDate();
+            $monthYear = $endDate->format('F Y');
 
-            $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($evento->getId());
-            $evento->setWorkersAvailable($countUsers);
+            if (!isset($eventosPorMes[$monthYear])) {
+                $eventosPorMes[$monthYear] = [];
+            }
+
+            $eventosPorMes[$monthYear][] = $event;
+
+            $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($event->getId());
+            $event->setWorkersAvailable($countUsers);
         }
-
-            // Ordenar los meses y años en orden ascendente
-        uksort($eventosPorMes, function ($a, $b) {
-            $mesA = \DateTime::createFromFormat('F Y', $a);
-            $mesB = \DateTime::createFromFormat('F Y', $b);
-            return $mesA <=> $mesB;
-        });
 
         return $this->render('event/index.html.twig', [
             'eventosPorMes' => $eventosPorMes,
