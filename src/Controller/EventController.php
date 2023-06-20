@@ -42,6 +42,7 @@ class EventController extends AbstractController
 
             // Separar eventos por meses y años
         $eventosPorMes = [];
+
         foreach ($events as $event) {
             $endDate = $event->getEndDate();
             $monthYear = $endDate->format('F Y');
@@ -52,12 +53,21 @@ class EventController extends AbstractController
 
             $eventosPorMes[$monthYear][] = $event;
 
+            if ($event->getStatus() === 1) {
+                if (!isset($eventosPorMesTrabajadores[$monthYear])) {
+                    $eventosPorMesTrabajadores[$monthYear] = [];
+                }
+
+                $eventosPorMesTrabajadores[$monthYear][] = $event;
+            }
+
             $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($event->getId());
             $event->setWorkersAvailable($countUsers);
         }
 
         return $this->render('event/index.html.twig', [
             'eventosPorMes' => $eventosPorMes,
+            'eventosPorMesTrabajadores' => $eventosPorMesTrabajadores,
         ]);
     }
 

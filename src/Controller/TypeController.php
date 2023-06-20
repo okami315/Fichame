@@ -24,7 +24,7 @@ class TypeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_type_new', methods: ['GET', 'POST'])]
-    public function new( SluggerInterface $slugger, Request $request, TypeRepository $typeRepository): Response
+    public function new(SluggerInterface $slugger, Request $request, TypeRepository $typeRepository): Response
     {
         $type = new Type();
         $form = $this->createForm(TypeType::class, $type);
@@ -72,12 +72,32 @@ class TypeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_type_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Type $type, TypeRepository $typeRepository): Response
+    public function edit(SluggerInterface $slugger, Request $request, Type $type, TypeRepository $typeRepository): Response
     {
         $form = $this->createForm(TypeType::class, $type);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imagen = $form->get('icon')->getData();
+
+            if ($imagen) {
+                $originalFilename = pathinfo($imagen->getClientOriginalName(), PATHINFO_FILENAME);
+
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imagen->guessExtension();
+
+                try {
+                    $imagen->move(
+                        $this->getParameter('imagen_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                $type->setIcon($newFilename);
+            }
+
             $typeRepository->save($type, true);
 
             return $this->redirectToRoute('app_type_index', [], Response::HTTP_SEE_OTHER);

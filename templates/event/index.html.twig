@@ -19,7 +19,7 @@
 			{% endif %}
 			<div class="col-12 col-md-10">
 				{% if is_granted('ROLE_ADMIN') %}
-					{{dump(eventosPorMes)}}
+					{# {{dump(eventosPorMes)}} #}
 					{% for mes, eventos in eventosPorMes %}
 						<h2>{{ mes }}</h2>
 								<table class="table text-center">
@@ -96,7 +96,7 @@
 							</table>
 					{% endfor %}
 				{% else %}
-					{% for mes, eventos in eventosPorMes %}
+					{% for mes, eventos in eventosPorMesTrabajadores %}
 						<h2>{{ mes }}</h2>
 								<table class="table text-center">
 									<thead>
@@ -151,7 +151,7 @@
 													</div>
 												{% endif %}
 											</td>
-											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
+											<td>{{ evento.workersnumber }}</td>
 											<td>
 												<div class="row justify-content-center align-items-center">
 													<div>
