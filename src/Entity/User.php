@@ -74,12 +74,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $driver = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Registration::class)]
+    private Collection $registrations;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $fixed_hours = null;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $status = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $birthdate = null;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $agreement = null;
+
+    #[ORM\Column]
+    private ?int $age = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $social_security = null;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
         $this -> regDate = new \DateTime();
         $this->events = new ArrayCollection();
         $this->userEvents = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -337,6 +359,108 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDriver(?bool $driver): self
     {
         $this->driver = $driver;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations->add($registration);
+            $registration->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->removeElement($registration)) {
+            // set the owning side to null (unless already changed)
+            if ($registration->getUser() === $this) {
+                $registration->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFixedHours(): ?float
+    {
+        return $this->estimated_hours;
+    }
+
+    public function setFixedHours(?float $estimated_hours): self
+    {
+        $this->estimated_hours = $estimated_hours;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getBirthdate(): ?\DateTimeInterface
+    {
+        return $this->birthdate;
+    }
+
+    public function setBirthdate(\DateTimeInterface $birthdate): self
+    {
+        $this->birthdate = $birthdate;
+
+        return $this;
+    }
+
+    public function getAgreement(): ?int
+    {
+        return $this->agreement;
+    }
+
+    public function setAgreement(?int $agreement): self
+    {
+        $this->agreement = $agreement;
+
+        return $this;
+    }
+
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+
+    public function setAge(int $age): self
+    {
+        $this->age = $age;
+
+        return $this;
+    }
+
+    public function getSocialSecurity(): ?string
+    {
+        return $this->social_security;
+    }
+
+    public function setSocialSecurity(string $social_security): self
+    {
+        $this->social_security = $social_security;
 
         return $this;
     }

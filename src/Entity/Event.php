@@ -70,6 +70,9 @@ class Event
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createDate = null;
+
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Registration::class)]
+    private Collection $registrations;
     
 
     public function __construct()
@@ -80,7 +83,7 @@ class Event
         $this->userEvents = new ArrayCollection();
         $this->startDate = new \DateTime();
         $this->endDate = new \DateTime();
-        $this -> createDate = new \DateTime();
+        $this->registrations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -344,6 +347,36 @@ class Event
     public function setCreateDate(\DateTimeInterface $createDate): self
     {
         $this->createDate = $createDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Registration>
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations->add($registration);
+            $registration->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->removeElement($registration)) {
+            // set the owning side to null (unless already changed)
+            if ($registration->getEvent() === $this) {
+                $registration->setEvent(null);
+            }
+        }
 
         return $this;
     }

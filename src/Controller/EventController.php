@@ -96,7 +96,7 @@ class EventController extends AbstractController
         $form->handleRequest($request);
         $event->setCompany($this->getUser()->getCompany());
         if ($form->isSubmitted() && $form->isValid()) {
-            // $event->setCreateDate(new DateTime());
+            $event->setCreateDate(new DateTime());
             $eventRepository->save($event, true);
 
             // foreach ($userRepository->findAll() as $user) {
