@@ -164,8 +164,6 @@ class EventController extends AbstractController
         foreach ($userRepository->findAll() as $user) {
                 $userEventRepository->createUserEvent($event, $user);
             }
-
-
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
 
