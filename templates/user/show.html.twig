@@ -3,65 +3,28 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
-
-    <table class="table">
-        <tbody>
-            {% if is_granted("ROLE_ADMIN") %}
-                <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th>Username</th>
-                <td>{{ user.username }}</td>
-            </tr>
-            {% if is_granted("ROLE_ADMIN") %}
-            <tr>
-                <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th>FullName</th>
-                <td>{{ user.fullName }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ user.address }}</td>
-            </tr>
-            <tr>
-                <th>PhoneNumber</th>
-                <td>{{ user.phoneNumber }}</td>
-            </tr>
-            <tr>
-                <th>Dni</th>
-                <td>{{ user.dni }}</td>
-            </tr>
-            <tr>
-                <th>NAF</th>
-                <td>{{ user.naf }}</td>
-            </tr>
-            {% if is_granted("ROLE_ADMIN") %}
-            <tr>
-                <th>RegDate</th>
-                <td>{{ user.regDate ? user.regDate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            {% endif %}
-            
-        </tbody>
-    </table>
-
-    {% if is_granted("ROLE_ADMIN") %}
-        <a href="{{ path('app_user_index') }}">back to list</a>
-
-        <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-
-        {{ include('user/_delete_form.html.twig') }}
-    {% endif %}
+    <div class="row justify-content-center align-items-center">
+        <div class="col-11 col-md-3 mt-4 card">
+            <div class="card-body">
+                <div class="row justify-content-around align-items-center">
+                    <h3 class="card-title">{{ user.fullname }}</h3>
+                    {% if user.status == 1 %}
+                        <h3 class="card-title text-success">Activo</h3>    
+                    {% elseif user.status == 2 %}
+                        <h3 class="card-title text-danger">Inactivo</h3>
+                    {% else %}
+                        <h3 class="card-title">Borrador</h3>
+                    {% endif %}
+                </div>
+                <p clas="card-text"><b>Tipo de contrato:</b> {{ user.agreement }}</p>
+                <p clas="card-text"><b>Numero de la seguridad social:</b> {{ user.socialSecurity }}</p>
+                <p clas="card-text"><b>Direccion:</b> {{ user.address }}</p>
+                <p clas="card-text"><b>Telefono:</b> {{ user.phoneNumber }}</p>
+                <p clas="card-text"><b>Horas fijas:</b> {{ user.fixedHours }}</p>
+                <p clas="card-text"><b>Carnet de conducir:</b> {{ user.driver == 1 ? 'Si' : 'No' }}</p>
+                <p clas="card-text"><b>Fecha de nacimiento:</b> {{ user.birthdate|date('d-m-Y') }}</p>
+                <p clas="card-text"><b>Edad:</b> {{ user.age }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

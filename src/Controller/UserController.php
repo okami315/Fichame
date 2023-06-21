@@ -52,6 +52,35 @@ class UserController extends AbstractController
     }
 
     #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin/trabajadores/', name: 'app_user_trabajadores', methods: ['GET'])]
+    public function trabajadores(UserRepository $userRepository): Response
+    {
+        if($this->isGranted('ROLE_SUPER_ADMIN')){
+            $users = $userRepository->findAll();
+        } else {
+            $users = $userRepository->findBy(
+                ['company' => $this->getUser()->getCompany()->getId()]
+            );
+        }
+
+        $usersActive = [];
+        $usersInactive = [];
+        
+        foreach ($users as $user) {
+            if ($user->getStatus() == 1) {
+                $usersActive[] = $user;
+            } elseif ($user->getStatus() == 2) {
+                $usersInactive[] = $user;
+            }
+        }
+
+        return $this->render('user/trabajadores.html.twig', [
+            'usersActive' => $usersActive,
+            'usersInactive' => $usersInactive,
+        ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/user/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, UserRepository $userRepository): Response
     {

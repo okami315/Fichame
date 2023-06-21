@@ -22,8 +22,14 @@ class EventType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
             ])
-            ->add('start_date', DateType::class)
-            ->add('end_date', DateType::class)
+            ->add('startDate', DateType::class, [
+                'widget' => 'single_text',
+                'years' => range(date('Y') - 100, date('Y')), // Rango de años desde 1900 hasta el año actual
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+                'years' => range(date('Y') - 100, date('Y')), // Rango de años desde 1900 hasta el año actual
+            ])
             ->add('workers_number')
             ->add('drivers_number')
             ->add('distance')

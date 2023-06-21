@@ -44,7 +44,7 @@ class EventController extends AbstractController
         $eventosPorMes = [];
 
         foreach ($events as $event) {
-            $endDate = $event->getEndDate();
+            $endDate = $event->getStartDate();
             $monthYear = $endDate->format('F Y');
 
             if (!isset($eventosPorMes[$monthYear])) {

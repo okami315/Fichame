@@ -30,6 +30,11 @@ class UserType extends AbstractType
             ->add('phoneNumber')
             ->add('dni')
             ->add('naf')
+            ->add('driver')
+            ->add('status')
+            ->add('agreement')
+            ->add('socialSecurity')
+            ->add('agreement')
         ;
     }
 

@@ -14,10 +14,12 @@
         }) }}
         
         {{ form_row(registrationForm.fullName ,{ 'attr': {'class': 'form-control'} }) }}
+        {{ form_row(registrationForm.birthdate ,{ 'attr': {'class': 'form-control'} }) }}
         {{ form_row(registrationForm.email ,{ 'attr': {'class': 'form-control'} }) }}
         {{ form_row(registrationForm.address ,{ 'attr': {'class': 'form-control'} }) }}
         {{ form_row(registrationForm.phoneNumber, { 'attr': {'class': 'form-control'} }) }}
         {{ form_row(registrationForm.dni, { 'attr': {'class': 'form-control'} } ) }}
+        {{ form_row(registrationForm.social_security, { 'attr': {'class': 'form-control'} } ) }}
         {{ form_row(registrationForm.monthlytime ,{ 'attr': {'class': 'form-control'} }) }}
         {{ form_row(registrationForm.agreeTerms , { 'attr': {'class': 'form-control'} }) }}
         <button type="submit" class="btn btn-primary mt-2 ">Register</button>
