@@ -37,6 +37,7 @@ class EventController extends AbstractController
         $events = $eventRepository->createQueryBuilder('e')
             ->where('e.endDate >= :currentMonth')
             ->setParameter('currentMonth', $currentMonth)
+            // ->orderBy('e.startDate', 'ASC')
             ->getQuery()
             ->getResult();
 
@@ -44,8 +45,19 @@ class EventController extends AbstractController
         $eventosPorMes = [];
 
         foreach ($events as $event) {
-            $endDate = $event->getStartDate();
+            $startDate = $event->getStartDate();
+            $endDate = $event->getEndDate();
+
             $monthYear = $endDate->format('F Y');
+
+            $firstDayOfMonth = clone $endDate;
+            $firstDayOfMonth->modify('first day of this month');
+
+            if ($startDate < $firstDayOfMonth) {
+                $monthYear = $endDate->format('F Y');
+            } else {
+                $monthYear = $startDate->format('F Y');
+            }
 
             if (!isset($eventosPorMes[$monthYear])) {
                 $eventosPorMes[$monthYear] = [];

@@ -18,7 +18,7 @@
 			{% endif %}
 			<div class="col-12 col-md-10">
 				{% if is_granted('ROLE_ADMIN') %}
-					{# {{dump(eventosPorMes)}} #}
+					{{dump(eventosPorMes)}}
 					{% for mes, eventos in eventosPorMes %}
 						<h2>{{ mes }}</h2>
 								<table class="table text-center">
