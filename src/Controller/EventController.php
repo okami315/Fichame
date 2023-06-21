@@ -43,7 +43,7 @@ class EventController extends AbstractController
 
             // Separar eventos por meses y años
         $eventosPorMes = [];
-
+        $eventosPorMesTrabajadores = [];
         foreach ($events as $event) {
             $startDate = $event->getStartDate();
             $endDate = $event->getEndDate();
@@ -166,12 +166,15 @@ class EventController extends AbstractController
     {
         $event->setStatus(1);
         // $event->setPendingWorkers($userRepository->countUsersWithNullDisponibility());
-        $eventRepository->save($event, true);
+      
 
         // Se asignan todos los user_events para después sacar el número de ellos que quedan por marcar disponibilidad
-        foreach ($userRepository->findAll() as $user) {
+        foreach ($userRepository->findWithoutRole() as $user) {
                 $userEventRepository->createUserEvent($event, $user);
         }
+        $event->setPendingWorkers($userEventRepository->countUsersWithoutDisponibilityByEventId($event->getId()));
+        $eventRepository->save($event, true);
+        
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
 

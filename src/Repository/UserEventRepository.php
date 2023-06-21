@@ -87,6 +87,21 @@ class UserEventRepository extends ServiceEntityRepository
         return $query->getSingleScalarResult();
     }
 
+    public function countUsersWithoutDisponibilityByEventId($eventId): int
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery('
+        SELECT COUNT(ue.id)
+        FROM App\Entity\UserEvent ue
+        WHERE ue.event = :eventId
+        AND ue.disponibility IS NULL
+    ')
+            ->setParameter('eventId', $eventId);
+
+        return $query->getSingleScalarResult();
+    }
+
 
 
     //    /**
