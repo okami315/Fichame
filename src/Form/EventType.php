@@ -35,7 +35,6 @@ class EventType extends AbstractType
             ->add('distance')
             ->add('schedule')
             ->add('estimated_hours')
-            ->add('linkInformation')
             ->add('linkForm')
         ;
     }

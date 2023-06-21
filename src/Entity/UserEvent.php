@@ -36,9 +36,6 @@ class UserEvent
     private ?int $asistance = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $selected = null;
-
-    #[ORM\Column(nullable: true)]
     private ?float $estimatedHours = null;
 
     #[ORM\Column(nullable: true)]
@@ -138,19 +135,6 @@ class UserEvent
         $this->asistance = $asistance;
 
     }
-
-    public function isSelected(): ?bool
-    {
-        return $this->selected;
-    }
-
-    public function setSelected(?bool $selected): self
-    {
-        $this->selected = $selected;
-
-        return $this;
-    }
-
     public function getEstimatedHours(): ?float
     {
         return $this->estimatedHours;

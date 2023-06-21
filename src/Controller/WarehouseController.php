@@ -43,7 +43,6 @@ class WarehouseController extends AbstractController
         $event->setEndDate($fechafin);
         $event->setHidden(0);
         $event->setSchedule(' ');
-        $event->setLinkInformation(' ');
         $event->setWorkersNumber(1);
         $event->setCompany($this->getUser()->getCompany());
         

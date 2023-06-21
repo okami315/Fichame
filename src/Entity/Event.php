@@ -23,10 +23,6 @@ class Event
 
     #[ORM\Column(length: 255)]
     private ?string $schedule = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $linkInformation = null;
-
     
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $linkForm = null;
@@ -123,19 +119,6 @@ class Event
 
         return $this;
     }
-
-    public function getLinkInformation(): ?string
-    {
-        return $this->linkInformation;
-    }
-
-    public function setLinkInformation(string $linkInformation): self
-    {
-        $this->linkInformation = $linkInformation;
-
-        return $this;
-    }
-
 
     public function getLinkForm(): ?string
     {

@@ -64,7 +64,6 @@ class EventRepository extends ServiceEntityRepository
         $event->setStartDate(new \DateTime());
         $event->setEndDate(new \DateTime());
         $event->setSchedule("");
-        $event->setLinkInformation("");
         $event->setWorkersNumber(1);
         $event->setCompany($user->getCompany());
         $this->save($event, true);

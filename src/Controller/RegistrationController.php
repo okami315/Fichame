@@ -26,6 +26,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setRegDate( new DateTime('now'));
+            $user->setRoles(['ROLE_USER']);
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -39,6 +40,13 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
+
+            
+        
+            // Asignar user_event para todos los eventos disponibles recorrerlos con un foreach
+            // $userEventRepository->createUserEvent($event, $user);
+        
+            // Adicionalmente para ese evento aumentar en uno al actual el valor de los pending
 
             return $this->redirectToRoute('app_login');
         }

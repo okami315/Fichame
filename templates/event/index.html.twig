@@ -18,7 +18,7 @@
 			{% endif %}
 			<div class="col-12 col-md-10">
 				{% if is_granted('ROLE_ADMIN') %}
-					{{dump(eventosPorMes)}}
+					{# {{dump(eventosPorMes)}} #}
 					{% for mes, eventos in eventosPorMes %}
 						<h2>{{ mes }}</h2>
 								<table class="table text-center">
@@ -127,9 +127,8 @@
 											<p id="p-{{ evento.id }}">
 												{% if userEvent.disponibility is null %}
 													🟡
-												{% elseif userEvent.disponibility == 0 %}
-													⚫
-												{% elseif userEvent.selected is null %}
+												
+												{% elseif userEvent.asistance is null and userEvent.disponibility %}
 													🔘
 													{% if userEvent.coordination == 1 %}
 														<p>🗣</p>
@@ -137,6 +136,8 @@
 													{% if userEvent.driving == 1 %}
 														<p>🚕</p>
 													{% endif %}
+												{% elseif userEvent.asistance == 0 or userEvent.disponibility == 0 %}
+													⚫
 												{% else %}
 													🟢
 													{% if userEvent.coordination == 1 %}
@@ -181,7 +182,7 @@
 															{% if userEvent.user.id == app.user.id %}
 															{% if userEvent.asistance is null %}
 															Marcar disponibilidad
-															<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.selected }}')">
+															<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
 															<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
 															<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
 															<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
@@ -212,7 +213,7 @@
 	</div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-function sendDisponibility(eventId,eventselected) {
+function sendDisponibility(eventId,asistance) {
   var selectElement = document.getElementById("disponibility-select-" + eventId);
   var disponibilityValue = selectElement.value;
 
@@ -228,7 +229,7 @@ function sendDisponibility(eventId,eventselected) {
     var newIcon = '';
 
     if (disponibilityValue === '1') {
-		if(eventselected == 0){
+		if(asistance == 0){
 			 newIcon = '🔘';
 		}else{
 			newIcon = '🟢';
