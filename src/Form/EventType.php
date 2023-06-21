@@ -28,6 +28,7 @@ class EventType extends AbstractType
             ->add('drivers_number')
             ->add('distance')
             ->add('schedule')
+            ->add('estimated_hours')
             ->add('linkInformation')
             ->add('linkForm')
         ;

@@ -73,6 +73,12 @@ class Event
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Registration::class)]
     private Collection $registrations;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $estimated_hours = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $pending_workers = null;
     
 
     public function __construct()
@@ -377,6 +383,30 @@ class Event
                 $registration->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEstimatedHours(): ?float
+    {
+        return $this->estimated_hours;
+    }
+
+    public function setEstimatedHours(?float $estimated_hours): self
+    {
+        $this->estimated_hours = $estimated_hours;
+
+        return $this;
+    }
+
+    public function getPendingWorkers(): ?int
+    {
+        return $this->pending_workers;
+    }
+
+    public function setPendingWorkers(?int $pending_workers): self
+    {
+        $this->pending_workers = $pending_workers;
 
         return $this;
     }

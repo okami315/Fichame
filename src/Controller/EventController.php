@@ -153,12 +153,13 @@ class EventController extends AbstractController
     public function open(Request $request, Event $event, EventRepository $eventRepository , UserRepository $userRepository ,UserEventRepository $userEventRepository): Response
     {
         $event->setStatus(1);
+        // $event->setPendingWorkers($userRepository->countUsersWithNullDisponibility());
         $eventRepository->save($event, true);
 
         // Se asignan todos los user_events para después sacar el número de ellos que quedan por marcar disponibilidad
         foreach ($userRepository->findAll() as $user) {
                 $userEventRepository->createUserEvent($event, $user);
-            }
+        }
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
 

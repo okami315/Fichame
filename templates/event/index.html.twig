@@ -30,6 +30,8 @@
 											<th>Fecha</th>
 											<th>Tipo</th>
 											<th>Nº trabajadores</th>
+											<th>Horario estimado</th>
+											<th>Horas estimadas</th>
 											<th>Acciones</th>
 										</tr>
 									</thead>
@@ -57,6 +59,8 @@
 												{% endif %}
 											</td>
 											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
+											<td>{{ evento.schedule }}</td>
+											<td>{{ evento.estimatedhours }}</td>
 											<td>
 												<div class="row justify-content-center align-items-center">
 													<div>
@@ -106,6 +110,11 @@
 											<th>Fecha</th>
 											<th>Tipo</th>
 											<th>Nº trabajadores</th>
+											<th>Horario estimado</th>
+											<th>Horas estimadas</th>
+											<th>Horas reales</th>
+											<th>Sueldo estimado</th>
+											<th>Sueldo real</th>
 											<th>Acciones</th>
 										</tr>
 									</thead>
@@ -154,6 +163,18 @@
 												{% endif %}
 											</td>
 											<td>{{ evento.workersnumber }}</td>
+											<td>{{ evento.schedule }}</td>
+											
+											{% for userEvent in evento.userEvents %}
+											{% if userEvent.user.id == app.user.id %}
+
+												<td>{{ userEvent.estimatedhours }}</td>
+												<td>{{ userEvent.realhours }}</td>
+												<td>{{ userEvent.estimatedsalary }}</td>
+												<td>{{ userEvent.realsalary }}</td>
+												
+											{% endif %}
+											{% endfor %}
 											<td>
 												<div class="row justify-content-center align-items-center">
 													<div>
@@ -168,6 +189,14 @@
 															</select>
 															{% endif %} 
 															{% endif %} 
+
+															
+															{% if userEvent.asistance == 1 %}
+															<a href='{{ evento.linkform }}'>{{evento.linkform }}</a>
+
+															{% endif %}
+															
+
 														{% endfor %}
 													</div>
 												</div>
@@ -210,9 +239,7 @@ function sendDisponibility(eventId,eventselected) {
     } else {
       newIcon = '🟡';
     }
-
     iconElement.textContent = newIcon;
-
   })
   .catch(function (error) {
     console.log(error);

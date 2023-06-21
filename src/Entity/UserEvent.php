@@ -47,6 +47,12 @@ class UserEvent
     #[ORM\Column(nullable: true)]
     private ?float $extraHours = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $realsalary = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $estimatedsalary = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -177,6 +183,30 @@ class UserEvent
     public function setExtraHours(?float $extraHours): self
     {
         $this->extraHours = $extraHours;
+
+        return $this;
+    }
+
+    public function getRealsalary(): ?float
+    {
+        return $this->realsalary;
+    }
+
+    public function setRealsalary(?float $realsalary): self
+    {
+        $this->realsalary = $realsalary;
+
+        return $this;
+    }
+
+    public function getEstimatedsalary(): ?float
+    {
+        return $this->estimatedsalary;
+    }
+
+    public function setEstimatedsalary(?float $estimatedsalary): self
+    {
+        $this->estimatedsalary = $estimatedsalary;
 
         return $this;
     }

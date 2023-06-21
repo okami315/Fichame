@@ -40,12 +40,6 @@ class UserEventController extends AbstractController
             $userEvent->setUser($usuario);
             $userEvent->setEvent($evento);
         }
-
-        // $form = $this->createForm(AsistanceType::class, $userEvent);
-        // $form->handleRequest($request);
-
-        // if ($form->isSubmitted() && $form->isValid()) {
-
         if ($data['disponibility'] == "null") {
             $userEvent->setDisponibility(null);
             $userEventRepository->save($userEvent, true);
@@ -55,12 +49,7 @@ class UserEventController extends AbstractController
         }
 
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-        // }
 
-        // return $this->render('user_event/newAsistance.html.twig', [
-        //     'user_event' => $userEvent,
-        //     'form' => $form,
-        // ]);
     }
 
     #[Route('/', name: 'app_user_event_index', methods: ['GET'])]
@@ -153,6 +142,15 @@ class UserEventController extends AbstractController
         $coordinador = $data['coordinador'] == '1' ? true : false; 
 
         $userEvent->setCoordination($coordinador);
+        if($coordinador){
+            $userEvent->setRealHours(($userEvent->getRealHours())+2);
+            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())+2);
+        }else{
+            $userEvent->setRealHours(($userEvent->getRealHours())-2);
+            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())-2);
+        }
+        $userEvent->setRealsalary($userEvent->getRealHours()*10);
+        $userEvent->setEstimatedsalary($userEvent->getEstimatedHours()*10);
         $userEventRepository->save($userEvent, true);
 
         return new Response('Coordinador actualizado correctamente', Response::HTTP_OK);
@@ -165,7 +163,15 @@ class UserEventController extends AbstractController
         $userEvent = $userEventRepository->find($id);
 
         $driving = $data['driving'] == '1' ? true : false; 
-
+        if($driving){
+            $userEvent->setRealHours(($userEvent->getRealHours())+4);
+            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())+4);
+        }else{
+            $userEvent->setRealHours(($userEvent->getRealHours())-4);
+            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())-4);
+        }
+        $userEvent->setRealsalary($userEvent->getRealHours()*10);
+        $userEvent->setEstimatedsalary($userEvent->getEstimatedHours()*10);
         $userEvent->setDriving($driving);
         $userEventRepository->save($userEvent, true);
 
@@ -193,6 +199,12 @@ class UserEventController extends AbstractController
         $userEvent = $userEventRepository->find($id);
 
         $userEvent->setEstimatedHours($data['estimatedHours']);
+        $userEvent->setRealHours($userEvent->getEstimatedHours()+$userEvent->getExtraHours());
+
+        $userEvent->setEstimatedsalary($userEvent->getEstimatedHours()*10);
+        $userEvent->setRealsalary($userEvent->getRealHours()*10);
+        // $userEvent->setRealsalary($userEvent->getEstimatedsalary()+($userEvent->getExtraHours())*10);
+        
         $userEventRepository->save($userEvent, true);
 
         return new Response('Horario estimado actualizado correctamente', Response::HTTP_OK);
@@ -205,6 +217,13 @@ class UserEventController extends AbstractController
         $userEvent = $userEventRepository->find($id);
 
         $userEvent->setExtraHours($data['extraHours']);
+
+    
+        $userEvent->setRealHours($userEvent->getEstimatedHours()+$userEvent->getExtraHours());
+
+        $userEvent->setRealsalary($userEvent->getEstimatedsalary()+($userEvent->getExtraHours())*10);
+        
+
         $userEventRepository->save($userEvent, true);
 
         return new Response('Horas extra actualizadas correctamente', Response::HTTP_OK);

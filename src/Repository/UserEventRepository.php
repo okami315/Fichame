@@ -56,9 +56,12 @@ class UserEventRepository extends ServiceEntityRepository
         $userEvent = new UserEvent();
         $userEvent->setUser($user);
         $userEvent->setEvent($event);
+        $userEvent->setRealHours($event->getEstimatedHours());
+        $userEvent->setEstimatedHours($event->getEstimatedHours());
+        $userEvent->setRealsalary($event->getEstimatedHours()*10);
+        $userEvent->setEstimatedsalary($event->getEstimatedHours()*10);
         $this->save($userEvent, true);
     }
-
     public function getUserForIdEvent($id)
     {
         $query = $this->createQueryBuilder('e')
