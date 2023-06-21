@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -81,7 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?float $fixed_hours = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $status = null;
+    private ?int $status = 1;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $birthdate = null;
@@ -102,6 +103,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->events = new ArrayCollection();
         $this->userEvents = new ArrayCollection();
         $this->registrations = new ArrayCollection();
+        $this->birthdate = new \DateTime();
+        $this->calculateAge();
+    }
+
+    public function getBirthdate(): ?\DateTimeInterface
+    {
+        return $this->birthdate;
+    }
+
+    public function setBirthdate(\DateTimeInterface $birthdate): self
+    {
+        $this->birthdate = $birthdate;
+        $this->calculateAge();
+
+        return $this;
+    }
+
+    private function calculateAge(): void
+    {
+        $now = new \DateTime();
+        $this->age = $now->diff($this->birthdate)->y;
     }
 
     public function getId(): ?int
@@ -395,12 +417,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getFixedHours(): ?float
     {
-        return $this->estimated_hours;
+        return $this->fixed_hours;
     }
 
-    public function setFixedHours(?float $estimated_hours): self
+    public function setFixedHours(?float $fixed_hours): self
     {
-        $this->estimated_hours = $estimated_hours;
+        $this->fixed_hours = $fixed_hours;
 
         return $this;
     }
@@ -413,18 +435,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(?int $status): self
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    public function getBirthdate(): ?\DateTimeInterface
-    {
-        return $this->birthdate;
-    }
-
-    public function setBirthdate(\DateTimeInterface $birthdate): self
-    {
-        $this->birthdate = $birthdate;
 
         return $this;
     }

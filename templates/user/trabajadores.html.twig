@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Lista de trabajadores</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nombre y apellidos</th>
+                <th scope="col">Tipo de contrato</th>
+                <th scope="col">DNI</th>
+                <th scope="col">Fecha de naciminento</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <h2>Usuarios activos</h2>
+        {% for user in usersActive %}
+            {% for role in user.roles %}
+            {% if role == 'ROLE_USER' or (role == 'ROLE_USER' and role == 'ROLE_ALMACEN') %}
+            <tbody>
+                <tr>
+                    <td><a href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.fullname }}</a></td>
+                    <td>{{ user.agreement }}</td>
+                    <td>{{ user.dni }}</td>
+                    <td>{{ user.birthdate ? user.birthdate|date('d/m/Y') : '' }}</td>
+                    <td><a href="{{ path('app_user_edit', {'id': user.id}) }}">Editar</a></td>
+                </tr>
+            </tbody>
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nombre y apellidos</th>
+                <th scope="col">Tipo de contrato</th>
+                <th scope="col">DNI</th>
+                <th scope="col">Fecha de naciminento</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <h2>Usuarios inactivos</h2>
+        {% for user in usersInactive %}
+            {% for role in user.roles %}
+            {% if role == 'ROLE_USER' or (role == 'ROLE_USER' and role == 'ROLE_ALMACEN') %}
+            <tbody>
+                <tr>
+                    <td><a href="{{ path('app_user_show', {'id': user.id}) }}">{{ user.fullname }}</a></td>
+                    <td>{{ user.agreement }}</td>
+                    <td>{{ user.dni }}</td>
+                    <td>{{ user.birthdate ? user.birthdate|date('d/m/Y') : '' }}</td>
+                    <td><a href="{{ path('app_user_edit', {'id': user.id}) }}">Editar</a></td>
+                </tr>
+            </tbody>
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </table>
+{% endblock %}

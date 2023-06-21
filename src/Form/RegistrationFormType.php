@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RegistrationFormType extends AbstractType
@@ -22,7 +23,12 @@ class RegistrationFormType extends AbstractType
             ->add('email')
             ->add('address')
             ->add('phoneNumber')
+            ->add('birthdate', DateType::class, [
+                'widget' => 'single_text',
+                'years' => range(date('Y') - 100, date('Y')), // Rango de años desde 1900 hasta el año actual
+            ])
             ->add('dni')
+            ->add('social_security')
             ->add('monthlytime')
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
