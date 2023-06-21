@@ -39,11 +39,21 @@ class UserEventController extends AbstractController
             $userEvent = new UserEvent();
             $userEvent->setUser($usuario);
             $userEvent->setEvent($evento);
-        }
+        }   
+        
         if ($data['disponibility'] == "null") {
+ 
+            $evento->setPendingWorkers($evento->getPendingWorkers()+1);
+            $eventRepository->save($evento, true);
+           
             $userEvent->setDisponibility(null);
             $userEventRepository->save($userEvent, true);
         } else {
+            $anterior = $userEvent->getDisponibility();
+            if($anterior === null){
+                $evento->setPendingWorkers($evento->getPendingWorkers()-1);
+                $eventRepository->save($evento, true);
+            }
             $userEvent->setDisponibility($data['disponibility']);
             $userEventRepository->save($userEvent, true);
         }
