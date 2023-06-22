@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Event;
 use App\Entity\Type;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -33,7 +34,9 @@ class EventType extends AbstractType
             ->add('workers_number')
             ->add('drivers_number')
             ->add('distance')
-            ->add('schedule')
+            ->add('schedule', TextareaType::class, [ // Utilizar TextareaType en lugar de TextType
+                'attr' => ['rows' => 8], // Ajustar el número de filas según tus necesidades
+            ])
             ->add('estimated_hours')
             ->add('linkForm')
         ;

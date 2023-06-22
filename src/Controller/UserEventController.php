@@ -139,7 +139,6 @@ class UserEventController extends AbstractController
             $userEvent->setAsistance($data['asistance']);
             $userEventRepository->save($userEvent, true);
         }
-
         return $this->json(['message' => 'Asistencia actualizada correctamente']);
     }
 

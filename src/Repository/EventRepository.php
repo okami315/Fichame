@@ -73,6 +73,22 @@ class EventRepository extends ServiceEntityRepository
         return $task->getId();
     }
 
+  /**
+ * @return Event[] Returns an array of Event objects
+ */
+public function findActiveEvents(): array
+{
+   $currentDate = new \DateTime();
+
+   return $this->createQueryBuilder('e')
+       ->andWhere('e.startDate < :currentDate')
+       ->andWhere('e.endDate > :currentDate')
+       ->andWhere('e.status = 1')
+       ->setParameter('currentDate', $currentDate)
+       ->getQuery()
+       ->getResult();
+}
+
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */

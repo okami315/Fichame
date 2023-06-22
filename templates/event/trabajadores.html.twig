@@ -1,10 +1,6 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Event{% endblock %}
-
 {% block body %}
-    <h1 class="text-center">Evento: {{ event.name }}</h1>
-
+    <h1 class="text-center">{{ event.name }}</h1>
+    <div class="table-responsive">
     <table class="table text-center">
         <thead>
             <tr>
@@ -13,7 +9,7 @@
                 <th scope="col">Coordinador</th>
                 <th scope="col">Conductor</th>
                 <th scope="col">Coche particular</th>
-                <th scope="col">Horario estimado</th>
+                <th scope="col">Horas específicas</th>
                 <th scope="col">Horas fichadas</th>
                 <th scope="col">Modificador de horas</th>
             </tr>
@@ -60,7 +56,7 @@
             {% endif %}
         {% endfor %}
     </table>
-
+</div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>    
         function sendAsistance(userEventId, event) {
@@ -73,6 +69,7 @@
             })
                 .then(function (response) {
                     console.log("Actualización exitosa");
+                    location.reload();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -86,6 +83,7 @@
             })
                 .then(function (response) {
                     console.log("Coordinador actualizado correctamente");
+                     location.reload();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -99,6 +97,7 @@
             })
                 .then(function (response) {
                     console.log("Conductor actualizado correctamente");
+                     location.reload();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -112,6 +111,7 @@
             })
                 .then(function (response) {
                     console.log("Coche particular actualizado correctamente");
+                     location.reload();
                 })
                 .catch(function (error) {
                     console.log(error);

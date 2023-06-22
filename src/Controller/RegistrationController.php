@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Entity\Company;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\EventRepository;
+use App\Repository\UserEventRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class RegistrationController extends AbstractController
 {
     #[Route('/register/{nif}', name: 'app_register', methods: ['POST','GET'])]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, Company $company): Response
+    public function register(Request $request, UserEventRepository $userEventRepository,EventRepository $eventRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, Company $company): Response
     {
         $user = new User();
         $user->setCompany($company);
@@ -43,10 +45,18 @@ class RegistrationController extends AbstractController
 
             
         
+            $events  = $eventRepository->findActiveEvents();
+            
+            foreach ($events as $event) {
+                $userEventRepository->createUserEvent($event, $user);
+                $event->setPendingWorkers($event->getPendingWorkers()+1);
+            }   
             // Asignar user_event para todos los eventos disponibles recorrerlos con un foreach
             // $userEventRepository->createUserEvent($event, $user);
         
             // Adicionalmente para ese evento aumentar en uno al actual el valor de los pending
+
+
 
             return $this->redirectToRoute('app_login');
         }

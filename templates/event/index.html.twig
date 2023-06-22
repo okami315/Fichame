@@ -9,10 +9,9 @@
 		<div class="row justify-content-center mb-3">
 			{% if is_granted('ROLE_ADMIN') %}
 				<div class="col-12 col-md-2 pt-4">
-					<div class="text-center">
-						<a href="{{ path('app_event_new') }}" class="btn btn-primary mb-2">Crear nuevo evento</a>
-						<a href="{{ path('app_type_new') }}" class="btn btn-primary mb-2">Crear tipo de evento</a>
-						<a href="{{ path('app_type_index') }}" class="btn btn-primary mb-2">Gestionar tipos</a>
+					<div class="text-center d-flex flex-wrap">
+						<a href="{{ path('app_event_new') }}" class="btn btn-primary m-1 flex-grow-1">Crear nuevo evento</a>
+						<a href="{{ path('app_type_index') }}" class="btn btn-primary m-1 flex-grow-1">Gestionar tipos</a>
 					</div>
 				</div>
 			{% endif %}
@@ -28,7 +27,10 @@
 											<th>Nombre</th>
 											<th>Fecha</th>
 											<th>Tipo</th>
-											<th>Nº trabajadores</th>
+											<th>Disponibles</th>
+											<th>Pendientes</th>
+											<th>Asignados</th>
+											<th>Conductores</th>
 											<th>Horario estimado</th>
 											<th>Horas estimadas</th>
 											<th>Acciones</th>
@@ -58,35 +60,38 @@
 												{% endif %}
 											</td>
 											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
+											<td>{{ evento.pendingWorkers }}/{{ evento.workersnumber}}</td>
+											<td> Asignados /{{ evento.workersnumber}}</td>
+											<td> Drivers Available/{{ evento.driversnumber}}</td>
 											<td>{{ evento.schedule }}</td>
-											<td>{{ evento.estimatedhours }}</td>
+											<td>{{ evento.estimatedhours}}</td>
 											<td>
 												<div class="row justify-content-center align-items-center">
 													<div>
 														<div>
-															<a class="mb-2 btn btn-primary" href="{{ path('app_event_edit', {'id': evento.id}) }}">Editar</a>
+															<a class="mb-2 btn btn-primary" href="{{ path('app_event_edit', {'id': evento.id}) }}">👁 | 👥</a>
 														</div>
 														{% if evento.status == 0 and evento.userEvents|length  == 0 %}
 															<div>
 																<form class="m-0 mb-2" method="post" action="{{ path('app_event_delete', {'id': evento.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
 																	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
-																	<button class="btn btn-primary">Borrar</button>
+																	<button class="btn btn-primary">🗑</button>
 																</form>
 																<form class="m-0 mb-2" method="post" action="{{ path('app_event_open_id', {'id': evento.id}) }}">
-																	<button class="btn btn-primary">Publicar evento</button>
+																	<button class="btn btn-primary">🔓</button>
 																</form>
 															</div>
 														{% endif %}
 														{% if evento.status == 1 %}
 															<div>
 																<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
-																	<button class="btn btn-primary">Cerrar evento</button>
+																	<button class="btn btn-primary">✖</button>
 																</form>
 															</div>
 														{% endif %}
-														<div>
+														{# <div>
 															<a class="mb-2 btn btn-primary" href="{{ path('app_event_show_workers', {'id': evento.id}) }}">Trabajadores</a>
-														</div>
+														</div> #}
 													</div>
 												</div>
 											</td>
@@ -105,16 +110,16 @@
 									<thead>
 										<tr>
 											<th>Estado</th>
+											<th>Tipo</th>
 											<th>Nombre</th>
 											<th>Fecha</th>
-											<th>Tipo</th>
 											<th>Nº trabajadores</th>
-											<th>Horario estimado</th>
 											<th>Horas estimadas</th>
 											<th>Horas reales</th>
+											{# Modal al pulsar Horas estimadas <th>Horario estimado</th>										 #}
 											<th>Sueldo estimado</th>
 											<th>Sueldo real</th>
-											<th>Acciones</th>
+											<th>Disponibilidad</th>
 										</tr>
 									</thead>
 								{% for evento in eventos %}
@@ -131,29 +136,27 @@
 												{% elseif userEvent.asistance is null and userEvent.disponibility %}
 													🔘
 													{% if userEvent.coordination == 1 %}
-														<p>🗣</p>
+														🗣
 													{% endif %}
 													{% if userEvent.driving == 1 %}
-														<p>🚕</p>
+														🚕
 													{% endif %}
 												{% elseif userEvent.asistance == 0 or userEvent.disponibility == 0 %}
 													⚫
 												{% else %}
 													🟢
 													{% if userEvent.coordination == 1 %}
-														<p>🗣</p>
+														🗣
 													{% endif %}
 													{% if userEvent.driving == 1 %}
-														<p>🚕</p>
+														🚕
 													{% endif %}
 												{% endif %}
 											</p>
 											{% endif %}
 											{% endfor %}
 											</td>
-											<td>{{ evento.name }}</td>
-											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
-											<td>
+												<td>
 												{% if evento.type is not empty %}
 												  	<div class="d-flex justify-content-center align-items-center">
 													{% for type in evento.type %}
@@ -162,8 +165,11 @@
 													</div>
 												{% endif %}
 											</td>
+											<td>{{ evento.name }}</td>
+											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
 											<td>{{ evento.workersnumber }}</td>
-											<td>{{ evento.schedule }}</td>
+
+											{# <td>{{ evento.schedule }}</td> Modal #}
 											
 											{% for userEvent in evento.userEvents %}
 											{% if userEvent.user.id == app.user.id %}
@@ -181,21 +187,19 @@
 														{% for userEvent in evento.userEvents %}
 															{% if userEvent.user.id == app.user.id %}
 															{% if userEvent.asistance is null %}
-															Marcar disponibilidad
 															<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
 															<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
 															<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
 															<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
 															</select>
 															{% endif %} 
-															{% endif %} 
 
-															
 															{% if userEvent.asistance == 1 %}
 															<a href='{{ evento.linkform }}'>{{evento.linkform }}</a>
 
 															{% endif %}
 															
+															{% endif %} 							
 
 														{% endfor %}
 													</div>
