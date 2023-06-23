@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Signing;
 use App\Form\SigningType;
+use App\Repository\EventRepository;
 use App\Repository\SigningRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,10 +22,14 @@ class SigningController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_signing_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, SigningRepository $signingRepository): Response
+    #[Route('/new/{id}', name: 'app_signing_new', methods: ['GET', 'POST'])]
+    public function new($id, Request $request, EventRepository $eventRepository, SigningRepository $signingRepository): Response
     {
+        $evento = $eventRepository->find($id);
+
         $signing = new Signing();
+        $signing->setEvent($evento);
+        
         $form = $this->createForm(SigningType::class, $signing);
         $form->handleRequest($request);
 
