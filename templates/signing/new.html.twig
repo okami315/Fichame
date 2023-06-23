@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Signing{% endblock %}
+
+{% block body %}
+    <h1>Create new Signing</h1>
+
+    {{ include('signing/_form.html.twig') }}
+
+    <a href="{{ path('app_signing_index') }}">back to list</a>
+{% endblock %}

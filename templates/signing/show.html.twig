@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signing{% endblock %}
+
+{% block body %}
+    <h1>Signing</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ signing.id }}</td>
+            </tr>
+            <tr>
+                <th>Checkin</th>
+                <td>{{ signing.checkin ? signing.checkin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Checkout</th>
+                <td>{{ signing.checkout ? signing.checkout|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Createcheckin</th>
+                <td>{{ signing.createcheckin ? signing.createcheckin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Createcheckout</th>
+                <td>{{ signing.createcheckout ? signing.createcheckout|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_signing_index') }}">back to list</a>
+
+    <a href="{{ path('app_signing_edit', {'id': signing.id}) }}">edit</a>
+
+    {{ include('signing/_delete_form.html.twig') }}
+{% endblock %}
