@@ -75,6 +75,7 @@ class EventController extends AbstractController
 
             $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($event->getId());
             $event->setWorkersAvailable($countUsers);
+            $eventRepository->save($event, true);
         }
 
         return $this->render('event/index.html.twig', [
@@ -141,7 +142,10 @@ class EventController extends AbstractController
             $event->setEditDate(new DateTime());
             $eventRepository->save($event, true);
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->render('event/edit.html.twig', [
+                'event' => $event,
+                'form' => $form,
+            ]);
         }
 
         return $this->render('event/edit.html.twig', [

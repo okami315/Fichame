@@ -5,5 +5,20 @@
 
 {% block body %}
 	{% include 'comunes/_form.html.twig' with {'titulo': 'Edición del evento'} %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-5 mt-5 card" id="container">
+	<h2>Campos no editables</h2>	
+	{% if event.status == 0 %}
+			<p>🟡</p>
+		{% elseif event.status == 1 %}
+			<p>🔴</p>
+		{% else %}
+			<p>🟢</p>
+		{% endif %}
+		<p>Trabajadores disponibles: {{ event.workersavailable }}/{{ event.workersnumber }}</p>
+		<p>Conductores asignados: Conductores asignados /{{ event.driversnumber}}</p>
+		<p>Sueldo: {{event.estimatedhours * 10 }}€</p>
+		</div>
+		</div>
 	{% include 'event/trabajadores.html.twig'%}
 {% endblock %} 
