@@ -135,13 +135,15 @@
 											<th>Nº trabajadores</th>
 											<th>Horas estimadas</th>
 											<th>Horas reales</th>
-											{# Modal al pulsar Horas estimadas <th>Horario estimado</th>										 #}
+											{# Modal al pulsar Horas estimadas <th>Horario estimado</th>#}
 											<th>Sueldo estimado</th>
 											<th>Sueldo real</th>
 											<th>Disponibilidad</th>
 										</tr>
 									</thead>
+								
 								{% for evento in eventos %}
+								
 									{% if evento.status != 0 %}
 									<tbody>
 										<tr>
@@ -221,15 +223,8 @@
 																{% if userEvent.asistance == 1 %}
 																	<a href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer">Formulario</a>
 																	<a href='{{ evento.link }}' target="_blank" rel="noopener noreferrer">Formulario Opcional</a>
-																		<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_new', {'id': evento.id}) }}">Fichar</a>
-																	{% else %}
-																		{% for signing in evento.signings %}
-																			{% if signing.user.id == app.user.id %}
-																				<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_show', {'id': signing.id}) }}">Fichar</a>
-																			{% endif %}
-																		{% endfor %}
+																	<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_index', {'id': evento.id}) }}">Fichar</a>
 																	{% endif %}
-																{% endif %}
 																{% endif %}
 														{% endfor %}
 													</div>
