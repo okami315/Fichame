@@ -41,10 +41,6 @@ class SigningController extends AbstractController
         $signingRepository->save($signing, true);
 
         return $this->redirectToRoute('app_signing_show', ['id' => $signing->getId()], Response::HTTP_SEE_OTHER);
-
-        return $this->renderForm('signing/new.html.twig', [
-            'signing' => $signing,
-        ]);
     }
 
     #[Route('/{id}', name: 'app_signing_show', methods: ['GET'])]

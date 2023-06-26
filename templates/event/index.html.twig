@@ -221,6 +221,7 @@
 																{% if userEvent.asistance == 1 %}
 																	<a href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer">Formulario</a>
 																	<a href='{{ evento.link }}' target="_blank" rel="noopener noreferrer">Formulario Opcional</a>
+																	{% if evento.signings.isEmpty() %}
 																		<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_new', {'id': evento.id}) }}">Fichar</a>
 																	{% else %}
 																		{% for signing in evento.signings %}
@@ -229,7 +230,7 @@
 																			{% endif %}
 																		{% endfor %}
 																	{% endif %}
-																{% endif %}
+																	{% endif %}
 																{% endif %}
 														{% endfor %}
 													</div>
