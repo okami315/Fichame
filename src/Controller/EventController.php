@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -96,6 +97,19 @@ class EventController extends AbstractController
             'eventosPorMesTrabajadores' => $eventosPorMesTrabajadores,
             'totalPending' => $totalPending,
         ]);
+    }
+
+    #[Route('/getevent/{id}', name: 'app_event_getEvent', methods: ['GET'])]
+    public function getEvent(Event $event): JsonResponse
+    {
+        // Obtener los datos del evento
+        $eventData = [
+            'name' => $event->getName(),
+            'schedule' => $event->getSchedule(),
+        ];
+    
+        // Devolver los datos del evento en formato JSON
+        return new JsonResponse($eventData);
     }
 
     // #[IsGranted('ROLE_ADMIN')]

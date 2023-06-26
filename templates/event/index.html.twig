@@ -64,8 +64,8 @@
 											<td> {{evento.workersselected }}/{{ evento.workersnumber}}</td>
 											<td> {{evento.driversavailable }}/{{ evento.driversnumber}}</td>
 											<td>
-												<a onclick="openModal()" style= "cursor:pointer">
-												{{ evento.estimatedhours }}
+												<a onclick="openModal('{{ evento.id }}')" style="cursor:pointer">
+													{{ evento.estimatedhours }}
 												</a>
 											</td>
 											<td>
@@ -191,9 +191,8 @@
 											
 											{% for userEvent in evento.userEvents %}
 											{% if userEvent.user.id == app.user.id %}
-
 												<td>
-												<a onclick="openModal()" style= "cursor:pointer">
+												<a onclick="openModal('{{ userEvent.event.id }}')" style="cursor:pointer">
 												{{ userEvent.estimatedhours }}
 												</a>
 												</td>
@@ -223,7 +222,7 @@
 																	<a href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer">Formulario</a>
 																	<a href='{{ evento.link }}' target="_blank" rel="noopener noreferrer">Formulario Opcional</a>
 																	{% if evento.signings.isEmpty() %}
-																	{{ dump(evento.id) }}
+																	{# {{ dump(evento.id) }} #}
 																		<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_new', {'id': evento.id}) }}">Fichar</a>
 																	{% else %}
 																		{% for signing in evento.signings %}
@@ -251,7 +250,6 @@
 													</button>
 												</div>
 												<div class="modal-body">
-													{{evento.schedule }}
 												</div>
 											</div>
 										</div>
@@ -267,10 +265,28 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 
-function openModal() {
+function populateModalContent(eventId) {
+  axios.get('/getevent/' + eventId)
+    .then(function (response) {
+      var eventData = response.data;
+
+      // Actualiza el título del modal con el nombre del evento
+      var modalTitle = document.getElementById('modalLabel');
+      modalTitle.textContent = eventData.name;
+
+      var modalBody = document.querySelector('.modal-body');
+      modalBody.innerHTML = eventData.schedule; // Suponiendo que la propiedad 'schedule' contiene el contenido deseado
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function openModal(eventId) {
     var modal = document.getElementById('miModal');
     modal.classList.add('show');
     modal.style.display = 'block';
+	populateModalContent(eventId);
 }
 
 function closeModal() {
