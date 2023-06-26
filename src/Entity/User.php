@@ -75,8 +75,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $driver = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Registration::class)]
-    private Collection $registrations;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Signing::class)]
+    private Collection $signings;
 
     #[ORM\Column(nullable: true)]
     private ?float $fixed_hours = null;
@@ -102,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this -> regDate = new \DateTime();
         $this->events = new ArrayCollection();
         $this->userEvents = new ArrayCollection();
-        $this->registrations = new ArrayCollection();
+        $this->signings = new ArrayCollection();
         $this->birthdate = new \DateTime();
         $this->calculateAge();
     }
@@ -287,7 +287,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->monthlytime = $monthlytime;
     }
 
-    public function getCompany(): ?Company
+    public function getCompany(): Company
     {
         return $this->company;
     }
@@ -388,27 +388,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Registration>
      */
-    public function getRegistrations(): Collection
+    public function getSignings(): Collection
     {
-        return $this->registrations;
+        return $this->signings;
     }
 
-    public function addRegistration(Registration $registration): self
+    public function addSigning(Signing $signing): self
     {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations->add($registration);
-            $registration->setUser($this);
+        if (!$this->signings->contains($signing)) {
+            $this->signings->add($signing);
+            $signing->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeRegistration(Registration $registration): self
+    public function removeSigning(Signing $signing): self
     {
-        if ($this->registrations->removeElement($registration)) {
+        if ($this->signings->removeElement($signing)) {
             // set the owning side to null (unless already changed)
-            if ($registration->getUser() === $this) {
-                $registration->setUser(null);
+            if ($signing->getUser() === $this) {
+                $signing->setUser(null);
             }
         }
 

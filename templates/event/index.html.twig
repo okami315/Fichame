@@ -208,21 +208,29 @@
 													<div>
 														{% for userEvent in evento.userEvents %}
 															{% if userEvent.user.id == app.user.id %}
-															{% if userEvent.asistance is null %}
-															<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
-															<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
-															<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
-															<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
-															</select>
-															{% endif %} 
+																{% if userEvent.asistance is null %}
+																	<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
+																		<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
+																		<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
+																		<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
+																	</select>
+																{% endif %} 
 
-															{% if userEvent.asistance == 1 %}
-															<p><a href='{{ evento.linkform }}'>Link Drive Evento</a></p>
-															<a href='{{ evento.link }}'>Link Plutio?</a>
-															{% endif %}
-															
-															{% endif %} 							
-
+					
+																{% if userEvent.asistance == 1 %}
+																	<a href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer">Formulario</a>
+																	<a href='{{ evento.link }}' target="_blank" rel="noopener noreferrer">Formulario Opcional</a>
+																	{% if evento.signings.isEmpty() %}
+																	{{ dump(evento.id) }}
+																		<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_new', {'id': evento.id}) }}">Fichar</a>
+																	{% else %}
+																		{% for signing in evento.signings %}
+																			{% if signing.user.id == app.user.id %}
+																				<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_show', {'id': signing.id}) }}">Fichar</a>
+																			{% endif %}
+																		{% endfor %}
+																	{% endif %}
+																{% endif %}
 														{% endfor %}
 													</div>
 												</div>

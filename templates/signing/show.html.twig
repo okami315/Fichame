@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signing{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Registro de {{ signing.user }}</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-11 col-md-3 mt-3 card">
+            {{ include('event/show.html.twig') }}
+        </div>
+        <table class="table col-11 col-md-9 mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">Entrada</th>
+                    <th scope="col">Salida</th>
+                    <th scope="col">Horas totales</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ signing.checkin ? signing.checkin|date('d/m/Y H:i') : '' }}</td>
+                    <td>{{ signing.checkout ? signing.checkout|date('d/m/Y H:i:s') : '' }}</td>
+                    <td>
+                        {% if signing.checkin and signing.checkout %}
+                            {% set diff = signing.checkout|date('U') - signing.checkin|date('U') %}
+                            {% set hours = diff / 3600 %}
+                            {{ hours }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if signing.checkin and signing.checkout %}
+                            <a href="{{ path('app_signing_edit', {'id': signing.id}) }}">Editar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

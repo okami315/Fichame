@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\RegistrationRepository;
+use App\Repository\SigningRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RegistrationRepository::class)]
-class Registration
+#[ORM\Entity(repositoryClass: SigningRepository::class)]
+class Signing
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,10 +26,10 @@ class Registration
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $createcheckout = null;
 
-    #[ORM\ManyToOne(inversedBy: 'registrations')]
+    #[ORM\ManyToOne(inversedBy: 'Signing')]
     private ?Event $event = null;
 
-    #[ORM\ManyToOne(inversedBy: 'registrations')]
+    #[ORM\ManyToOne(inversedBy: 'Signing')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 

@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Registration;
+use App\Entity\Signing;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Registration>
+ * @extends ServiceEntityRepository<Signing>
  *
- * @method Registration|null find($id, $lockMode = null, $lockVersion = null)
- * @method Registration|null findOneBy(array $criteria, array $orderBy = null)
- * @method Registration[]    findAll()
- * @method Registration[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Signing|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Signing|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Signing[]    findAll()
+ * @method Signing[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RegistrationRepository extends ServiceEntityRepository
+class SigningRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Registration::class);
+        parent::__construct($registry, Signing::class);
     }
 
-    public function save(Registration $entity, bool $flush = false): void
+    public function save(Signing $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class RegistrationRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Registration $entity, bool $flush = false): void
+    public function remove(Signing $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class RegistrationRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Registration[] Returns an array of Registration objects
+//     * @return Signing[] Returns an array of Signing objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class RegistrationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Registration
+//    public function findOneBySomeField($value): ?Signing
 //    {
 //        return $this->createQueryBuilder('r')
 //            ->andWhere('r.exampleField = :val')

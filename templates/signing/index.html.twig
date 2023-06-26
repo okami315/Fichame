@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signing index{% endblock %}
+
+{% block body %}
+    <h1>Signing index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Checkin</th>
+                <th>Checkout</th>
+                <th>Createcheckin</th>
+                <th>Createcheckout</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for signing in signings %}
+            <tr>
+                <td>{{ signing.id }}</td>
+                <td>{{ signing.checkin ? signing.checkin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ signing.checkout ? signing.checkout|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ signing.createcheckin ? signing.createcheckin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ signing.createcheckout ? signing.createcheckout|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_signing_show', {'id': signing.id}) }}">show</a>
+                    <a href="{{ path('app_signing_edit', {'id': signing.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_signing_new') }}">Create new</a>
+{% endblock %}

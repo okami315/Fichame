@@ -67,8 +67,8 @@ class Event
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createDate = null;
 
-    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Registration::class)]
-    private Collection $registrations;
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Signing::class)]
+    private Collection $signings;
 
     #[ORM\Column(nullable: true)]
     private ?float $estimated_hours = null;
@@ -94,7 +94,7 @@ class Event
         $this->userEvents = new ArrayCollection();
         $this->startDate = new \DateTime();
         $this->endDate = new \DateTime();
-        $this->registrations = new ArrayCollection();
+        $this->signings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -352,27 +352,27 @@ class Event
     /**
      * @return Collection<int, Registration>
      */
-    public function getRegistrations(): Collection
+    public function getSignings(): Collection
     {
-        return $this->registrations;
+        return $this->signings;
     }
 
-    public function addRegistration(Registration $registration): self
+    public function addSigning(Signing $signing): self
     {
-        if (!$this->registrations->contains($registration)) {
-            $this->registrations->add($registration);
-            $registration->setEvent($this);
+        if (!$this->signings->contains($signing)) {
+            $this->signings->add($signing);
+            $signing->setEvent($this);
         }
 
         return $this;
     }
 
-    public function removeRegistration(Registration $registration): self
+    public function removeSigning(Signing $signing): self
     {
-        if ($this->registrations->removeElement($registration)) {
+        if ($this->signings->removeElement($signing)) {
             // set the owning side to null (unless already changed)
-            if ($registration->getEvent() === $this) {
-                $registration->setEvent(null);
+            if ($signing->getEvent() === $this) {
+                $signing->setEvent(null);
             }
         }
 
