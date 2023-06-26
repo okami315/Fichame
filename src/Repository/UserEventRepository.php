@@ -102,6 +102,23 @@ class UserEventRepository extends ServiceEntityRepository
         return $query->getSingleScalarResult();
     }
 
+    public function getExtraHours(Event $event, User $user): int
+    {
+        $entityManager = $this->getEntityManager();
+    
+        $query = $entityManager->createQuery('
+            SELECT ue.extraHours
+            FROM App\Entity\UserEvent ue
+            WHERE ue.event = :event
+            AND ue.user = :user
+        ')
+            ->setParameter('event', $event)
+            ->setParameter('user', $user);
+    
+        $extraHours = $query->getOneOrNullResult();
+    
+        return $extraHours['extraHours'] ?? 0;
+    }
 
 
     //    /**

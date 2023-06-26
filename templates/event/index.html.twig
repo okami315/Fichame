@@ -105,7 +105,7 @@
 										<div class="modal-dialog modal-lg" role="document">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h5 class="modal-title" id="modalLabel">Título del modal</h5>
+													<h5 class="modal-title" id="modalLabel">Horario Estimado</h5>
 													<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
 														<span aria-hidden="true">&times;</span>
 													</button>
@@ -237,7 +237,7 @@
 										<div class="modal-dialog modal-lg" role="document">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h5 class="modal-title" id="modalLabel">Título del modal</h5>
+													<h5 class="modal-title" id="modalLabel">Horario Estimado</h5>
 													<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
 														<span aria-hidden="true">&times;</span>
 													</button>
@@ -264,8 +264,8 @@ function populateModalContent(eventId) {
       var eventData = response.data;
 
       // Actualiza el título del modal con el nombre del evento
-      var modalTitle = document.getElementById('modalLabel');
-      modalTitle.textContent = eventData.name;
+      //var modalTitle = document.getElementById('modalLabel');
+      //modalTitle.textContent = eventData.name;
 
       var modalBody = document.querySelector('.modal-body');
       modalBody.innerHTML = eventData.schedule; // Suponiendo que la propiedad 'schedule' contiene el contenido deseado

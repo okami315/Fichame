@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\SigningRepository;
+use App\Repository\UserEventRepository;
 use App\Repository\UserRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,14 +28,35 @@ class UserController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/user/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(User $user,UserEventRepository $userEventRepository,SigningRepository $signingRepository): Response
     {   
         SecurityController::checkCompany($this, $this->getUser()->getCompany()->getNif(),$user->getCompany()->getNif());
+        $signings = $signingRepository->findByUser($user);
 
+        $data = [
+            'signings' => [],
+        ];
+    
+        foreach ($signings as $signing) {
+
+            $signingData = [
+                'name' => $signing->getEvent() ? $signing->getEvent() : "Almacen",
+                'estimated_hours' => $signing->getEvent() ? $signing->getEvent()->getEstimatedHours() : $signing->getUser()->getFixedHours(),
+                'done_hours' => $signing,
+                'extra_hours' => $signing->getEvent() ? $userEventRepository->getExtraHours($signing->getEvent(),$signing->getUser()): 0,
+                'real_hours' => $signing->getEvent() ? $signing->getEvent()->getEstimatedHours() +  $userEventRepository->getExtraHours($signing->getEvent(),$signing->getUser()) :  $signing->getUser()->getFixedHours(),
+            ];
+        
+            $data['signings'][] = $signingData;
+        }
         return $this->render('user/show.html.twig', [
             'user' => $user,
+            'signings' => $signings,
+            'data' => $data,
         ]);
+        
     }
+    
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/user/', name: 'app_user_index', methods: ['GET'])]

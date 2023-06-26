@@ -27,4 +27,41 @@
             </div>
         </div>
     </div>
+    <div class="table-responsive">
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Horas Estimadas</th>
+                    <th scope="col">Horas Fichadas</th>
+                    <th scope="col">Modificador de Horas</th>
+                    <th scope="col">Horas Reales</th>
+                </tr>
+            </thead>
+                <tbody>
+                    <tr> 
+                    {{dump(data["signings"][0])}}
+                        <td>{{data["signings"][0]["name"]}}</td>
+                        {# {% if signing.event is null %}
+                        <td>{{signing.user.fixedHours}}</td> #}
+                        {# {% else %} #}
+                        {# <td>{{estimatedHours}}</td> #}
+                        {# {% endif %} #}
+
+                        <td>
+                        {# {% if signing.checkin and signing.checkout %}
+                            {% set diff = signing.checkout|date('U') - signing.checkin|date('U') %}
+                            {% set hours = diff / 3600 %}
+                            {% set minutes = (diff % 3600) / 60 %}
+                            {{ hours|number_format(0, '.', '') }}h {{ minutes|number_format(0, '.', '') }}m
+                        {% endif %} #}
+                        </td>
+                        <td>
+                            {# <input class="form-control" type="number" name="horario_estimado" id="horario_estimado" value="{% if userEvent.estimatedHours is null %}{{ event.schedule }}{% else %}{{ userEvent.estimatedHours }}{% endif %}" onchange="updateEstimatedHours('{{ userEvent.id }}', this.value)"> #}
+                        </td>
+                    </tr>
+                </tbody>
+        </table>
+    </div>
+
 {% endblock %}
