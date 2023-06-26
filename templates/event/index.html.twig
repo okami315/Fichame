@@ -41,11 +41,11 @@
 										<tr>
 											<td>
 												{% if evento.status == 0 %}
-													<p>🟡</p>
+													<i class="fas fa-circle" style="color: #E4FF5D;"></i>
 												{% elseif evento.status == 1 %}
-													<p>🔴</p>
+													<i class="fas fa-circle" style="color: #FF0000;"></i>
 												{% else %}
-													<p>🟢</p>
+													<i class="fas fa-circle" style="color: ##6AFF65;"></i>
 												{% endif %}
 											</td>
 											<td>
@@ -152,24 +152,24 @@
 											{% if userEvent.user.id == app.user.id %}
 											<p id="p-{{ evento.id }}">
 												{% if userEvent.disponibility is null %}
-													🟡
+													<i class="fas fa-circle" style="color: #E4FF5D;"></i>
 												{% elseif userEvent.asistance is null and userEvent.disponibility %}
 													🔘
 													{% if userEvent.coordination == 1 %}
-														🗣
+														<i class="fas fa-user" style="color: #c0c0c0;"></i>
 													{% endif %}
 													{% if userEvent.driving == 1 %}
-														🚐
+														<i class="fas fa-car-side" style="color: #c0c0c0;"></i>
 													{% endif %}
 												{% elseif userEvent.asistance == 0 or userEvent.disponibility == 0 %}
-													⚫
+													<i class="fas fa-circle" style="color: #000000;"></i>
 												{% else %}
-													🟢
+													<i class="fas fa-circle" style="color: #7EFF9D;"></i>
 													{% if userEvent.coordination == 1 %}
-														🗣
+														<i class="fas fa-user" style="color: #c0c0c0;"></i>
 													{% endif %}
 													{% if userEvent.driving == 1 %}
-														🚐
+														<i class="fas fa-car-side" style="color: #c0c0c0;"></i>
 													{% endif %}
 												{% endif %}
 											</p>

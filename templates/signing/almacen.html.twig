@@ -27,8 +27,7 @@
             {% for signing in signings %}
                 <tr>    
                     <td>{{ signing.checkin ? signing.checkin|date('H:i d/m/Y') : '' }}</td>
-                    <td>{{ signing.checkout ? signing.checkout|date('d/m/Y H:i:s') : '' }}</td>
-                    <td>
+                    <td>{{ signing.checkout ? signing.checkout|date('H:i d/m/Y') : '' }}</td>                    <td>
                         {% if signing.checkin and signing.checkout %}
                             {% set diff = signing.checkout|date('U') - signing.checkin|date('U') %}
                             {% set hours = diff / 3600 %}
