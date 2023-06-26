@@ -3,7 +3,5 @@
 {% block title %}Edit Signing{% endblock %}
 
 {% block body %}
-    <h1>Edit Signing</h1>
-
-    {{ include('signing/_form.html.twig', {'button_label': 'Update'}) }}
+	{% include 'comunes/_form.html.twig' with {'titulo': 'Edición del registro'} %}
 {% endblock %}

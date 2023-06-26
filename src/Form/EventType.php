@@ -25,17 +25,17 @@ class EventType extends AbstractType
             ])
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
-                'years' => range(date('Y') - 100, date('Y')), // Rango de años desde 1900 hasta el año actual
+                'years' => range(date('Y') - 100, date('Y')), 
             ])
             ->add('endDate', DateType::class, [
                 'widget' => 'single_text',
-                'years' => range(date('Y') - 100, date('Y')), // Rango de años desde 1900 hasta el año actual
+                'years' => range(date('Y') - 100, date('Y')), 
             ])
             ->add('workers_number')
             ->add('drivers_number')
             ->add('distance')
-            ->add('schedule', TextareaType::class, [ // Utilizar TextareaType en lugar de TextType
-                'attr' => ['rows' => 8], // Ajustar el número de filas según tus necesidades
+            ->add('schedule', TextareaType::class, [ 
+                'attr' => ['rows' => 8], 
             ])
             ->add('estimated_hours')
             ->add('linkForm')
