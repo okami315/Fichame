@@ -75,6 +75,15 @@ class Event
 
     #[ORM\Column(nullable: true)]
     private ?int $pending_workers = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $drivers_available = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $workers_selected = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $link = null;
     
 
     public function __construct()
@@ -390,6 +399,42 @@ class Event
     public function setPendingWorkers(?int $pending_workers): self
     {
         $this->pending_workers = $pending_workers;
+
+        return $this;
+    }
+
+    public function getDriversAvailable(): ?int
+    {
+        return $this->drivers_available;
+    }
+
+    public function setDriversAvailable(?int $drivers_available): self
+    {
+        $this->drivers_available = $drivers_available;
+
+        return $this;
+    }
+
+    public function getWorkersSelected(): ?int
+    {
+        return $this->workers_selected;
+    }
+
+    public function setWorkersSelected(?int $workers_selected): self
+    {
+        $this->workers_selected = $workers_selected;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): self
+    {
+        $this->link = $link;
 
         return $this;
     }

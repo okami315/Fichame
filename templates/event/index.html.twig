@@ -61,8 +61,8 @@
 											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
 											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
 											<td>{{ evento.pendingWorkers }}/{{ evento.workersnumber}}</td>
-											<td> Asignados /{{ evento.workersnumber}}</td>
-											<td> Drivers Available/{{ evento.driversnumber}}</td>
+											<td> {{evento.workersselected }}/{{ evento.workersnumber}}</td>
+											<td> {{evento.driversavailable }}/{{ evento.driversnumber}}</td>
 											<td>
 												<a onclick="openModal()" style= "cursor:pointer">
 												{{ evento.estimatedhours }}
@@ -85,7 +85,7 @@
 																</form>
 															</div>
 														{% endif %}
-														{% if evento.status == 1 %}
+														{% if evento.status != 0 %}
 															<div>
 																<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
 																	<button class="btn">✖</button>
@@ -217,8 +217,8 @@
 															{% endif %} 
 
 															{% if userEvent.asistance == 1 %}
-															<a href='{{ evento.linkform }}'>{{evento.linkform }}</a>
-
+															<p><a href='{{ evento.linkform }}'>Link Drive Evento</a></p>
+															<a href='{{ evento.link }}'>Link Plutio?</a>
 															{% endif %}
 															
 															{% endif %} 							

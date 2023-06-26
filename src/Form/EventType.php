@@ -39,6 +39,7 @@ class EventType extends AbstractType
             ])
             ->add('estimated_hours')
             ->add('linkForm')
+            ->add('link')
         ;
     }
 

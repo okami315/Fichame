@@ -76,6 +76,15 @@ class EventController extends AbstractController
             $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($event->getId());
             $event->setWorkersAvailable($countUsers);
             $eventRepository->save($event, true);
+
+            // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+            if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
+                $event->setStatus(2);
+                $eventRepository->save($event, true);
+            }else{
+                $event->setStatus(1);
+                $eventRepository->save($event, true);
+            }
         }
 
         return $this->render('event/index.html.twig', [
@@ -114,6 +123,9 @@ class EventController extends AbstractController
         $event->setCompany($this->getUser()->getCompany());
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setCreateDate(new DateTime());
+            $event->setDriversAvailable(0);
+            $event->setWorkersSelected(0);
+            $event->setPendingWorkers(0);
             $eventRepository->save($event, true);
 
             // foreach ($userRepository->findAll() as $user) {
@@ -137,6 +149,15 @@ class EventController extends AbstractController
 
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
+
+        // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+        if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
+            $event->setStatus(2);
+            $eventRepository->save($event, true);
+        }else{
+            $event->setStatus(1);
+            $eventRepository->save($event, true);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setEditDate(new DateTime());
