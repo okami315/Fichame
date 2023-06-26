@@ -21,8 +21,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EventController extends AbstractController
 {
     #[Route('/event', name: 'app_event_index', methods: ['GET'])]
-    public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
+    public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository, UserRepository $userRepository): Response
     {
+        $totalPending = $userRepository->countActiveUsers();
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $events = $eventRepository->findAll();
         } else {
@@ -93,6 +94,7 @@ class EventController extends AbstractController
         return $this->render('event/index.html.twig', [
             'eventosPorMes' => $eventosPorMes,
             'eventosPorMesTrabajadores' => $eventosPorMesTrabajadores,
+            'totalPending' => $totalPending,
         ]);
     }
 

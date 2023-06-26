@@ -60,7 +60,7 @@
 											<td>{{ evento.name }}</td>
 											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
 											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
-											<td>{{ evento.pendingWorkers }}/{{ evento.workersnumber}}</td>
+											<td>{{ evento.pendingWorkers }}/{{ totalPending }}</td>
 											<td> {{evento.workersselected }}/{{ evento.workersnumber}}</td>
 											<td> {{evento.driversavailable }}/{{ evento.driversnumber}}</td>
 											<td>

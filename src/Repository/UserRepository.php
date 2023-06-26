@@ -97,6 +97,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    public function countActiveUsers()
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(u)
+            FROM App\Entity\User u
+            WHERE u.status = 1
+            AND u.roles LIKE :role'
+        )->setParameter('role', '%ROLE_USER%');
+    
+        return $query->getSingleScalarResult();
+    }
+    
 
     //    public function findOneBySomeField($value): ?User
     //    {
