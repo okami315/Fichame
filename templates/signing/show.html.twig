@@ -5,11 +5,19 @@
 {% block body %}
     <h1 class="text-center">Registro de {{ signing.user }}</h1>
 
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mx-2">
         <div class="col-11 col-md-3 mt-3 card">
-            {{ include('event/show.html.twig') }}
+            <div class="text-center mt-3">
+                <a class="btn btn-primary" href="{{ path('app_signing_entrada', {'id': signing.id}) }}">Entrada</a>
+                {% if signing.checkin %}
+                    <a class="btn btn-primary" href="{{ path('app_signing_salida', {'id': signing.id}) }}">Salida</a>
+                {% endif %}
+            </div>
+            <div>
+                {{ include('event/show.html.twig') }}
+            </div>
         </div>
-        <table class="table col-11 col-md-9 mt-3">
+        <table class="table text-center col-11 col-md-9 mt-3">
             <thead>
                 <tr>
                     <th scope="col">Entrada</th>
@@ -20,13 +28,14 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ signing.checkin ? signing.checkin|date('d/m/Y H:i') : '' }}</td>
+                    <td>{{ signing.checkin ? signing.checkin|date('H:i d/m/Y') : '' }}</td>
                     <td>{{ signing.checkout ? signing.checkout|date('d/m/Y H:i:s') : '' }}</td>
                     <td>
                         {% if signing.checkin and signing.checkout %}
                             {% set diff = signing.checkout|date('U') - signing.checkin|date('U') %}
                             {% set hours = diff / 3600 %}
-                            {{ hours }}
+                            {% set minutes = (diff % 3600) / 60 %}
+                            {{ hours|number_format(0, '.', '') }}h {{ minutes|number_format(0, '.', '') }}m
                         {% endif %}
                     </td>
                     <td>

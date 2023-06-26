@@ -84,4 +84,24 @@ class SigningController extends AbstractController
 
         return $this->redirectToRoute('app_signing_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/entrada', name: 'app_signing_entrada', methods: ['GET', 'POST'])]
+    public function entrada(Request $request, Signing $signing, SigningRepository $signingRepository): Response
+    {
+        $signing->setCheckin(new \DateTime);
+
+        $signingRepository->save($signing, true);
+
+        return $this->redirectToRoute('app_signing_show', ['id' => $signing->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/salida', name: 'app_signing_salida', methods: ['GET', 'POST'])]
+    public function salida(Request $request, Signing $signing, SigningRepository $signingRepository): Response
+    {
+        $signing->setCheckout(new \DateTime);
+
+        $signingRepository->save($signing, true);
+
+        return $this->redirectToRoute('app_signing_show', ['id' => $signing->getId()], Response::HTTP_SEE_OTHER);
+    }
 }
