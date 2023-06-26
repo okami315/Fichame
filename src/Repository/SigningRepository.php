@@ -53,6 +53,19 @@ class SigningRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAlmacenByUser(string $userId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.event is NULL')
+            ->andWhere('r.user = :user')
+            ->setParameters([
+                'user' => $userId
+            ])
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findWithoutCheckout($eventId, $userId): bool
     {
         $result = $this->createQueryBuilder('r')
@@ -61,6 +74,21 @@ class SigningRepository extends ServiceEntityRepository
             ->andWhere('r.checkin is not NULL and r.checkout is NULL')
             ->setParameters([
                 'event' => $eventId,
+                'user' => $userId
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    
+        return $result !== null ? true : false;
+    }
+
+    public function findWithoutCheckoutNeitherEvent($userId): bool
+    {
+        $result = $this->createQueryBuilder('r')
+            ->andWhere('r.event is NULL')
+            ->andWhere('r.user = :user')
+            ->andWhere('r.checkin is not NULL and r.checkout is NULL')
+            ->setParameters([
                 'user' => $userId
             ])
             ->getQuery()
