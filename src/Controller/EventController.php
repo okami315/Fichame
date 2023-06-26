@@ -67,7 +67,7 @@ class EventController extends AbstractController
 
             $eventosPorMes[$monthYear][] = $event;
 
-            if ($event->getStatus() === 1) {
+            if ($event->getStatus() === 1 or $event->getStatus()===2) {
                 if (!isset($eventosPorMesTrabajadores[$monthYear])) {
                     $eventosPorMesTrabajadores[$monthYear] = [];
                 }

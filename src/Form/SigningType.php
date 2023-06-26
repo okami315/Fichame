@@ -14,10 +14,6 @@ class SigningType extends AbstractType
         $builder
             ->add('checkin')
             ->add('checkout')
-            ->add('createcheckin')
-            ->add('createcheckout')
-            ->add('event')
-            ->add('user')
         ;
     }
 

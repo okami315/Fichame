@@ -39,6 +39,37 @@ class SigningRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByEventIdAndUser(string $eventId, string $userId): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.event = :event')
+            ->andWhere('r.user = :user')
+            ->setParameters([
+                'event' => $eventId,
+                'user' => $userId
+            ])
+            ->orderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findWithoutCheckout($eventId, $userId): bool
+    {
+        $result = $this->createQueryBuilder('r')
+            ->andWhere('r.event = :event')
+            ->andWhere('r.user = :user')
+            ->andWhere('r.checkin is not NULL and r.checkout is NULL')
+            ->setParameters([
+                'event' => $eventId,
+                'user' => $userId
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    
+        return $result !== null ? true : false;
+    }
+    
+
 //    /**
 //     * @return Signing[] Returns an array of Signing objects
 //     */
