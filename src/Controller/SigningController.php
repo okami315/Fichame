@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/signing')]
 class SigningController extends AbstractController
@@ -23,33 +24,36 @@ class SigningController extends AbstractController
     }
 
     #[Route('/new/{id}', name: 'app_signing_new', methods: ['GET', 'POST'])]
-    public function new($id, Request $request, EventRepository $eventRepository, SigningRepository $signingRepository): Response
+    public function new($id, Request $request, EventRepository $eventRepository, SigningRepository $signingRepository, Security $security): Response
     {
         $evento = $eventRepository->find($id);
+        $user = $security->getUser();
 
         $signing = new Signing();
+
         $signing->setEvent($evento);
+        $signing->setUser($user);
+        $signing->setCheckin(null);
+        $signing->setCheckout(null);
+        $signing->setCreatecheckin(null);
+        $signing->setCreatecheckout(null);
         
-        $form = $this->createForm(SigningType::class, $signing);
-        $form->handleRequest($request);
+        $signingRepository->save($signing, true);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $signingRepository->save($signing, true);
-
-            return $this->redirectToRoute('app_signing_index', [], Response::HTTP_SEE_OTHER);
-        }
+        return $this->redirectToRoute('app_signing_show', ['id' => $signing->getId()], Response::HTTP_SEE_OTHER);
 
         return $this->renderForm('signing/new.html.twig', [
             'signing' => $signing,
-            'form' => $form,
         ]);
     }
 
     #[Route('/{id}', name: 'app_signing_show', methods: ['GET'])]
-    public function show(Signing $signing): Response
+    public function show(Signing $signing, EventRepository $eventRepository): Response
     {
+        $event = $eventRepository->find($signing->getEvent());
         return $this->render('signing/show.html.twig', [
             'signing' => $signing,
+            'event' => $event,
         ]);
     }
 

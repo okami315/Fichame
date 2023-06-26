@@ -225,7 +225,7 @@
 																	{% else %}
 																		{% for signing in evento.signings %}
 																			{% if signing.user.id == app.user.id %}
-																				<p>Ya has realizado el signing para este evento.</p>
+																				<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_show', {'id': signing.id}) }}">Fichar</a>
 																			{% endif %}
 																		{% endfor %}
 																	{% endif %}
