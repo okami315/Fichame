@@ -127,15 +127,50 @@ class UserEventController extends AbstractController
 
 
     #[Route('/update-asistance/{id}', name: 'app_user_event_updateAsistance', methods: ['GET', 'POST'])]
-    public function updateAsistance(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    public function updateAsistance(Request $request, int $id, UserEventRepository $userEventRepository,  EventRepository $eventRepository): Response
     {
         $data = json_decode($request->getContent(), true);
         $userEvent = $userEventRepository->find($id);
+        $event = $userEvent->getEvent();
 
         if ($data['asistance'] == "null") {
+
+            // Si la asistencia antes era true ahora se resta
+            if($userEvent->getAsistance()==true){
+                // Si estaba marcado como conductor se debe restar
+                if($userEvent->isDriving()){
+                    $event->setDriversAvailable($event->getDriversAvailable()-1);
+                    $eventRepository->save($event, true);
+                }
+            $event->setWorkersSelected($event->getWorkersSelected()-1);
+            $eventRepository->save($event, true);
+            }
+         
             $userEvent->setAsistance(null);
             $userEventRepository->save($userEvent, true);
-        } else {
+           
+        } else if ($data['asistance'] == true) {
+            // Comprobamos que el driving no esté true por haberlo marcado antes
+            if($userEvent->isDriving()){
+                $event->setDriversAvailable($event->getDriversAvailable()+1);
+                $eventRepository->save($event, true);  
+            }
+            $userEvent->setAsistance($data['asistance']);
+            $userEventRepository->save($userEvent, true);
+            $event->setWorkersSelected($event->getWorkersSelected()+1);
+            $eventRepository->save($event, true);
+        }else{
+
+            // Si la asistencia antes era true ahora se resta
+            if($userEvent->getAsistance()==true){
+                // Si estaba marcado como conductor se debe restar 
+                if($userEvent->isDriving()){
+                    $event->setDriversAvailable($event->getDriversAvailable()-1);
+                    $eventRepository->save($event, true);
+                }
+                $event->setWorkersSelected($event->getWorkersSelected()-1);
+                $eventRepository->save($event, true);
+            }
             $userEvent->setAsistance($data['asistance']);
             $userEventRepository->save($userEvent, true);
         }
@@ -166,16 +201,25 @@ class UserEventController extends AbstractController
     }
 
     #[Route('/update-driving/{id}', name: 'app_user_event_updateDriving', methods: ['GET', 'POST'])]
-    public function updateDriving(Request $request, int $id, UserEventRepository $userEventRepository): Response
+    public function updateDriving(Request $request, int $id, UserEventRepository $userEventRepository, EventRepository $eventRepository): Response
     {
         $data = json_decode($request->getContent(), true);
         $userEvent = $userEventRepository->find($id);
+        $event = $userEvent->getEvent();
 
-        $driving = $data['driving'] == '1' ? true : false; 
+        $driving = $data['driving'] == '1' ? true : false;
         if($driving){
+            // Sumar 1 a drivers_available
+            $event->setDriversAvailable($event->getDriversAvailable()+1);
+            $eventRepository->save($event, true);
+
             $userEvent->setRealHours(($userEvent->getRealHours())+4);
             $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())+4);
         }else{
+            // Restar 1 a drivers_available
+            $event->setDriversAvailable($event->getDriversAvailable()-1);
+            $eventRepository->save($event, true);
+
             $userEvent->setRealHours(($userEvent->getRealHours())-4);
             $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())-4);
         }

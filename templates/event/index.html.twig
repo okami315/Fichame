@@ -60,12 +60,12 @@
 											<td>{{ evento.name }}</td>
 											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
 											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
-											<td>{{ evento.pendingWorkers }}/{{ evento.workersnumber}}</td>
-											<td> Asignados /{{ evento.workersnumber}}</td>
-											<td> Drivers Available/{{ evento.driversnumber}}</td>
+											<td>{{ evento.pendingWorkers }}/{{ totalPending }}</td>
+											<td> {{evento.workersselected }}/{{ evento.workersnumber}}</td>
+											<td> {{evento.driversavailable }}/{{ evento.driversnumber}}</td>
 											<td>
-												<a onclick="openModal()" style= "cursor:pointer">
-												{{ evento.estimatedhours }}
+												<a onclick="openModal('{{ evento.id }}')" style="cursor:pointer">
+													{{ evento.estimatedhours }}
 												</a>
 											</td>
 											<td>
@@ -85,7 +85,7 @@
 																</form>
 															</div>
 														{% endif %}
-														{% if evento.status == 1 %}
+														{% if evento.status != 0 %}
 															<div>
 																<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
 																	<button class="btn">✖</button>
@@ -191,9 +191,8 @@
 											
 											{% for userEvent in evento.userEvents %}
 											{% if userEvent.user.id == app.user.id %}
-
 												<td>
-												<a onclick="openModal()" style= "cursor:pointer">
+												<a onclick="openModal('{{ userEvent.event.id }}')" style="cursor:pointer">
 												{{ userEvent.estimatedhours }}
 												</a>
 												</td>
@@ -207,7 +206,9 @@
 												<div class="row justify-content-center align-items-center">
 													<div>
 														{% for userEvent in evento.userEvents %}
+															
 															{% if userEvent.user.id == app.user.id %}
+															{# {{ dump(userEvent.asistance) }} #}
 																{% if userEvent.asistance is null %}
 																	<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
 																		<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
@@ -216,10 +217,10 @@
 																	</select>
 																{% endif %} 
 
+					
 																{% if userEvent.asistance == 1 %}
 																	<a href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer">Formulario</a>
-
-																	{% if evento.signings.isEmpty() %}
+																	<a href='{{ evento.link }}' target="_blank" rel="noopener noreferrer">Formulario Opcional</a>
 																		<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_new', {'id': evento.id}) }}">Fichar</a>
 																	{% else %}
 																		{% for signing in evento.signings %}
@@ -229,7 +230,7 @@
 																		{% endfor %}
 																	{% endif %}
 																{% endif %}
-															{% endif %}
+																{% endif %}
 														{% endfor %}
 													</div>
 												</div>
@@ -247,7 +248,6 @@
 													</button>
 												</div>
 												<div class="modal-body">
-													{{evento.schedule }}
 												</div>
 											</div>
 										</div>
@@ -263,10 +263,28 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 
-function openModal() {
+function populateModalContent(eventId) {
+  axios.get('/getevent/' + eventId)
+    .then(function (response) {
+      var eventData = response.data;
+
+      // Actualiza el título del modal con el nombre del evento
+      var modalTitle = document.getElementById('modalLabel');
+      modalTitle.textContent = eventData.name;
+
+      var modalBody = document.querySelector('.modal-body');
+      modalBody.innerHTML = eventData.schedule; // Suponiendo que la propiedad 'schedule' contiene el contenido deseado
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function openModal(eventId) {
     var modal = document.getElementById('miModal');
     modal.classList.add('show');
     modal.style.display = 'block';
+	populateModalContent(eventId);
 }
 
 function closeModal() {

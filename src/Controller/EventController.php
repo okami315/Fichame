@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,8 +22,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EventController extends AbstractController
 {
     #[Route('/event', name: 'app_event_index', methods: ['GET'])]
-    public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository): Response
+    public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository, UserRepository $userRepository): Response
     {
+        $totalPending = $userRepository->countActiveUsers();
         if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $events = $eventRepository->findAll();
         } else {
@@ -76,12 +78,38 @@ class EventController extends AbstractController
             $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($event->getId());
             $event->setWorkersAvailable($countUsers);
             $eventRepository->save($event, true);
+
+            // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+            if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
+                $event->setStatus(2);
+                $eventRepository->save($event, true);
+            }else if($event->getStatus()==0){
+                $event->setStatus(0);
+                $eventRepository->save($event, true);
+            }else {
+                $event->setStatus(1);
+                $eventRepository->save($event, true);
+            }
         }
 
         return $this->render('event/index.html.twig', [
             'eventosPorMes' => $eventosPorMes,
             'eventosPorMesTrabajadores' => $eventosPorMesTrabajadores,
+            'totalPending' => $totalPending,
         ]);
+    }
+
+    #[Route('/getevent/{id}', name: 'app_event_getEvent', methods: ['GET'])]
+    public function getEvent(Event $event): JsonResponse
+    {
+        // Obtener los datos del evento
+        $eventData = [
+            'name' => $event->getName(),
+            'schedule' => $event->getSchedule(),
+        ];
+    
+        // Devolver los datos del evento en formato JSON
+        return new JsonResponse($eventData);
     }
 
     // #[IsGranted('ROLE_ADMIN')]
@@ -114,6 +142,9 @@ class EventController extends AbstractController
         $event->setCompany($this->getUser()->getCompany());
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setCreateDate(new DateTime());
+            $event->setDriversAvailable(0);
+            $event->setWorkersSelected(0);
+            $event->setPendingWorkers(0);
             $eventRepository->save($event, true);
 
             // foreach ($userRepository->findAll() as $user) {
@@ -137,6 +168,15 @@ class EventController extends AbstractController
 
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
+
+        // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+        if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
+            $event->setStatus(2);
+            $eventRepository->save($event, true);
+        }else{
+            $event->setStatus(1);
+            $eventRepository->save($event, true);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setEditDate(new DateTime());

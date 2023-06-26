@@ -40,8 +40,7 @@ class EventRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entity);
 
-        if ($flush)
-        {
+        if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
@@ -50,15 +49,14 @@ class EventRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($entity);
 
-        if ($flush)
-        {
+        if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
 
     public function createEventAlmacen(User $user, TaskRepository $taskRepository)
     {
-        
+
         $event = new Event();
         $event->setName('Almacén');
         $event->setStartDate(new \DateTime());
@@ -69,27 +67,27 @@ class EventRepository extends ServiceEntityRepository
         $this->save($event, true);
         $task = $taskRepository->createAsignedTask($event, $user);
         $task->setType(1);
-        $taskRepository->save($task,true);
+        $taskRepository->save($task, true);
         return $task->getId();
     }
 
-  /**
- * @return Event[] Returns an array of Event objects
- */
-public function findActiveEvents(): array
-{
-   $currentDate = new \DateTime();
+    /**
+     * @return Event[] Returns an array of Event objects
+     */
+    public function findActiveEvents(): array
+    {
+        $currentDate = new \DateTime();
 
-   return $this->createQueryBuilder('e')
-       ->andWhere('e.startDate < :currentDate')
-       ->andWhere('e.endDate > :currentDate')
-       ->andWhere('e.status = 1')
-       ->setParameter('currentDate', $currentDate)
-       ->getQuery()
-       ->getResult();
-}
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.startDate < :currentDate')
+            ->andWhere('e.endDate > :currentDate')
+            ->andWhere('e.status = 1')
+            ->setParameter('currentDate', $currentDate)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    /**
+    //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */
 //    public function findByExampleField($value): array
@@ -104,7 +102,7 @@ public function findActiveEvents(): array
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Event
+    //    public function findOneBySomeField($value): ?Event
 //    {
 //        return $this->createQueryBuilder('e')
 //            ->andWhere('e.exampleField = :val')
@@ -113,4 +111,19 @@ public function findActiveEvents(): array
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function hasCoordination($eventId)
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT ue
+        FROM App\Entity\UserEvent ue
+        WHERE ue.event = :eventId
+        AND ue.coordination = 1'
+        )->setParameter('eventId', $eventId);
+
+        $userEvents = $query->getResult();
+
+        return !empty($userEvents);
+    }
+
 }
