@@ -81,7 +81,10 @@ class EventController extends AbstractController
             if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
                 $event->setStatus(2);
                 $eventRepository->save($event, true);
-            }else{
+            }else if($event->getStatus()==0){
+                $event->setStatus(0);
+                $eventRepository->save($event, true);
+            }else {
                 $event->setStatus(1);
                 $eventRepository->save($event, true);
             }

@@ -207,7 +207,9 @@
 												<div class="row justify-content-center align-items-center">
 													<div>
 														{% for userEvent in evento.userEvents %}
+															
 															{% if userEvent.user.id == app.user.id %}
+															{# {{ dump(userEvent.asistance) }} #}
 																{% if userEvent.asistance is null %}
 																	<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
 																		<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
