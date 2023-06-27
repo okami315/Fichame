@@ -3,28 +3,61 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<h1 class="  text-center mt-4" >Register</h1>
- 	<div class="container col-4 mt-4 border border-4  text-center p-0 d-flex justify-content-center" >
-      
-    {{ form_start(registrationForm , { 'attr': {'class': 'col-8 p-0 m-0'} })  }}
-   
-        {{ form_row(registrationForm.username, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.plainPassword,{ 'attr': {'class': 'form-control'} }, {
-            label: 'Password'
-        }) }}
-        
-        {{ form_row(registrationForm.fullName ,{ 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.birthdate ,{ 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.email ,{ 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.address ,{ 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.phoneNumber, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.dni, { 'attr': {'class': 'form-control'} } ) }}
-        {{ form_row(registrationForm.social_security, { 'attr': {'class': 'form-control'} } ) }}
-        {{ form_row(registrationForm.monthlytime ,{ 'attr': {'class': 'form-control'} }) }}
-        {{ form_row(registrationForm.agreeTerms , { 'attr': {'class': 'form-control'} }) }}
-        <button type="submit" class="btn btn-primary mt-2 ">Register</button>
-        <a href="/login" class="btn btn-danger mt-2">Volver</a>
-       
-    {{ form_end(registrationForm) }}
-     </div>
+
+    <div class="container mx-auto row justify-content-center">
+        <div class="col-12 col-md-5 mt-3" id="container">
+            <h2 class="text-center pt-5 mb-2">Registro</h2>
+
+            {{ form_start(registrationForm) }}
+                <div class="form-group">
+                    {{ form_label(registrationForm.username) }}
+                    {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword, 'Password') }}
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.fullName, 'Nombre completo') }}
+                    {{ form_widget(registrationForm.fullName, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.birthdate, 'Fecha de nacimiento') }}
+                    {{ form_widget(registrationForm.birthdate, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.email, 'Correo electronico') }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.address, 'Direccion') }}
+                    {{ form_widget(registrationForm.address, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.phoneNumber, 'Telefono') }}
+                    {{ form_widget(registrationForm.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.dni, 'DNI') }}
+                    {{ form_widget(registrationForm.dni, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.social_security, 'Numero de la seguridad social') }}
+                    {{ form_widget(registrationForm.social_security, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(registrationForm.monthlytime, 'Monthlytime') }}
+                    {{ form_widget(registrationForm.monthlytime, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="form-check ml-auto my-3">
+                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'} }) }}
+                    {{ form_label(registrationForm.agreeTerms, '¿Aceptas las condiciones?', {'label_attr': {'class': 'form-check-label'} }) }}
+                </div>
+
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" name="logeo" value="Registrarse">
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
 {% endblock %}

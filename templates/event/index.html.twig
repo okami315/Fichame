@@ -111,7 +111,7 @@
 													</button>
 												</div>
 												<div class="modal-body">
-													{{evento.schedule }}
+    												{{ evento.schedule }}
 												</div>
 											</div>
 										</div>
@@ -290,11 +290,15 @@ function populateModalContent(eventId) {
       modalTitle.textContent = eventData.name;
 
       var modalBody = document.querySelector('.modal-body');
-      modalBody.innerHTML = eventData.schedule; // Suponiendo que la propiedad 'schedule' contiene el contenido deseado
+      modalBody.innerHTML = nl2br(eventData.schedule); // Utiliza nl2br para convertir los saltos de línea en etiquetas <br>
     })
     .catch(function (error) {
       console.log(error);
     });
+}
+
+function nl2br(str) {
+  return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
 }
 
 function openModal(eventId) {
