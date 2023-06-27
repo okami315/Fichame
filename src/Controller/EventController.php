@@ -25,72 +25,56 @@ class EventController extends AbstractController
     public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository, UserRepository $userRepository): Response
     {
         $totalPending = $userRepository->countActiveUsers();
-        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-            $events = $eventRepository->findAll();
-        } else {
-            $events = $eventRepository->findBy([
-                'company' => $this->getUser()->getCompany()->getId(),
-            ], ['startDate' => 'ASC']);
-        }
 
         $currentMonth = new \DateTime();
-        $currentMonth->modify('first day of this month');
+        $currentMonth->setTime(0, 0, 0);
 
+            // Obtener eventos desde el mes actual en adelante, ordenados por fecha de inicio ascendente
         $events = $eventRepository->createQueryBuilder('e')
             ->where('e.endDate >= :currentMonth')
             ->setParameter('currentMonth', $currentMonth)
-            // ->orderBy('e.startDate', 'ASC')
+            ->orderBy('e.startDate', 'ASC')
             ->getQuery()
             ->getResult();
 
-            // Separar eventos por meses y años
+            // Agrupa los eventos por meses
         $eventosPorMes = [];
         $eventosPorMesTrabajadores = [];
-        foreach ($events as $event) {
-            $startDate = $event->getStartDate();
-            $endDate = $event->getEndDate();
-
-            $monthYear = $endDate->format('F Y');
-
-            $firstDayOfMonth = clone $endDate;
-            $firstDayOfMonth->modify('first day of this month');
-
-            if ($startDate < $firstDayOfMonth) {
-                $monthYear = $endDate->format('F Y');
-            } else {
-                $monthYear = $startDate->format('F Y');
-            }
-
-            if (!isset($eventosPorMes[$monthYear])) {
-                $eventosPorMes[$monthYear] = [];
-            }
-
-            $eventosPorMes[$monthYear][] = $event;
-
-            if ($event->getStatus() === 1 or $event->getStatus()===2) {
-                if (!isset($eventosPorMesTrabajadores[$monthYear])) {
-                    $eventosPorMesTrabajadores[$monthYear] = [];
+        foreach ($events as $evento) {
+            $startDate = $evento->getStartDate();
+            $mes = $startDate >= $currentMonth ? $startDate->format('F Y') : $currentMonth->format('F Y');
+            $eventosPorMes[$mes][] = $evento;
+    
+            if ($evento->getStatus() === 1 || $evento->getStatus() === 2) {
+                if (!isset($eventosPorMesTrabajadores[$mes])) {
+                    $eventosPorMesTrabajadores[$mes] = [];
                 }
-
-                $eventosPorMesTrabajadores[$monthYear][] = $event;
+                $eventosPorMesTrabajadores[$mes][] = $evento;
             }
-
-            $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($event->getId());
-            $event->setWorkersAvailable($countUsers);
-            $eventRepository->save($event, true);
-
-            // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
-            if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
-                $event->setStatus(2);
-                $eventRepository->save($event, true);
-            }else if($event->getStatus()==0){
-                $event->setStatus(0);
-                $eventRepository->save($event, true);
-            }else {
-                $event->setStatus(1);
-                $eventRepository->save($event, true);
+    
+            $countUsers = $userEventRepository->countUsersWithAvailabilityByEventId($evento->getId());
+            $evento->setWorkersAvailable($countUsers);
+            $eventRepository->save($evento, true);
+    
+                // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+            if ($evento->getStatus() != 0 && $evento->getWorkersSelected() == $evento->getWorkersNumber() && $evento->getDriversNumber() == $evento->getDriversAvailable() && $eventRepository->hasCoordination($evento->getId())) {
+                $evento->setStatus(2);
+                $eventRepository->save($evento, true);
+            } else if ($evento->getStatus() == 0) {
+                $evento->setStatus(0);
+                $eventRepository->save($evento, true);
+            } else {
+                $evento->setStatus(1);
+                $eventRepository->save($evento, true);
             }
         }
+    
+        // Ordenar los meses y años en orden ascendente
+        uksort($eventosPorMes, function ($a, $b) {
+            $mesA = \DateTime::createFromFormat('F Y', $a);
+            $mesB = \DateTime::createFromFormat('F Y', $b);
+            return $mesA <=> $mesB;
+        });
 
         return $this->render('event/index.html.twig', [
             'eventosPorMes' => $eventosPorMes,
