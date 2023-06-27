@@ -139,6 +139,8 @@
 											<th>Sueldo estimado</th>
 											<th>Sueldo real</th>
 											<th>Disponibilidad</th>
+											<th>Formulario</th>
+											<th>Fichar</th>
 										</tr>
 									</thead>
 								
@@ -205,30 +207,44 @@
 											{% endif %}
 											{% endfor %}
 											<td>
+												{% for userEvent in evento.userEvents %}
+													{% if userEvent.user.id == app.user.id %}
+														{% if userEvent.asistance is null %}
+															<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
+																<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
+																<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
+																<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
+															</select>
+														{% endif %} 
+													{% endif %} 
+												{% endfor %}
+											</td>
+											<td>
 												<div class="row justify-content-center align-items-center">
 													<div>
-														{% for userEvent in evento.userEvents %}
-															
-															{% if userEvent.user.id == app.user.id %}
-															{# {{ dump(userEvent.asistance) }} #}
-																{% if userEvent.asistance is null %}
-																	<select class="col-11 mb-2 form-select" id="disponibility-select-{{ evento.id }}" onchange="sendDisponibility('{{ evento.id }}','{{ userEvent.asistance }}')">
-																		<option value="null" {% if userEvent.disponibility is null %}selected{% endif %}>No marcar</option>
-																		<option value="1" {% if userEvent.disponibility == 1 %}selected{% endif %}>Disponible</option>
-																		<option value="0" {% if userEvent.disponibility == 0 and userEvent.disponibility is not null %}selected{% endif %}>No disponible</option>
-																	</select>
-																{% endif %} 
-
-					
-																{% if userEvent.asistance == 1 %}
-																	<a href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer">Formulario</a>
-																	<a href='{{ evento.link }}' target="_blank" rel="noopener noreferrer">Formulario Opcional</a>
-																	<a class="col-11 mb-2 btn btn-primary" href="{{ path('app_signing_index', {'id': evento.id}) }}">Fichar</a>
+														<div class="row justify-content-between">
+															{% for userEvent in evento.userEvents %}	
+																{% if userEvent.user.id == app.user.id %}
+																	{% if userEvent.asistance == 1 %}
+																		<a class="px-1" href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer"><i class="text-dark fas fa-poll-h"></i></a>
+																		<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
+																			<img src="{{ asset('images_deploy/plutio-icon.png') }}" alt="iconType" width="15px">
+																		</a>
 																	{% endif %}
 																{% endif %}
-														{% endfor %}
+															{% endfor %}
+														</div>
 													</div>
 												</div>
+											</td>
+											<td>
+												{% for userEvent in evento.userEvents %}
+													{% if userEvent.user.id == app.user.id %}
+														{% if userEvent.asistance == 1 %}
+															<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
+														{% endif %}
+													{% endif %}
+												{% endfor %}
 											</td>
 										</tr>
 									</tbody>
