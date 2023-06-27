@@ -3,5 +3,9 @@
 {% block title %}Edit Type{% endblock %}
 
 {% block body %}
-	{% include 'comunes/_form.html.twig' with {'titulo': 'Edición de tipo'} %}
+    <div class="container mx-auto row justify-content-center">
+        <div class="col-12 col-md-6 mt-5" id="container">
+			{% include 'comunes/_form.html.twig' with {'titulo': 'Edición de tipo'} %}
+	    </div>
+    </div>
 {% endblock %}

@@ -153,15 +153,6 @@ class EventController extends AbstractController
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
-        // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
-        if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
-            $event->setStatus(2);
-            $eventRepository->save($event, true);
-        }else{
-            $event->setStatus(1);
-            $eventRepository->save($event, true);
-        }
-
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setEditDate(new DateTime());
             $eventRepository->save($event, true);

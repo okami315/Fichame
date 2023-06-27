@@ -1,1 +1,14 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+#container {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+#user_driver {
+    width: 25px;
+    height: 25px;
+    margin: 0 auto;
+}
+  

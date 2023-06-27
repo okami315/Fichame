@@ -3,35 +3,39 @@
 {% block title %}Type index{% endblock %}
 
 {% block body %}
-    <h1>Type index</h1>
+    <h1 class="text-center">Listado de tipos</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Icon</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for type in types %}
-            <tr>
-                <td>{{ type.id }}</td>
-                <td>{{ type.name }}</td>
-                <td>{{ type.icon }}</td>
-                <td>
-                    <a href="{{ path('app_type_show', {'id': type.id}) }}">show</a>
-                    <a href="{{ path('app_type_edit', {'id': type.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_type_new') }}">Create new</a>
+    <div class="row justify-content-center mx-2">
+        <div class="col-12 mt-3">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Icon</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for type in types %}
+                        <tr>
+                            <td>{{ type.id }}</td>
+                            <td>{{ type.name }}</td>
+                            <td>{{ type.icon }}</td>
+                            <td>
+                                <a href="{{ path('app_type_edit', {'id': type.id}) }}">edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">No se han encontrado tipos</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-primary mx-3" href="{{ path('app_type_new') }}">Crear nuevo</a>
 {% endblock %}
