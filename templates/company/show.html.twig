@@ -3,25 +3,31 @@
 {% block title %}Company{% endblock %}
 
 {% block body %}
-    <h1>Mi empresa</h1>
+    <h1 class="text-center">Mi empresa</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ company.title }}</td>
-            </tr>
-            <tr>
-                <th>Nif</th>
-                <td>{{ company.nif }}</td>
-            </tr>
-            <tr>
-                <th></th>
-                <td>{{ company.ccc }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row justify-content-center mx-2">
+        <div class="col-12 mt-3">
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Nombre</th>
+                            <td>{{ company.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nif</th>
+                            <td>{{ company.nif }}</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td>{{ company.ccc }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{path("app_register", {'nif': company.nif})}}">Registrar un nuevo trabajador en la empresa</a>
+    <a class="btn btn-primary mx-3" href="{{path("app_register", {'nif': company.nif})}}">Registrar un nuevo trabajador en la empresa</a>
 {% endblock %}
 

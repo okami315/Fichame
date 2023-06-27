@@ -24,10 +24,10 @@ class UserEvent
     private ?bool $driving = false;
 
     #[ORM\ManyToOne(inversedBy: 'userEvents')]
-    private ?User $user = null;
+    private User $user;
 
     #[ORM\ManyToOne(inversedBy: 'userEvents')]
-    private ?Event $event = null;
+    private Event $event;
 
     #[ORM\Column]
     private ?bool $private_car = false;

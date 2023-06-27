@@ -9,7 +9,6 @@
     <div class="row justify-content-center mx-2">
         <div class="col-11 col-md-3 mt-3 card">
             <div class="text-center mt-3">
-                <a class="btn btn-primary" href="{{ path('app_signing_index_almacen') }}">Almacen</a>
                 {% if not bool %}
                     <a class="btn btn-primary" href="{{ path('app_signing_entrada', {'id': event.id}) }}">Entrada</a>
                 {% endif %}

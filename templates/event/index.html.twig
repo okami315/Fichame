@@ -241,7 +241,13 @@
 												{% for userEvent in evento.userEvents %}
 													{% if userEvent.user.id == app.user.id %}
 														{% if userEvent.asistance == 1 %}
-															<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
+															{% for role in userEvent.user.roles %}
+																{% if role == 'ROLE_USER' %}
+																	<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
+																{% elseif role == 'ROLE_ALMACEN' %}
+																	<a class="mt-2 btn btn-primary" href="{{ path('app_signing_index_almacen') }}">Almacen</a>
+																{% endif %}
+															{% endfor %}
 														{% endif %}
 													{% endif %}
 												{% endfor %}
