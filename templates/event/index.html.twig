@@ -5,23 +5,23 @@
 {% block body %}
 	{% set currentMonth = "now"|date('F Y') %}
 	<div class="container-fluid">
-		<div class="row justify-content-center mb-3">
+		<div class="row justify-content-end mb-3">
 			{% if is_granted('ROLE_ADMIN') %}
-				<div class="col-12 col-md-4 pt-4">
-					<div class="text-center d-flex flex-wrap">
-						<a href="{{ path('app_event_new') }}" class="btn btn-primary m-1 flex-grow-1">Crear nuevo evento</a>
-						<a href="{{ path('app_type_index') }}" class="btn btn-primary m-1 flex-grow-1">Gestionar tipos</a>
+				<div class="col-12 col-md-4 pt-2">
+                	<div class="text-right d-flex justify-content-end flex-wrap">
+						<a href="{{ path('app_event_new') }}" class="boton btn m-1 flex-grow-1">Crear nuevo evento</a>
+						<a href="{{ path('app_type_index') }}" class="boton btn m-1 flex-grow-1">Gestionar tipos</a>
 					</div>
 				</div>
 			{% endif %}
 			<div class="col-12">
 				{% if is_granted('ROLE_ADMIN') %}
 					<div class="row justify-content-center mx-1">
-        				<div class="col-12 mt-3">
+        				<div class="col-12">
             				<div class="table-responsive">
 								{% for mes, eventos in eventosPorMes %}
 									<h2>{{ mes }}</h2>
-									<table class="table text-center">
+									<table class="table text-left">
 										<thead>
 											<tr>
 												<th>Estado</th>
@@ -52,7 +52,9 @@
 													{% if evento.type is not empty %}
 														<div class="d-flex justify-content-center align-items-center">
 														{% for type in evento.type %}
-															<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+															{% if type.icon is not empty %}
+																<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+															{% endif %}
 														{% endfor %}
 														</div>
 													{% endif %}
@@ -125,7 +127,7 @@
             				<div class="table-responsive">
 								{% for mes, eventos in eventosPorMesTrabajadores %}
 									<h2>{{ mes }}</h2>
-									<table class="table text-center">
+									<table class="table text-left">
 										<thead>
 											<tr>
 												<th>Estado</th>
@@ -180,7 +182,9 @@
 														{% if evento.type is not empty %}
 															<div class="d-flex justify-content-center align-items-center">
 															{% for type in evento.type %}
-																<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+																{% if type.icon is not empty %}
+																	<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+																{% endif %}
 															{% endfor %}
 															</div>
 														{% endif %}
@@ -215,13 +219,13 @@
 														<div class="row justify-content-center align-items-center">
 															<div>
 																<div class="row justify-content-between">
+																	<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
+																		<img src="{{ asset('images_deploy/plutio-icon.png') }}" alt="iconType" width="15px">
+																	</a>
 																	{% for userEvent in evento.userEvents %}	
 																		{% if userEvent.user.id == app.user.id %}
 																			{% if userEvent.asistance == 1 %}
 																				<a class="px-1" href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer"><i class="text-dark fas fa-poll-h"></i></a>
-																				<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
-																					<img src="{{ asset('images_deploy/plutio-icon.png') }}" alt="iconType" width="15px">
-																				</a>
 																			{% endif %}
 																		{% endif %}
 																	{% endfor %}
@@ -233,13 +237,7 @@
 														{% for userEvent in evento.userEvents %}
 															{% if userEvent.user.id == app.user.id %}
 																{% if userEvent.asistance == 1 %}
-																	{% for role in userEvent.user.roles %}
-																		{% if role == 'ROLE_USER' %}
-																			<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
-																		{% elseif role == 'ROLE_ALMACEN' %}
-																			<a class="mt-2 btn btn-primary" href="{{ path('app_signing_index_almacen') }}">Almacen</a>
-																		{% endif %}
-																	{% endfor %}
+																	<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
 																{% endif %}
 															{% endif %}
 														{% endfor %}

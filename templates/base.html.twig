@@ -9,7 +9,9 @@
     </head>
     <body>
         <div class="container-fluid p-0">
-            {% include "comunes/_menu.html.twig" %}
+            {% if app.user %}
+                {% include "comunes/_menu.html.twig" %}
+            {% endif %}
             {% block body %}{% endblock %}
         </div>
         {% block javascripts %}

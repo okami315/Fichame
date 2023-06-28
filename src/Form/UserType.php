@@ -14,8 +14,12 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username')
-            ->add('fullName')
+            ->add('username', null, [
+                'label' => 'Nombre de usuario',
+            ])
+            ->add('fullName', null, [
+                'label' => 'Nombre completo',
+            ])
             ->add('roles', ChoiceType::class, [
                 'choices'  => [
                     'Admin' => 'ROLE_ADMIN',
@@ -23,18 +27,42 @@ class UserType extends AbstractType
                     'Almacen' => 'ROLE_ALMACEN',
                 ],
                 'expanded' => true,
-                'multiple' => true
+                'multiple' => true,
+                'label' => 'Roles',
             ])
-            ->add('email')
-            ->add('address')
-            ->add('phoneNumber')
-            ->add('dni')
-            ->add('naf')
-            ->add('driver')
-            ->add('status')
-            ->add('agreement')
-            ->add('socialSecurity')
-            ->add('agreement')
+            ->add('email', null, [
+                'label' => 'Correo electrónico',
+            ])
+            ->add('address', null, [
+                'label' => 'Dirección',
+            ])
+            ->add('phoneNumber', null, [
+                'label' => 'Número de teléfono',
+            ])
+            ->add('dni', null, [
+                'label' => 'DNI',
+            ])
+            ->add('naf', null, [
+                'label' => 'NAF',
+            ])
+            ->add('driver', null, [
+                'label' => 'Conductor',
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'Activo' => 1,
+                    'Inactivo' => 2,
+                    'Borrado' => 0,
+                ],
+                'label' => 'Estado',
+            ])
+            ->add('agreement', null, [
+                'label' => 'Contrato',
+            ])
+            ->add('social_security', null, [
+                'label' => 'Seguridad Social',
+                'required' => true,
+            ])
         ;
     }
 

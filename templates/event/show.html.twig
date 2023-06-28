@@ -6,7 +6,9 @@
             {% if event.type is not empty %}
                 <div class="d-flex justify-content-center align-items-center">
                 {% for type in event.type %}
-                    <img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+                    {% if type.icon is not empty %}
+						<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+					{% endif %}
                 {% endfor %}
                 </div>
             {% endif %}

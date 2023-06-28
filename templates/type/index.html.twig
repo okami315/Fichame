@@ -12,9 +12,9 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Name</th>
-                            <th>Icon</th>
-                            <th>actions</th>
+                            <th>Nombre</th>
+                            <th>Imagen</th>
+                            <th>Accciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,8 +23,9 @@
                             <td>{{ type.id }}</td>
                             <td>{{ type.name }}</td>
                             <td>{{ type.icon }}</td>
-                            <td>
-                                <a href="{{ path('app_type_edit', {'id': type.id}) }}">edit</a>
+                            <td class="d-flex align-items-center">
+                                <a class="btn mb-3 mx-2 boton" href="{{ path('app_type_edit', {'id': type.id}) }}">Editar</a>
+                                {{ include('type/_delete_form.html.twig') }}
                             </td>
                         </tr>
                     {% else %}
@@ -37,5 +38,5 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-primary mx-3" href="{{ path('app_type_new') }}">Crear nuevo</a>
+    <a class="boton btn mx-3" href="{{ path('app_type_new') }}">Crear nuevo</a>
 {% endblock %}

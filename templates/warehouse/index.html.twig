@@ -2,22 +2,27 @@
 
 {% block title %}Calendario de Almacén{% endblock %}
 
-
-
 {% block body %}
 
+  <h1 class="text-center" id="titulo"></h1>
+
+
+  <div class="container mb-5">
+    <div class="text-center">
+      <a class="d-inline-block boton btn" href="{{ path('app_signing_index_almacen') }}">Almacen</a>
+    </div>
+    <div id="calendar"></div>
+  </div>
+
 {% block javascripts %}
-<script src='js/index.global.min.js'></script>
-  
+  <script src='js/index.global.min.js'></script>
 {% endblock %}
 
-<div id="calendar"></div>
-{% block scripts %}
-<script>
-
-    document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+  {% block scripts %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       locale: 'es',
       events: [
@@ -43,7 +48,7 @@
     });
     calendar.render();
 
-    var $title = document.querySelector('#calendar div:nth-of-type(2)');
+    var $title = document.querySelector('#titulo');
     $title.innerHTML = '<a class="h2" href="{{path("app_monthly")}}">Análisis mensual</a>  <a class="h2" href="{{path("app_warehouse_vacation")}}">Fichar Vacaciones</a>';
   });
 </script>

@@ -14,7 +14,9 @@ class TypeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => 'Nombre',
+            ])
             ->add('icon', FileType::class, [
                 'label' => 'Imagen para el tipo',
                 'mapped' => false,
@@ -26,8 +28,9 @@ class TypeType extends AbstractType
                             'image/jpeg',
                             'image/png',
                         ],
-                        'mimeTypesMessage' => 'Por favor sube una imagen'
-                    ])
+                        'mimeTypesMessage' => 'Por favor sube una imagen',
+                        'maxSizeMessage' => 'El tamaño máximo permitido es de 1024 KB',
+                    ]),
                 ],
             ])
         ;

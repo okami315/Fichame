@@ -10,11 +10,11 @@
 
             {{ form_start(registrationForm) }}
                 <div class="form-group">
-                    {{ form_label(registrationForm.username) }}
+                    {{ form_label(registrationForm.username, 'Nombre de usuario') }}
                     {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
                 </div>
                 <div class="form-group">
-                    {{ form_label(registrationForm.plainPassword, 'Password') }}
+                    {{ form_label(registrationForm.plainPassword, 'Contraseña') }}
                     {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
                 </div>
                 <div class="form-group">
@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="d-grid">
-                    <input type="submit" class="btn btn-primary" name="logeo" value="Registrarse">
+                    <input type="submit" class="boton btn" name="logeo" value="Registrarse">
                 </div>
             {{ form_end(registrationForm) }}
         </div>

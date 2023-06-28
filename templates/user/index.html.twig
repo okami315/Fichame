@@ -13,16 +13,13 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Username</th>
+                            <th>usuario</th>
                             <th>Roles</th>
-                            <th>FullName</th>
+                            <th>Nombre completo</th>
                             <th>Email</th>
-                            <th>Address</th>
-                            <th>PhoneNumber</th>
-                            <th>Dni</th>
-                            <th>Naf</th>
-                            <th>RegDate</th>
-                            <th>actions</th>
+                            <th>DNI</th>
+                            <th>Fecha de registro</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,13 +30,10 @@
                                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                                 <td>{{ user.fullName }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.address }}</td>
-                                <td>{{ user.phoneNumber }}</td>
                                 <td>{{ user.dni }}</td>
-                                <td>{{ user.naf }}</td>
                                 <td>{{ user.regDate ? user.regDate|date('Y-m-d H:i:s') : '' }}</td>
                                 <td>
-                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                                    <a class="btn boton" href="{{ path('app_user_edit', {'id': user.id}) }}">Editar</a>
                                     {% if not user.roles %}
                                         <a href="{{ path('app_user_verify', {'id': user.id}) }}">verify</a>
                                     {% endif %}

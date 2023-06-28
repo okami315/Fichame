@@ -1,7 +1,7 @@
 <header>
     {% if app.user %}
         <div class="mx-2 my-1 text-right">
-            <a class="text-dark" href="{{path("app_user_profile")}}"><i class="fas fa-user"></i> <b>{{ app.user.userIdentifier }}({{ app.user.dni }})</b></a>  - <a class="text-dark" href="{{path('app_company_show', {'nif':app.user.company.nif})}}">{{app.user.company.title}}({{app.user.company.nif}})</a> <a class="btn btn-danger" href="{{ path('app_logout') }}">Cerrar sesion</a>
+            <a class="text-dark" href="{{path("app_user_profile")}}"><i class="fas fa-user"></i> <b>{{ app.user.userIdentifier }}</b></a>  - <a class="text-dark" href="{{path('app_company_show', {'nif':app.user.company.nif})}}">{{app.user.company.title}}</a> <a class="btn btn-danger" href="{{ path('app_logout') }}">Cerrar sesion</a>
         </div>
     {% endif %}
 </header>
@@ -23,7 +23,7 @@
                 <li class="nav-item"><a class="nav-link active" href="{{path("app_company_index")}}"><i class="fa-solid fa-building"></i> Empresas</a></li>
             {% endif %}
 
-            <li class="nav-item"><a class="nav-link active" href="{{path("app_user_trabajadores")}}"><i class="fas fa-users"></i> Admin</a></li>
+            <li class="nav-item"><a class="nav-link active" href="{{path("app_user_trabajadores")}}"><i class="fas fa-users"></i> Trabajadores</a></li>
         {% endif %}
         
     </ul>

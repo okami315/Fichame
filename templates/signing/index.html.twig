@@ -10,7 +10,7 @@
         <div class="col-11 col-md-3 mt-3 card">
             <div class="text-center mt-3">
                 {% if not bool %}
-                    <a class="btn btn-primary" href="{{ path('app_signing_entrada', {'id': event.id}) }}">Entrada</a>
+                    <a class="boton btn" href="{{ path('app_signing_entrada', {'id': event.id}) }}">Entrada</a>
                 {% endif %}
             </div>
             <div>
@@ -43,9 +43,9 @@
                                 </td>
                                 <td>
                                     {% if signing.checkin and signing.checkout %}
-                                        <a class="btn btn-primary" href="{{ path('app_signing_edit', {'id': signing.id}) }}">Editar</a>
+                                        <a class="boton btn" href="{{ path('app_signing_edit', {'id': signing.id}) }}">Editar</a>
                                     {% elseif signing.checkin and not signing.checkout %}
-                                        <a class="btn btn-primary" href="{{ path('app_signing_salida', {'id': signing.id}) }}">Salida</a>
+                                        <a class="boton btn" href="{{ path('app_signing_salida', {'id': signing.id}) }}">Salida</a>
                                     {% endif %}  
                                 </td>
                             </tr>

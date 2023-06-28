@@ -16,30 +16,49 @@ class EventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => 'Nombre',
+            ])
             ->add('type', EntityType::class, [
                 'class' => Type::class,
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,
+                'label' => 'Tipo',
             ])
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
-                'years' => range(date('Y') - 100, date('Y')), 
+                'years' => range(date('Y') - 100, date('Y')),
+                'label' => 'Fecha de inicio',
             ])
             ->add('endDate', DateType::class, [
                 'widget' => 'single_text',
-                'years' => range(date('Y') - 100, date('Y')), 
+                'years' => range(date('Y') - 100, date('Y')),
+                'label' => 'Fecha de fin',
             ])
-            ->add('workers_number')
-            ->add('drivers_number')
-            ->add('distance')
-            ->add('schedule', TextareaType::class, [ 
-                'attr' => ['rows' => 8], 
+            ->add('workers_number', null, [
+                'label' => 'Número de trabajadores',
             ])
-            ->add('estimated_hours')
-            ->add('linkForm')
-            ->add('link')
+            ->add('drivers_number', null, [
+                'label' => 'Número de conductores',
+            ])
+            ->add('distance', null, [
+                'label' => 'Distancia',
+            ])
+            ->add('schedule', TextareaType::class, [
+                'attr' => ['rows' => 8],
+                'label' => 'Horario',
+                'required' => false,
+            ])
+            ->add('estimated_hours', null, [
+                'label' => 'Horas estimadas',
+            ])
+            ->add('linkForm', null, [
+                'label' => 'Enalce formulario',
+            ])
+            ->add('link', null, [
+                'label' => 'Enlace formulario opcional',
+            ])
         ;
     }
 
