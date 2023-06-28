@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Eventos
-{% endblock %}
+{% block title %}Eventos{% endblock %}
 
 {% block body %}
 	{% set currentMonth = "now"|date('F Y') %}
@@ -17,196 +16,189 @@
 			{% endif %}
 			<div class="col-12">
 				{% if is_granted('ROLE_ADMIN') %}
-					{# {{dump(eventosPorMes)}} #}
-					{% for mes, eventos in eventosPorMes %}
-						<h2>{{ mes }}</h2>
-								<table class="table text-center">
-									<thead>
-										<tr>
-											<th>Estado</th>
-											<th>Tipo</th>
-											<th>Nombre</th>
-											<th>Fecha</th>
-											<th>Disponibles</th>
-											<th>Pendientes</th>
-											<th>Asignados</th>
-											<th>Conductores</th>
-											{# <th>Horario estimado</th> #}
-											<th>Horas estimadas</th>
-											<th>Acciones</th>
-										</tr>
-									</thead>
-								{% for evento in eventos %}
-									<tbody>
-										<tr>
-											<td>
-												{% if evento.status == 0 %}
-													<i class="fas fa-circle" style="color: #E4FF5D;"></i>
-												{% elseif evento.status == 1 %}
-													<i class="fas fa-circle" style="color: #FF0000;"></i>
-												{% else %}
-													<i class="fas fa-circle" style="color: #7EFF9D;"></i>
-												{% endif %}
-											</td>
-											<td>
-												{% if evento.type is not empty %}
-												  	<div class="d-flex justify-content-center align-items-center">
-													{% for type in evento.type %}
-														<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
-													{% endfor %}
-													</div>
-												{% endif %}
-											</td>
-											<td>{{ evento.name }}</td>
-											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
-											<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
-											<td>{{ evento.pendingWorkers }}/{{ totalPending }}</td>
-											<td> {{evento.workersselected }}/{{ evento.workersnumber}}</td>
-											<td> {{evento.driversavailable }}/{{ evento.driversnumber}}</td>
-											<td>
-												<a onclick="openModal('{{ evento.id }}')" style="cursor:pointer">
-													{{ evento.estimatedhours }}
-												</a>
-											</td>
-											<td>
-												<div class="row justify-content-center align-items-center">
-													<div class="d-flex">
-														<div>
-															<a class="mb-2 btn" href="{{ path('app_event_edit', {'id': evento.id}) }}"><i class="fas fa-edit"></i></a>
+					<div class="row justify-content-center mx-1">
+        				<div class="col-12 mt-3">
+            				<div class="table-responsive">
+								{% for mes, eventos in eventosPorMes %}
+									<h2>{{ mes }}</h2>
+									<table class="table text-center">
+										<thead>
+											<tr>
+												<th>Estado</th>
+												<th>Tipo</th>
+												<th>Nombre</th>
+												<th>Fecha</th>
+												<th>Disponibles</th>
+												<th>Pendientes</th>
+												<th>Asignados</th>
+												<th>Conductores</th>
+												<th>Horas estimadas</th>
+												<th>Acciones</th>
+											</tr>
+										</thead>
+									{% for evento in eventos %}
+										<tbody>
+											<tr>
+												<td>
+													{% if evento.status == 0 %}
+														<i class="fas fa-circle" style="color: #E4FF5D;"></i>
+													{% elseif evento.status == 1 %}
+														<i class="fas fa-circle" style="color: #FF0000;"></i>
+													{% else %}
+														<i class="fas fa-circle" style="color: #7EFF9D;"></i>
+													{% endif %}
+												</td>
+												<td>
+													{% if evento.type is not empty %}
+														<div class="d-flex justify-content-center align-items-center">
+														{% for type in evento.type %}
+															<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+														{% endfor %}
 														</div>
-														{% if evento.status == 0 and evento.userEvents|length  == 0 %}
-															<div class="d-flex">
-																<form class="m-0 mb-2" method="post" action="{{ path('app_event_delete', {'id': evento.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-																	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
-																	<button class="btn"><i class="fas fa-trash-alt"></i></button>
-																</form>
-																<form class="m-0 mb-2" method="post" action="{{ path('app_event_open_id', {'id': evento.id}) }}">
-																	<button class="btn"><i class="fas fa-eye"></i></button>
-																</form>
-															</div>
-														{% endif %}
-														{% if evento.status != 0 %}
+													{% endif %}
+												</td>
+												<td>{{ evento.name }}</td>
+												<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
+												<td>{{ evento.workersavailable }}/{{ evento.workersnumber }}</td>
+												<td>{{ evento.pendingWorkers }}/{{ totalPending }}</td>
+												<td> {{evento.workersselected }}/{{ evento.workersnumber}}</td>
+												<td> {{evento.driversavailable }}/{{ evento.driversnumber}}</td>
+												<td>
+													<a onclick="openModal('{{ evento.id }}')" style="cursor:pointer">
+														{{ evento.estimatedhours }}
+													</a>
+												</td>
+												<td>
+													<div class="row justify-content-center align-items-center">
+														<div class="d-flex">
 															<div>
-																<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
-																	<button class="btn"><i class="fas fa-times"></i></button>
-																</form>
+																<a class="mb-2 btn" href="{{ path('app_event_edit', {'id': evento.id}) }}"><i class="fas fa-edit"></i></a>
 															</div>
-														{% endif %}
-														{# <div>
-															<a class="mb-2 btn" href="{{ path('app_event_show_workers', {'id': evento.id}) }}">Trabajadores</a>
-														</div> #}
+															{% if evento.status == 0 and evento.userEvents|length  == 0 %}
+																<div class="d-flex">
+																	<form class="m-0 mb-2" method="post" action="{{ path('app_event_delete', {'id': evento.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+																		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evento.id) }}">
+																		<button class="btn"><i class="fas fa-trash-alt"></i></button>
+																	</form>
+																	<form class="m-0 mb-2" method="post" action="{{ path('app_event_open_id', {'id': evento.id}) }}">
+																		<button class="btn"><i class="fas fa-eye"></i></button>
+																	</form>
+																</div>
+															{% endif %}
+															{% if evento.status != 0 %}
+																<div>
+																	<form class="m-0 mb-2" method="post" action="{{ path('app_event_close_id', {'id': evento.id}) }}">
+																		<button class="btn"><i class="fas fa-times"></i></button>
+																	</form>
+																</div>
+															{% endif %}
+														</div>
 													</div>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-										{# Modal #}
-									<div class="modal fade" id="miModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-										<div class="modal-dialog modal-lg" role="document">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="modalLabel">Título del modal</h5>
-													<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
-														<span aria-hidden="true">&times;</span>
-													</button>
-												</div>
-												<div class="modal-body">
-    												{{ evento.schedule }}
+												</td>
+											</tr>
+										</tbody>
+{# ---------------------------------------- Modal ---------------------------------------- #}
+										<div class="modal fade" id="miModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+											<div class="modal-dialog modal-lg" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="modalLabel">Título del modal</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
+															<span aria-hidden="true">&times;</span>
+														</button>
+													</div>
+													<div class="modal-body">
+														{{ evento.schedule }}
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								{% endfor %}
-							</div>
+									{% endfor %}
+								</table>
+							{% endfor %}
 						</div>
-						{# {% endif %} #}
-							</table>
-					{% endfor %}
+        			</div>
+    			</div>
 				{% else %}
-					{% for mes, eventos in eventosPorMesTrabajadores %}
-						<h2>{{ mes }}</h2>
-								<table class="table text-center">
-									<thead>
-										<tr>
-											<th>Estado</th>
-											<th>Tipo</th>
-											<th>Nombre</th>
-											<th>Fecha</th>
-											<th>Nº trabajadores</th>
-											<th>Horas estimadas</th>
-											<th>Horas reales</th>
-											{# Modal al pulsar Horas estimadas <th>Horario estimado</th>#}
-											<th>Sueldo estimado</th>
-											<th>Sueldo real</th>
-											<th>Disponibilidad</th>
-											<th>Formulario</th>
-											<th>Fichar</th>
-										</tr>
-									</thead>
-								
-								{% for evento in eventos %}
-								
-									{% if evento.status != 0 %}
-									<tbody>
-										<tr>
-											<td>
-											{% for userEvent in evento.userEvents %}
-												{% if userEvent.user.id == app.user.id %}
-													<div class="d-flex justify-content-center align-items-center mx-2" id="p-{{ evento.id }}">
-														{% if userEvent.disponibility is null %}
-															<i class="px-1 fas fa-circle" style="color: #E4FF5D;"></i>
-															{% elseif userEvent.asistance is null and userEvent.disponibility %}
-																<i class="px-1 fas fa-circle" style="color: #999999;"></i>
-																{% if userEvent.coordination == 1 %}
-																	<i class="px-1 fas fa-user" style="color: #999999;"></i>
-																{% endif %}
-																{% if userEvent.driving == 1 %}
-																	<i class="px-1 fas fa-car-side" style="color: #999999;"></i>
-																{% endif %}
-															{% elseif userEvent.asistance == 0 or userEvent.disponibility == 0 %}
-																<i class="px-1 fas fa-circle" style="color: #000000;"></i>
-															{% else %}
-																<i class="px-1 fas fa-circle" style="color: #7EFF9D;"></i>
-															{% if userEvent.coordination == 1 %}
-																<i class="px-1 fas fa-user" style="color: #999999;"></i>
+					<div class="row justify-content-center mx-1">
+        				<div class="col-12 mt-3">
+            				<div class="table-responsive">
+								{% for mes, eventos in eventosPorMesTrabajadores %}
+									<h2>{{ mes }}</h2>
+									<table class="table text-center">
+										<thead>
+											<tr>
+												<th>Estado</th>
+												<th>Tipo</th>
+												<th>Nombre</th>
+												<th>Fecha</th>
+												<th>Nº trabajadores</th>
+												<th>Horas estimadas</th>
+												<th>Horas reales</th>
+												{# Modal al pulsar Horas estimadas <th>Horario estimado</th>#}
+												<th>Sueldo estimado</th>
+												<th>Sueldo real</th>
+												<th>Disponibilidad</th>
+												<th>Formulario</th>
+												<th>Fichar</th>
+											</tr>
+										</thead>
+									{% for evento in eventos %}
+										{% if evento.status != 0 %}
+											<tbody>
+												<tr>
+													<td>
+														{% for userEvent in evento.userEvents %}
+															{% if userEvent.user.id == app.user.id %}
+																<div class="d-flex justify-content-center align-items-center mx-2" id="p-{{ evento.id }}">
+																	{% if userEvent.disponibility is null %}
+																		<i class="px-1 fas fa-circle" style="color: #E4FF5D;"></i>
+																	{% elseif userEvent.asistance is null and userEvent.disponibility %}
+																		<i class="px-1 fas fa-circle" style="color: #999999;"></i>
+																		{% if userEvent.coordination == 1 %}
+																			<i class="px-1 fas fa-user" style="color: #999999;"></i>
+																		{% endif %}
+																		{% if userEvent.driving == 1 %}
+																			<i class="px-1 fas fa-car-side" style="color: #999999;"></i>
+																		{% endif %}
+																	{% elseif userEvent.asistance == 0 or userEvent.disponibility == 0 %}
+																		<i class="px-1 fas fa-circle" style="color: #000000;"></i>
+																	{% else %}
+																		<i class="px-1 fas fa-circle" style="color: #7EFF9D;"></i>
+																		{% if userEvent.coordination == 1 %}
+																			<i class="px-1 fas fa-user" style="color: #999999;"></i>
+																		{% endif %}
+																		{% if userEvent.driving == 1 %}
+																			<i class="px-1 fas fa-car-side" style="color: #999999;"></i>
+																		{% endif %}
+																	{% endif %}
+																</div>
 															{% endif %}
-															{% if userEvent.driving == 1 %}
-																<i class="px-1 fas fa-car-side" style="color: #999999;"></i>
-															{% endif %}
+														{% endfor %}
+													</td>
+													<td>
+														{% if evento.type is not empty %}
+															<div class="d-flex justify-content-center align-items-center">
+															{% for type in evento.type %}
+																<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
+															{% endfor %}
+															</div>
 														{% endif %}
-													</div>
-												{% endif %}
-											{% endfor %}
-											</td>
-												<td>
-												{% if evento.type is not empty %}
-												  	<div class="d-flex justify-content-center align-items-center">
-													{% for type in evento.type %}
-														<img src="{{ asset('images_upload/' ~ type.icon) }}" alt="iconType" width="40px">
-													{% endfor %}
-													</div>
-												{% endif %}
-											</td>
-											<td>{{ evento.name }}</td>
-											<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
-											<td>{{ evento.workersnumber }}</td>
-
-											{# <td>{{ evento.schedule }}</td> Modal #}
-											
-											{% for userEvent in evento.userEvents %}
-											{% if userEvent.user.id == app.user.id %}
-												<td>
-												<a onclick="openModal('{{ userEvent.event.id }}')" style="cursor:pointer">
-												{{ userEvent.estimatedhours }}
-												</a>
-												</td>
-												<td>{{ userEvent.realhours }}</td>
-												<td>{{ userEvent.estimatedsalary }}</td>
-												<td>{{ userEvent.realsalary }}</td>
-												
-											{% endif %}
-											{% endfor %}
-											<td>
+													</td>	
+													<td>{{ evento.name }}</td>
+													<td><b>{{ evento.startDate|date('d-m-Y') }}</b> al <b>{{ evento.endDate|date('d-m-Y') }}</b></td>
+													<td>{{ evento.workersnumber }}</td>
+												{% for userEvent in evento.userEvents %}
+													{% if userEvent.user.id == app.user.id %}
+														<td>
+															<a onclick="openModal('{{ userEvent.event.id }}')" style="cursor:pointer">{{ userEvent.estimatedhours }}</a>
+														</td>
+														<td>{{ userEvent.realhours }}</td>
+														<td>{{ userEvent.estimatedsalary }}</td>
+														<td>{{ userEvent.realsalary }}</td>
+													{% endif %}
+												{% endfor %}
+													<td>
 												{% for userEvent in evento.userEvents %}
 													{% if userEvent.user.id == app.user.id %}
 														{% if userEvent.asistance is null %}
@@ -218,137 +210,135 @@
 														{% endif %} 
 													{% endif %} 
 												{% endfor %}
-											</td>
-											<td>
-												<div class="row justify-content-center align-items-center">
-													<div>
-														<div class="row justify-content-between">
-															{% for userEvent in evento.userEvents %}	
-																{% if userEvent.user.id == app.user.id %}
-																	{% if userEvent.asistance == 1 %}
-																		<a class="px-1" href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer"><i class="text-dark fas fa-poll-h"></i></a>
-																		<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
-																			<img src="{{ asset('images_deploy/plutio-icon.png') }}" alt="iconType" width="15px">
-																		</a>
-																	{% endif %}
+													</td>
+													<td>
+														<div class="row justify-content-center align-items-center">
+															<div>
+																<div class="row justify-content-between">
+																	{% for userEvent in evento.userEvents %}	
+																		{% if userEvent.user.id == app.user.id %}
+																			{% if userEvent.asistance == 1 %}
+																				<a class="px-1" href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer"><i class="text-dark fas fa-poll-h"></i></a>
+																				<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
+																					<img src="{{ asset('images_deploy/plutio-icon.png') }}" alt="iconType" width="15px">
+																				</a>
+																			{% endif %}
+																		{% endif %}
+																	{% endfor %}
+																</div>
+															</div>
+														</div>
+													</td>
+													<td>
+														{% for userEvent in evento.userEvents %}
+															{% if userEvent.user.id == app.user.id %}
+																{% if userEvent.asistance == 1 %}
+																	{% for role in userEvent.user.roles %}
+																		{% if role == 'ROLE_USER' %}
+																			<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
+																		{% elseif role == 'ROLE_ALMACEN' %}
+																			<a class="mt-2 btn btn-primary" href="{{ path('app_signing_index_almacen') }}">Almacen</a>
+																		{% endif %}
+																	{% endfor %}
 																{% endif %}
-															{% endfor %}
+															{% endif %}
+														{% endfor %}
+													</td>
+												</tr>
+											</tbody>
+{# ---------------------------------------- Modal ---------------------------------------- #}									
+											<div class="modal fade" id="miModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+												<div class="modal-dialog modal-lg" role="document">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title" id="modalLabel">Título del modal</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
+																<span aria-hidden="true">&times;</span>
+															</button>
+														</div>
+														<div class="modal-body">
 														</div>
 													</div>
 												</div>
-											</td>
-											<td>
-												{% for userEvent in evento.userEvents %}
-													{% if userEvent.user.id == app.user.id %}
-														{% if userEvent.asistance == 1 %}
-															{% for role in userEvent.user.roles %}
-																{% if role == 'ROLE_USER' %}
-																	<a href="{{ path('app_signing_index', {'id': evento.id}) }}"><i class="text-dark fas fa-clock"></i></a>
-																{% elseif role == 'ROLE_ALMACEN' %}
-																	<a class="mt-2 btn btn-primary" href="{{ path('app_signing_index_almacen') }}">Almacen</a>
-																{% endif %}
-															{% endfor %}
-														{% endif %}
-													{% endif %}
-												{% endfor %}
-											</td>
-										</tr>
-									</tbody>
-										{# Modal #}
-									<div class="modal fade" id="miModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-										<div class="modal-dialog modal-lg" role="document">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title" id="modalLabel">Título del modal</h5>
-													<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
-														<span aria-hidden="true">&times;</span>
-													</button>
-												</div>
-												<div class="modal-body">
-												</div>
 											</div>
-										</div>
-									</div>
-									{% endif %}
-								{% endfor %}
-							</table>
-					{% endfor %}
-				{% endif %}
-			</div>
+										{% endif %}
+									{% endfor %}
+								</table>
+							{% endfor %}
+						</div>
+        			</div>
+    			</div>
+			{% endif %}
 		</div>
+	</div>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script>
+		function populateModalContent(eventId) {
+  			axios.get('/getevent/' + eventId)
+    		.then(function (response) {
+      			var eventData = response.data;
+      				// Actualiza el título del modal con el nombre del evento
+      			var modalTitle = document.getElementById('modalLabel');
+      			modalTitle.textContent = eventData.name;
 
-function populateModalContent(eventId) {
-  axios.get('/getevent/' + eventId)
-    .then(function (response) {
-      var eventData = response.data;
-
-      // Actualiza el título del modal con el nombre del evento
-      var modalTitle = document.getElementById('modalLabel');
-      modalTitle.textContent = eventData.name;
-
-      var modalBody = document.querySelector('.modal-body');
-      modalBody.innerHTML = nl2br(eventData.schedule); // Utiliza nl2br para convertir los saltos de línea en etiquetas <br>
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}
-
-function nl2br(str) {
-  return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
-}
-
-function openModal(eventId) {
-    var modal = document.getElementById('miModal');
-    modal.classList.add('show');
-    modal.style.display = 'block';
-	populateModalContent(eventId);
-}
-
-function closeModal() {
-    var modal = document.getElementById('miModal');
-    modal.classList.remove('show');
-    modal.style.display = 'none';
-}
-
-function sendDisponibility(eventId,asistance) {
-  var selectElement = document.getElementById("disponibility-select-" + eventId);
-  var disponibilityValue = selectElement.value;
-
-  axios.post('/user/event/disponibility/'+eventId, {
-    disponibility: disponibilityValue
-  })
-  .then(function (response) {
-    console.log("Todo gucci");
-    selectElement.value = disponibilityValue;
-
-	 // Actualizar el icono del evento en la interfaz de usuario
-    var iconElement = document.getElementById("p-" + eventId);
-    var newIcon = '';
-
-    if (disponibilityValue === '1') {
-		if(asistance == 0){
-			 newIcon = '<i class="fas fa-circle" style="color: #999999;"></i>';
-		}else{
-			newIcon = '<i class="fas fa-circle" style="color: #7EFF9D;"></i>';
+      			var modalBody = document.querySelector('.modal-body');
+      			modalBody.innerHTML = nl2br(eventData.schedule); // Utiliza nl2br para convertir los saltos de línea en etiquetas <br>
+    		})
+    		.catch(function (error) {
+      			console.log(error);
+    		});
 		}
-    } else if (disponibilityValue === '0') {
-      newIcon = '<i class="fas fa-circle" style="color: #000000;"></i>';
-    } else {
-      newIcon = '<i class="fas fa-circle" style="color: #E4FF5D;"></i>';
-    }
-    iconElement.innerHTML = newIcon;
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-}
-</script>
 
+		function nl2br(str) {
+		return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+		}
+
+		function openModal(eventId) {
+			var modal = document.getElementById('miModal');
+			modal.classList.add('show');
+			modal.style.display = 'block';
+			populateModalContent(eventId);
+		}
+
+		function closeModal() {
+			var modal = document.getElementById('miModal');
+			modal.classList.remove('show');
+			modal.style.display = 'none';
+		}
+
+		function sendDisponibility(eventId,asistance) {
+  			var selectElement = document.getElementById("disponibility-select-" + eventId);
+  			var disponibilityValue = selectElement.value;
+
+  			axios.post('/user/event/disponibility/'+eventId, {
+    			disponibility: disponibilityValue
+  			})
+  			.then (function (response) {
+    			console.log("Todo gucci");
+    			selectElement.value = disponibilityValue;
+
+	 			// Actualizar el icono del evento en la interfaz de usuario
+    			var iconElement = document.getElementById("p-" + eventId);
+    			var newIcon = '';
+	
+    			if (disponibilityValue === '1') {
+					if (asistance == 0) {
+			 			newIcon = '<i class="fas fa-circle" style="color: #999999;"></i>';
+					} else {
+						newIcon = '<i class="fas fa-circle" style="color: #7EFF9D;"></i>';
+				}
+    			} else if (disponibilityValue === '0') {
+      				newIcon = '<i class="fas fa-circle" style="color: #000000;"></i>';
+    			} else {
+      				newIcon = '<i class="fas fa-circle" style="color: #E4FF5D;"></i>';
+    			}
+    				iconElement.innerHTML = newIcon;
+  				})
+  			.catch(function (error) {
+    			console.log(error);
+  			});
+		}
+	</script>
 
 {% endblock %}
-
-
