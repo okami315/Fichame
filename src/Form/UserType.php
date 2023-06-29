@@ -59,10 +59,6 @@ class UserType extends AbstractType
             ->add('agreement', null, [
                 'label' => 'Contrato',
             ])
-            ->add('social_security', null, [
-                'label' => 'Seguridad Social',
-                'required' => true,
-            ])
         ;
     }
 

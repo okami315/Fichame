@@ -9,6 +9,7 @@
                 <th scope="col">Coordinador</th>
                 <th scope="col">Conductor</th>
                 <th scope="col">Coche particular</th>
+                <th scope="col">Horas estimadas</th>
                 <th scope="col">Horas específicas</th>
                 <th scope="col">Horas fichadas</th>
                 <th scope="col">Modificador de horas</th>
@@ -44,6 +45,9 @@
                             <input type="checkbox" name="coche_particular" id="coche_particular" value="1" {% if userEvent.isPrivateCar() %}checked{% endif %} onchange="updatePrivateCar('{{ userEvent.id }}', this.checked)">
                         {% endif %}
                     </td>
+                    <td>
+                        {{userEvent.event.estimatedHours}}
+                    </td>   
                     <td>
                         <input class="form-control" type="number" name="horario_estimado" id="horario_estimado" value="{% if userEvent.estimatedHours is null %}{{ event.schedule }}{% else %}{{ userEvent.estimatedHours }}{% endif %}" onchange="updateEstimatedHours('{{ userEvent.id }}', this.value)">
                     </td>

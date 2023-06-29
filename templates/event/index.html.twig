@@ -104,7 +104,7 @@
 											<div class="modal-dialog modal-lg" role="document">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h5 class="modal-title" id="modalLabel">Título del modal</h5>
+														<h5 class="modal-title" id="modalLabel">Horario Estimado</h5>
 														<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
 															<span aria-hidden="true">&times;</span>
 														</button>
@@ -219,12 +219,15 @@
 														<div class="row justify-content-center align-items-center">
 															<div>
 																<div class="row justify-content-between">
-																	<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
+																	{% if evento.link %}
+																				<a class="px-1" href="{{evento.link}}" target="_blank" rel="noopener noreferrer">
 																		<img src="{{ asset('images_deploy/plutio-icon.png') }}" alt="iconType" width="15px">
 																	</a>
+																	{% endif %}
+																	
 																	{% for userEvent in evento.userEvents %}	
 																		{% if userEvent.user.id == app.user.id %}
-																			{% if userEvent.asistance == 1 %}
+																			{% if userEvent.asistance == 1 and evento.linkform %}
 																				<a class="px-1" href='{{ evento.linkform }}' target="_blank" rel="noopener noreferrer"><i class="text-dark fas fa-poll-h"></i></a>
 																			{% endif %}
 																		{% endif %}
@@ -249,7 +252,7 @@
 												<div class="modal-dialog modal-lg" role="document">
 													<div class="modal-content">
 														<div class="modal-header">
-															<h5 class="modal-title" id="modalLabel">Título del modal</h5>
+															<h5 class="modal-title" id="modalLabel">Horario Estimado</h5>
 															<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="closeModal()">
 																<span aria-hidden="true">&times;</span>
 															</button>
@@ -276,10 +279,6 @@
   			axios.get('/getevent/' + eventId)
     		.then(function (response) {
       			var eventData = response.data;
-      				// Actualiza el título del modal con el nombre del evento
-      			var modalTitle = document.getElementById('modalLabel');
-      			modalTitle.textContent = eventData.name;
-
       			var modalBody = document.querySelector('.modal-body');
       			modalBody.innerHTML = nl2br(eventData.schedule); // Utiliza nl2br para convertir los saltos de línea en etiquetas <br>
     		})

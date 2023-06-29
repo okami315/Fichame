@@ -93,8 +93,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $age = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $social_security = null;
+    #[ORM\Column(nullable: true)]
+    private ?bool $active = null;
 
     public function __construct()
     {
@@ -386,7 +386,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Registration>
+     * @return Collection<int, Signing>
      */
     public function getSignings(): Collection
     {
@@ -463,14 +463,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSocialSecurity(): ?string
+    public function isActive(): ?bool
     {
-        return $this->social_security;
+        return $this->active;
     }
 
-    public function setSocialSecurity(string $social_security): self
+    public function setActive(?bool $active): self
     {
-        $this->social_security = $social_security;
+        $this->active = $active;
 
         return $this;
     }

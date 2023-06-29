@@ -186,15 +186,19 @@ class UserEventController extends AbstractController
         $coordinador = $data['coordinador'] == '1' ? true : false; 
 
         $userEvent->setCoordination($coordinador);
-        if($coordinador){
-            $userEvent->setRealHours(($userEvent->getRealHours())+2);
-            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())+2);
+        if($coordinador and $userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+6)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+6)*10);
+        }else if($coordinador and !$userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+2)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+2)*10);
+        }else if (!$coordinador and $userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+4)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+4)*10);
         }else{
-            $userEvent->setRealHours(($userEvent->getRealHours())-2);
-            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())-2);
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours())*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours())*10);
         }
-        $userEvent->setRealsalary($userEvent->getRealHours()*10);
-        $userEvent->setEstimatedsalary($userEvent->getEstimatedHours()*10);
         $userEventRepository->save($userEvent, true);
 
         return new Response('Coordinador actualizado correctamente', Response::HTTP_OK);
@@ -213,18 +217,39 @@ class UserEventController extends AbstractController
             $event->setDriversAvailable($event->getDriversAvailable()+1);
             $eventRepository->save($event, true);
 
-            $userEvent->setRealHours(($userEvent->getRealHours())+4);
-            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())+4);
+            if($userEvent->isCoordination() and $driving){
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+6)*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+6)*10);
+            }else if($userEvent->isCoordination() and !$driving){
+                $userEvent->setRealsalary(($userEvent->getRealHours()+2)*10);
+                $userEvent->setEstimatedsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+2)*10);
+            }else if (!$userEvent->isCoordination() and $driving){
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+4)*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+4)*10);
+            }else{
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours())*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours())*10);
+            }
         }else{
             // Restar 1 a drivers_available
             $event->setDriversAvailable($event->getDriversAvailable()-1);
             $eventRepository->save($event, true);
 
-            $userEvent->setRealHours(($userEvent->getRealHours())-4);
-            $userEvent->setEstimatedHours(($userEvent->getEstimatedHours())-4);
+            if($userEvent->isCoordination() and $driving){
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+6)*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+6)*10);
+            }else if($userEvent->isCoordination() and !$driving){
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+2)*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+2)*10);
+            }else if (!$userEvent->isCoordination() and $driving){
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+4)*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+4)*10);
+            }else{
+                $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours())*10);
+                $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours())*10);
+            }
         }
-        $userEvent->setRealsalary($userEvent->getRealHours()*10);
-        $userEvent->setEstimatedsalary($userEvent->getEstimatedHours()*10);
+      
         $userEvent->setDriving($driving);
         $userEventRepository->save($userEvent, true);
 
@@ -252,10 +277,21 @@ class UserEventController extends AbstractController
         $userEvent = $userEventRepository->find($id);
 
         $userEvent->setEstimatedHours($data['estimatedHours']);
-        $userEvent->setRealHours($userEvent->getEstimatedHours()+$userEvent->getExtraHours());
+        // $userEvent->setRealHours($userEvent->getEstimatedHours()+$userEvent->getExtraHours());
 
-        $userEvent->setEstimatedsalary($userEvent->getEstimatedHours()*10);
-        $userEvent->setRealsalary($userEvent->getRealHours()*10);
+        if($userEvent->isCoordination() and $userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+6)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+6)*10);
+        }else if($userEvent->isCoordination() and !$userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+2)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+2)*10);
+        }else if (!$userEvent->isCoordination() and $userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+4)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+4)*10);
+        }else{
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours())*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours())*10);
+        }
         // $userEvent->setRealsalary($userEvent->getEstimatedsalary()+($userEvent->getExtraHours())*10);
         
         $userEventRepository->save($userEvent, true);
@@ -272,9 +308,21 @@ class UserEventController extends AbstractController
         $userEvent->setExtraHours($data['extraHours']);
 
     
-        $userEvent->setRealHours($userEvent->getEstimatedHours()+$userEvent->getExtraHours());
+        // $userEvent->setRealHours($userEvent->getEstimatedHours()+$userEvent->getExtraHours());
 
-        $userEvent->setRealsalary($userEvent->getEstimatedsalary()+($userEvent->getExtraHours())*10);
+        if($userEvent->isCoordination() and $userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+6)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+6)*10);
+        }else if($userEvent->isCoordination() and !$userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+2)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+2)*10);
+        }else if (!$userEvent->isCoordination() and $userEvent->isDriving()){
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours()+4)*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours()+4)*10);
+        }else{
+            $userEvent->setRealsalary(($userEvent->getRealHours()+$userEvent->getExtraHours())*10);
+            $userEvent->setEstimatedsalary(($userEvent->getEstimatedHours())*10);
+        }
         
 
         $userEventRepository->save($userEvent, true);

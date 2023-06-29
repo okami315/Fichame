@@ -35,6 +35,34 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/role/{id}', name: 'app_user_roles', methods: ['PUT'])]
+    public function roles(Request $request, User $user, UserRepository $userRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $user->setRoles($data['roles']);
+        $userRepository->save($user, true);  
+        // if($this->isGranted('ROLE_SUPER_ADMIN')){
+        //     $users = $userRepository->findAll();
+        // } else {
+        //     $users = $userRepository->findBy(
+        //         ['company' => $this->getUser()->getCompany()->getId()]
+        //     );
+        // }  
+        return $this->json(['success' => true]);   
+        // return $this->redirectToRoute('app_user_index', ['users' => $users,], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/active/{id}', name: 'app_user_active', methods: ['POST'])]
+    public function active(Request $request, User $user, UserRepository $userRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $user->setActive($data['active']);
+        $userRepository->save($user, true);  
+        return $this->json(['success' => true]);   
+        // return $this->redirectToRoute('app_user_index', ['users' => $users,], Response::HTTP_SEE_OTHER);
+    }
+
+
+
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/user/', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
@@ -92,10 +120,10 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $userRepository->save($user, true);
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_trabajadores', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user/edit.html.twig', [
+        return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);

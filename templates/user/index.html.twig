@@ -13,32 +13,50 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>usuario</th>
+                            <th>Usuario</th>
                             <th>Roles</th>
+                            <th>Estado</th>
                             <th>Nombre completo</th>
                             <th>Email</th>
                             <th>DNI</th>
                             <th>Fecha de registro</th>
-                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for user in users %}
-                            <tr>
+                            <tr id="user-row-{{ user.id }}">
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.username }}</td>
-                                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                                {# <td>{{ user.roles ? user.roles|json_encode : '' }}</td> #}
+                                <td>
+                                    <input type="checkbox" id="role-user-{{ user.id }}" name="roles[]" value="ROLE_USER" data-user="{{ user.id }}" onchange="updateRoles({{ user.id }})"
+                                        {% if 'ROLE_USER' in user.roles %}checked{% endif %}>
+                                    <label for="role-user-{{ user.id }}">Rol Usuario</label>
+                                    <br>
+                                    <input type="checkbox" id="role-almacen-{{ user.id }}" name="roles[]" value="ROLE_ALMACEN" data-user="{{ user.id }}" onchange="updateRoles({{ user.id }})"
+                                        {% if 'ROLE_ALMACEN' in user.roles %}checked{% endif %}>
+                                    <label for="role-almacen-{{ user.id }}">Rol Almacen</label>
+                                    <br>
+                                    <input type="checkbox" id="role-admin-{{ user.id }}" name="roles[]" value="ROLE_ADMIN" data-user="{{ user.id }}" onchange="updateRoles({{ user.id }})"
+                                        {% if 'ROLE_ADMIN' in user.roles %}checked{% endif %}>
+                                    <label for="role-admin-{{ user.id }}">Rol Admin</label>
+                                </td>
+                                 <td>
+                                  <select class="col-11 mb-2 form-select" id="active-{{ user.id }}" onchange="changeActive('{{ user.id }}')">
+									<option value="1" {% if user.active == 1 or user.active is null %}selected{% endif %}>Activo</option>
+									<option value="0" {% if user.active == 0 and user.active is not null %}selected{% endif %}>Inactivo</option>
+								</select>
+                                </td>
                                 <td>{{ user.fullName }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.dni }}</td>
                                 <td>{{ user.regDate ? user.regDate|date('Y-m-d H:i:s') : '' }}</td>
-                                <td>
+                                {# <td>
                                     <a class="btn boton" href="{{ path('app_user_edit', {'id': user.id}) }}">Editar</a>
                                     {% if not user.roles %}
                                         <a href="{{ path('app_user_verify', {'id': user.id}) }}">verify</a>
-                                    {% endif %}
-                                    
-                                </td>
+                                    {% endif %}   
+                                </td> #}
                             </tr>
                         {% else %}
                             <tr>
@@ -50,4 +68,49 @@
             </div>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+function updateRoles(userId) {
+    // Obtener los checkboxes seleccionados del usuario específico
+    var checkboxes = document.querySelectorAll('input[name="roles[]"][data-user="' + userId + '"]:checked');
+    
+    // Crear un array para almacenar los roles seleccionados
+    var roles = [];
+    
+    // Iterar sobre los checkboxes seleccionados y agregar los valores al array
+    for (var i = 0; i < checkboxes.length; i++) {
+        roles.push(checkboxes[i].value);
+    }
+    
+    // Crear un objeto de datos con los roles seleccionados
+    var data = {
+        roles: roles
+    };
+    
+    // Enviar la solicitud POST o PUT utilizando Axios
+    axios.put('/role/' + userId, data)
+        .then(function(response) {
+            // Manejar la respuesta del servidor si es necesario
+        })
+        .catch(function(error) {
+            // Manejar el error si ocurre
+        });
+}
+function changeActive(userId) {
+  			var selectElement = document.getElementById("active-" + userId);
+  			var activeValue = selectElement.value;
+
+  			axios.post('/active/'+userId, {
+    			active: activeValue
+  			})
+  			.then (function (response) {
+    			console.log("Todo gucci");
+    			selectElement.value = activeValue;
+            })
+  			.catch(function (error) {
+    			console.log(error);
+  			});
+		}
+</script>
+
 {% endblock %}

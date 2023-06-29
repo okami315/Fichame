@@ -24,6 +24,9 @@ class EventController extends AbstractController
     #[Route('/event', name: 'app_event_index', methods: ['GET'])]
     public function index(EventRepository $eventRepository, UserEventRepository $userEventRepository, UserRepository $userRepository): Response
     {
+        if($this->getUser()->isActive() == false){
+            return $this->redirectToRoute('app_logout');
+        }
         $totalPending = $userRepository->countActiveUsers();
 
         $currentMonth = new \DateTime();
@@ -56,7 +59,7 @@ class EventController extends AbstractController
             $evento->setWorkersAvailable($countUsers);
             $eventRepository->save($evento, true);
     
-                // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+            // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
             if ($evento->getStatus() != 0 && $evento->getWorkersSelected() == $evento->getWorkersNumber() && $evento->getDriversNumber() == $evento->getDriversAvailable() && $eventRepository->hasCoordination($evento->getId())) {
                 $evento->setStatus(2);
                 $eventRepository->save($evento, true);
@@ -153,6 +156,15 @@ class EventController extends AbstractController
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
+         // Hacer condicion que si se cumple cambiar el status a 2 para que se vea verde el icono
+         if($event->getStatus()!=0 and $event->getWorkersSelected()==$event->getWorkersNumber() and $event->getDriversNumber()==$event->getDriversAvailable() and $eventRepository->hasCoordination($event->getId())){
+            $event->setStatus(2);
+            $eventRepository->save($event, true);
+        }else{
+            $event->setStatus(1);
+            $eventRepository->save($event, true);
+        }
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setEditDate(new DateTime());
             $eventRepository->save($event, true);
